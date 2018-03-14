@@ -1,0 +1,27 @@
+{
+  "name": "tree-sitter-agda",
+  "version": "1.0.0",
+  "description": "tree sitter for Agda",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx tree-sitter test",
+    "gen": "npx tree-sitter generate",
+    "generate": "npx tree-sitter generate && npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/banacorn/tree-sitter-agda.git"
+  },
+  "author": "LUA Ting-Gan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/banacorn/tree-sitter-agda/issues"
+  },
+  "homepage": "https://github.com/banacorn/tree-sitter-agda#readme",
+  "dependencies": {
+    "tree-sitter-cli": "^0.10.2"
+  },
+  "devDependencies": {
+    "electron-rebuild": "^1.7.3"
+  }
+}
