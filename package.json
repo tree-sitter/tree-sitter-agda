@@ -20,8 +20,5 @@
   "homepage": "https://github.com/banacorn/tree-sitter-agda#readme",
   "dependencies": {
     "tree-sitter-cli": "^0.10.2"
-  },
-  "devDependencies": {
-    "electron-rebuild": "^1.7.3"
   }
 }
