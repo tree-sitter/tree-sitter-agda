@@ -11,8 +11,27 @@ module.exports = grammar({
 
         _top_level: $ => choice(
             $.pragma,
-            $.hello
+            $.module_decl
         ),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Name
+        // http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.Names
+        ////////////////////////////////////////////////////////////////////////
+
+        name: $ => sepBy1(
+            '_',
+            $._name_part
+        ),
+
+        qualified_name: $ => sepBy1(
+            '.',
+            $._name_part
+        ),
+
+        anonymous_name: $ => '_',
+
+        _name_part: $ => /[^\s\_\;\.\"\(\)\{\}\@]+/,
 
         ////////////////////////////////////////////////////////////////////////
         // Comment
@@ -31,7 +50,11 @@ module.exports = grammar({
             )
         )),
 
+        ////////////////////////////////////////////////////////////////////////
+        // Pragma
         // http://agda.readthedocs.io/en/latest/language/pragmas.html
+        ////////////////////////////////////////////////////////////////////////
+
         pragma: $ => seq(
             '{-#',
             $.pragma_name,
@@ -53,10 +76,22 @@ module.exports = grammar({
         ),
         _pragma_argument: $ => /\S+/,
 
+        ////////////////////////////////////////////////////////////////////////
+        // Module
+        // http://agda.readthedocs.io/en/v2.5.3/language/module-system.html
+        ////////////////////////////////////////////////////////////////////////
 
-
-
-
-        hello: $ => 'hello'
+        module_decl: $ => seq(
+            'module',
+            choice(
+                $.qualified_name,
+                $.anonymous_name
+            ),
+            'where'
+        )
     }
 });
+
+function sepBy1(sep, rule) {
+  return seq(rule, repeat(seq(sep, rule)))
+}

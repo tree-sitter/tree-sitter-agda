@@ -1,0 +1,11 @@
+==================
+Anonymous Module Declaration
+==================
+
+module _ where
+
+---
+
+(source_file
+    (module_decl
+        (anonymous_name)))

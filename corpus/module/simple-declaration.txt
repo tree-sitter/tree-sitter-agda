@@ -1,0 +1,11 @@
+==================
+Simple Module Declaration
+==================
+
+module Test.Module where
+
+---
+
+(source_file
+    (module_decl
+        (qualified_name)))

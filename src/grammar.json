@@ -17,9 +17,67 @@
         },
         {
           "type": "SYMBOL",
-          "name": "hello"
+          "name": "module_decl"
         }
       ]
+    },
+    "name": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_name_part"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "_"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_name_part"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "qualified_name": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_name_part"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "."
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_name_part"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "anonymous_name": {
+      "type": "STRING",
+      "value": "_"
+    },
+    "_name_part": {
+      "type": "PATTERN",
+      "value": "[^\\s\\_\\;\\.\\\"\\(\\)\\{\\}\\@]+"
     },
     "comment": {
       "type": "TOKEN",
@@ -152,9 +210,31 @@
       "type": "PATTERN",
       "value": "\\S+"
     },
-    "hello": {
-      "type": "STRING",
-      "value": "hello"
+    "module_decl": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "module"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "qualified_name"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "anonymous_name"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "where"
+        }
+      ]
     }
   },
   "extras": [
