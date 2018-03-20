@@ -1,0 +1,11 @@
+==================
+Pragmas: Positivity Checking
+==================
+
+{-# NO_POSITIVITY_CHECK #-}
+
+---
+
+(source_file
+    (pragma
+        (pragma_name)))

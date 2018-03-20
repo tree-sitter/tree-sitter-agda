@@ -1,0 +1,11 @@
+==================
+Pragmas: Polarity Checking
+==================
+
+{-# POLARITY ∥_∥ ++ #-}
+
+---
+
+(source_file
+    (pragma
+        (pragma_name)))

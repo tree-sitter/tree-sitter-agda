@@ -2,6 +2,103 @@
   "name": "agda",
   "rules": {
     "source_file": {
+      "type": "REPEAT",
+      "content": {
+        "type": "SYMBOL",
+        "name": "_top_level"
+      }
+    },
+    "_top_level": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "pragma"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "hello"
+        }
+      ]
+    },
+    "pragma": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "{-#"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pragma_name"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_pragma_argument"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "#-}"
+        }
+      ]
+    },
+    "pragma_name": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "BUILTIN"
+        },
+        {
+          "type": "STRING",
+          "value": "CATCHALL"
+        },
+        {
+          "type": "STRING",
+          "value": "COMPILE"
+        },
+        {
+          "type": "STRING",
+          "value": "FOREIGN"
+        },
+        {
+          "type": "STRING",
+          "value": "NO_POSITIVITY_CHECK"
+        },
+        {
+          "type": "STRING",
+          "value": "NO_TERMINATION_CHECK"
+        },
+        {
+          "type": "STRING",
+          "value": "TERMINATING"
+        },
+        {
+          "type": "STRING",
+          "value": "NON_TERMINATING"
+        },
+        {
+          "type": "STRING",
+          "value": "POLARITY"
+        },
+        {
+          "type": "STRING",
+          "value": "STATIC"
+        },
+        {
+          "type": "PATTERN",
+          "value": "\\S+"
+        }
+      ]
+    },
+    "_pragma_argument": {
+      "type": "PATTERN",
+      "value": "\\S+"
+    },
+    "hello": {
       "type": "STRING",
       "value": "hello"
     }

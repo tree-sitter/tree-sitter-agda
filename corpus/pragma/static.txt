@@ -1,0 +1,11 @@
+==================
+Pragmas: Static values
+==================
+
+{-# STATIC <Name> #-}
+
+---
+
+(source_file
+    (pragma
+        (pragma_name)))

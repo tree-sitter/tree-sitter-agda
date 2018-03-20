@@ -1,0 +1,11 @@
+==================
+Pragmas: Termination Checking
+==================
+
+{-# NON_TERMINATING #-}
+
+---
+
+(source_file
+    (pragma
+        (pragma_name)))

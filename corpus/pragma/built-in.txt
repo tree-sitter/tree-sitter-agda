@@ -1,0 +1,11 @@
+==================
+Pragmas: Built-ins
+==================
+
+{-# BUILTIN UNIT ⊤ #-}
+
+---
+
+(source_file
+    (pragma
+        (pragma_name)))

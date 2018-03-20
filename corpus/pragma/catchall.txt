@@ -1,0 +1,11 @@
+==================
+Pragmas: Catchall
+==================
+
+{-# CATCHALL #-}
+
+---
+
+(source_file
+    (pragma
+        (pragma_name)))

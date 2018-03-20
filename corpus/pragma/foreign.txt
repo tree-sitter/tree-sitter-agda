@@ -1,0 +1,11 @@
+==================
+Pragmas: Foreign
+==================
+
+{-# FOREIGN GHC import qualified System.IO #-}
+
+---
+
+(source_file
+    (pragma
+        (pragma_name)))
