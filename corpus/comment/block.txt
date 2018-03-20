@@ -1,10 +1,10 @@
 ==================
-Return statements
+Block comment
 ==================
 
-hello
+{- comment -}
 
 ---
 
 (source_file
-    (hello))
+    (comment))

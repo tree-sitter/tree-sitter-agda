@@ -1,0 +1,10 @@
+==================
+Line comment
+==================
+
+-- comment
+
+---
+
+(source_file
+    (comment))
