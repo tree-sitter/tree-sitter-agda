@@ -1,0 +1,26 @@
+==================
+Pragmas
+==================
+
+{-# BUILTIN UNIT ⊤ #-}
+{-# CATCHALL #-}
+{-# COMPILE GHC FileHandle = type System.IO.Handle #-}
+{-# FOREIGN GHC import qualified System.IO #-}
+{-# NO_POSITIVITY_CHECK #-}
+{-# TERMINATING #-}
+{-# NON_TERMINATING #-}
+{-# POLARITY ∥_∥ ++ #-}
+{-# STATIC <Name> #-}
+
+---
+
+(source_file
+    (pragma (pragma_name))
+    (pragma (pragma_name))
+    (pragma (pragma_name))
+    (pragma (pragma_name))
+    (pragma (pragma_name))
+    (pragma (pragma_name))
+    (pragma (pragma_name))
+    (pragma (pragma_name))
+    (pragma (pragma_name)))

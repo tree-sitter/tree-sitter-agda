@@ -1,0 +1,12 @@
+==================
+Comments
+==================
+
+{- block -}
+-- line
+
+---
+
+(source_file
+    (comment)
+    (comment))
