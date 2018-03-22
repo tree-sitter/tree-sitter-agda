@@ -126,10 +126,13 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
 
         expr: $ => choice(
-            prec(2, seq($.tele_arrow, $.expr)),
-            prec(2, seq($._atomic_exprs1, '->', $.expr)),
-            prec(2, seq($._expr1, '=', $.expr)),
-            $._expr1 // lowest precedence
+            seq($.tele_arrow, $.expr),
+            seq($._atomic_exprs1, '->', $.expr),
+            seq($._expr1, '=', $.expr),
+            // prec(2, seq($.tele_arrow, $.expr)),
+            // prec(2, seq($._atomic_exprs1, '->', $.expr)),
+            // prec(2, seq($._expr1, '=', $.expr)),
+            prec(-1, $._expr1) // lowest precedence
         ),
 
         // Level 1 Expressions: Application
@@ -146,14 +149,14 @@ module.exports = grammar({
         // Level 2 Expressions: Lambdas and lets
         _expr2: $ => choice(
             // lambda bindings
-            seq('\\', $.lambda_bindings, '->', $.expr),
-            seq('\\',     '{', $.lambda_clauses, '}'),
-            seq('\\', 'where', $.vopen, $.lambda_where_clauses, $.vclose),
-            seq('\\',          $.lambda_bindings),
+            // seq('\\', $.lambda_bindings, '->', $.expr),
+            // seq('\\',     '{', $.lambda_clauses, '}'),
+            // seq('\\', 'where', $.vopen, $.lambda_where_clauses, $.vclose),
+            // seq('\\',          $.lambda_bindings),
             // forall
-            seq('forall', $.forall_bindings, $.expr),
+            // seq('forall', $.forall_bindings, $.expr),
             // let ... in
-            prec.left(seq('let', repeat1($._declaration), optional(seq('in', $.expr)))),
+            // prec.left(seq('let', repeat1($._declaration), optional(seq('in', $.expr)))),
 
             // TODO: do notation
             // seq('do', $.vopen, repeat1($.do_stmt), $.vclose),
@@ -332,11 +335,11 @@ module.exports = grammar({
         // Function clauses
         ////////////////////////////////////////////////////////////////////////
 
-        lhs: $ => prec.left(seq(
+        lhs: $ => seq(
             $._expr1,
             optional($.rewrite_equations),
             optional($.with_expressions)
-        )),
+        ),
 
         rewrite_equations: $ => seq('rewrite', $._expr1),
         with_expressions: $ => seq('with', $._expr1),
@@ -391,11 +394,11 @@ module.exports = grammar({
         // to allow declarations like 'x::xs ++ ys = e', when '::' has higher
         // precedence than '++'.
         // function_clause also handle possibly dotted type signatures.
-        function_clause: $ => prec.left(seq(
+        function_clause: $ => seq(
             $.lhs,
             optional($.rhs),
             optional($.where_clause)
-        )),
+        ),
 
         rhs: $ => choice(
             seq('=', $.expr),
@@ -666,7 +669,7 @@ module.exports = grammar({
             seq($.vopen, $.vclose),
             $.declarations
         ),
-        _declarations1: $ => prec.right(sepBy1($.semi, $._declaration)),
+        _declarations1: $ => sepBy1($.semi, $._declaration),
     }
 });
 

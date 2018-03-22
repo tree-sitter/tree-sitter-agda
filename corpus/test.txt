@@ -1,12 +1,8 @@
 ==================
-Test
+Type signature
 ==================
 
 a : Set
-a = A
-
-b : Set
-b = B
 
 ---
 
@@ -15,7 +11,37 @@ b = B
         (lhs
             (atomic_expr (qualified_name)))
         (rhs
-            (expr
-                (atomic_expr)
-                (atomic_expr (qualified_name))
-                (expr (atomic_expr (qualified_name)))))))
+            (expr (atomic_expr)))))
+
+==================
+Function: id
+==================
+
+id a = a
+
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atomic_expr (qualified_name))
+            (atomic_expr (qualified_name)))
+        (rhs
+            (expr (atomic_expr (qualified_name))))))
+
+==================
+Function with type signature
+==================
+
+id : A -> A
+id a = a
+
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atomic_expr (qualified_name))
+            (atomic_expr (qualified_name)))
+        (rhs
+            (expr (atomic_expr (qualified_name))))))
