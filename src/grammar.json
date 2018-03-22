@@ -40,8 +40,25 @@
       "value": "begin_import_dir: undefined"
     },
     "semi": {
-      "type": "STRING",
-      "value": ";"
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_layout_semicolon"
+        },
+        {
+          "type": "STRING",
+          "value": ";"
+        }
+      ]
+    },
+    "vopen": {
+      "type": "SYMBOL",
+      "name": "_layout_open_brace"
+    },
+    "vclose": {
+      "type": "SYMBOL",
+      "name": "_layout_close_brace"
     },
     "name": {
       "type": "PATTERN",
@@ -589,7 +606,15 @@
             },
             {
               "type": "SYMBOL",
+              "name": "vopen"
+            },
+            {
+              "type": "SYMBOL",
               "name": "lambda_where_clauses"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "vclose"
             }
           ]
         },
@@ -1854,7 +1879,7 @@
       ]
     },
     "lhs": {
-      "type": "PREC_RIGHT",
+      "type": "PREC_LEFT",
       "value": 0,
       "content": {
         "type": "SEQ",
@@ -1917,92 +1942,64 @@
       ]
     },
     "where_clause": {
-      "type": "PREC_RIGHT",
-      "value": 0,
-      "content": {
-        "type": "CHOICE",
-        "members": [
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "where"
-              },
-              {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "_declarations1"
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "module"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "name"
-              },
-              {
-                "type": "STRING",
-                "value": "where"
-              },
-              {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "_declarations1"
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "module"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "anonymous_name"
-              },
-              {
-                "type": "STRING",
-                "value": "where"
-              },
-              {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "_declarations1"
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "where"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_declarations0"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "module"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "name"
+            },
+            {
+              "type": "STRING",
+              "value": "where"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_declarations0"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "module"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "anonymous_name"
+            },
+            {
+              "type": "STRING",
+              "value": "where"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_declarations0"
+            }
+          ]
+        }
+      ]
     },
     "_declaration": {
       "type": "CHOICE",
@@ -2014,7 +2011,7 @@
       ]
     },
     "function_clause": {
-      "type": "PREC_RIGHT",
+      "type": "PREC_LEFT",
       "value": 0,
       "content": {
         "type": "SEQ",
@@ -2081,6 +2078,45 @@
         }
       ]
     },
+    "declarations": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "vopen"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_declarations1"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "vclose"
+        }
+      ]
+    },
+    "_declarations0": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "vopen"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "vclose"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "declarations"
+        }
+      ]
+    },
     "_declarations1": {
       "type": "PREC_RIGHT",
       "value": 0,
@@ -2122,6 +2158,23 @@
     }
   ],
   "conflicts": [],
-  "externals": [],
+  "externals": [
+    {
+      "type": "SYMBOL",
+      "name": "_layout_semicolon"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_layout_open_brace"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_layout_close_brace"
+    },
+    {
+      "type": "STRING",
+      "value": "->"
+    }
+  ],
   "inline": []
 }

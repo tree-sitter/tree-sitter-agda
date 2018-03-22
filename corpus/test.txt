@@ -5,6 +5,9 @@ Test
 a : Set
 a = A
 
+b : Set
+b = B
+
 ---
 
 (source_file

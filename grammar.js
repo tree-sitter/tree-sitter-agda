@@ -10,6 +10,13 @@ module.exports = grammar({
         /\s|\\n/
     ],
 
+    externals: $ => [
+        $._layout_semicolon,
+        $._layout_open_brace,
+        $._layout_close_brace,
+        '->'
+    ],
+
     rules: {
         // source_file: $ => $.function_clause,
         source_file: $ => repeat($._declaration),
@@ -20,12 +27,25 @@ module.exports = grammar({
         set_n: $ => 'set_n: undefined',
         begin_import_dir: $ => 'begin_import_dir: undefined',
 
+
+        ////////////////////////////////////////////////////////////////////////
+        // Special lexemes
+        ////////////////////////////////////////////////////////////////////////
+
+        semi: $ => choice(
+            $._layout_semicolon,
+            ';'
+        ),
+
+        vopen: $ => $._layout_open_brace,
+        vclose: $ => $._layout_close_brace,
+
+
         ////////////////////////////////////////////////////////////////////////
         // Name
         // http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.Names
         ////////////////////////////////////////////////////////////////////////
 
-        semi: $ => ';',
 
         name: $ => /[^\s\_\;\.\"\(\)\{\}\@]+(\_[^\s\_\;\.\"\(\)\{\}\@]+)*/,
         // for var1@var2
@@ -128,7 +148,7 @@ module.exports = grammar({
             // lambda bindings
             seq('\\', $.lambda_bindings, '->', $.expr),
             seq('\\',     '{', $.lambda_clauses, '}'),
-            seq('\\', 'where', $.lambda_where_clauses),
+            seq('\\', 'where', $.vopen, $.lambda_where_clauses, $.vclose),
             seq('\\',          $.lambda_bindings),
             // forall
             seq('forall', $.forall_bindings, $.expr),
@@ -136,7 +156,7 @@ module.exports = grammar({
             prec.left(seq('let', repeat1($._declaration), optional(seq('in', $.expr)))),
 
             // TODO: do notation
-            // seq('do', repeat1($.do_stmt)),
+            // seq('do', $.vopen, repeat1($.do_stmt), $.vclose),
 
             // seq('quoteGoal', $.name, 'in', $.expr),
             // seq('tactic', $._atomic_exprs1),
@@ -277,6 +297,7 @@ module.exports = grammar({
         //
         // do_where: $ => seq(
         //     'where',
+        //     $.vopen,
         //     $.lambda_where_clauses
         // ),
 
@@ -311,7 +332,7 @@ module.exports = grammar({
         // Function clauses
         ////////////////////////////////////////////////////////////////////////
 
-        lhs: $ => prec.right(seq(
+        lhs: $ => prec.left(seq(
             $._expr1,
             optional($.rewrite_equations),
             optional($.with_expressions)
@@ -325,11 +346,11 @@ module.exports = grammar({
         //     optional($.rewrite_equations)
         // ),
         //
-        where_clause: $ => prec.right(choice(
-            seq(                            'where', optional($._declarations1)),
-            seq('module', $.name,           'where', optional($._declarations1)),
-            seq('module', $.anonymous_name, 'where', optional($._declarations1))
-        )),
+        where_clause: $ => choice(
+            seq(                            'where', $._declarations0),
+            seq('module', $.name,           'where', $._declarations0),
+            seq('module', $.anonymous_name, 'where', $._declarations0)
+        ),
 
         // expr_where: $ => seq(
         //     $.expr,
@@ -370,7 +391,7 @@ module.exports = grammar({
         // to allow declarations like 'x::xs ++ ys = e', when '::' has higher
         // precedence than '++'.
         // function_clause also handle possibly dotted type signatures.
-        function_clause: $ => prec.right(seq(
+        function_clause: $ => prec.left(seq(
             $.lhs,
             optional($.rhs),
             optional($.where_clause)
@@ -388,7 +409,7 @@ module.exports = grammar({
         //     optional($.typed_untyped_bindings1),
         //     optional(seq(':', $.expr)),
         //     'where',
-        //     optional($._declarations1)
+        //     $._declarations0
         // ),
         //
         // // Data type signature. Found in mutual blocks.
@@ -420,11 +441,10 @@ module.exports = grammar({
         // ),
         //
         // // Declaration of record constructor name.
-        // record_constructor_name: $ => seq(
-        //     optional('instance'),
-        //     'constructor',
-        //     $.name
-        // ),
+        // record_constructor_name: $ => choice(
+        //     seq('constructor', $.name),
+        //     seq('instance', $.vopen, 'constructor', $.name, $.vclose)
+        // )
         //
         // // Fixity declarations.
         // infix: $ => seq(
@@ -436,49 +456,49 @@ module.exports = grammar({
         // Field declarations.
         // field: $ => seq(
         //     'field',
-        //     $.arg_type_signature
+        //     $.arg_type_signatures
         // ),
 
         // // Mutually recursive declarations.
         // mutual: $ => seq(
         //     'mutual',
-        //     optional($._declarations1)
+        //     $._declarations0
         // ),
         //
         // // Abstract declarations.
         // abstract: $ => seq(
         //     'abstract',
-        //     optional($._declarations1)
+        //     $._declarations0
         // ),
         //
         // // Private can only appear on the top-level (or rather the module level)
         // private: $ => seq(
         //     'private',
-        //     optional($._declarations1)
+        //     $._declarations0
         // ),
         //
         // // Instance declarations.
         // instance: $ => seq(
         //     'instance',
-        //     optional($._declarations1)
+        //     $._declarations0
         // ),
         //
         // // Macro declarations.
         // macro: $ => seq(
         //     'macro',
-        //     optional($._declarations1)
+        //     $._declarations0
         // ),
         //
         // // Postulates.
         // postulate: $ => seq(
         //     'postulate',
-        //     optional($._declarations1)
+        //     $._declarations0
         // ),
         //
         // // Primitives. Can only contain type signatures.
         // primitive: $ => seq(
         //     'primitive',
-        //     $.type_signature
+        //     $.type_signatures
         // ),
         //
         // // Unquoting declarations.
@@ -563,7 +583,7 @@ module.exports = grammar({
         //     choice($.qualified_name, $.anonymous_name),
         //     optional($.typed_untyped_bindings1),
         //     'where',
-        //     optional($._declarations1)
+        //     $._declarations0
         // ),
         //
         //
@@ -571,27 +591,48 @@ module.exports = grammar({
         // // Sequence of declarations
         // ////////////////////////////////////////////////////////////////////////
         //
-        // // Type signatures of the form "n1 n2 n3 ... : Type", with at least
-        // // one bound name.
-        // type_signature: $ => seq(
+        // // Non-empty list of type signatures, with several identifiers allowed
+        // // for every signature.
+        // type_signatures: $ => seq(
+        //     $.vopen,
+        //     $._type_signatures1,
+        //     $.vclose
+        // ),
+        //
+        // // Inside the layout block.
+        // _type_signatures1: $ => sepBy1($.semi, $._type_signature),
+        // _type_signature: $ => seq(
         //     repeat1($.name),
         //     ':',
         //     $.expr
         // ),
-
-        // // A variant of type_signature where any sub-sequence of names can be
+        //
+        // A variant of TypeSignatures which uses ArgTypeSigs instead of _type_signature
+        // arg_type_signatures: $ => seq(
+        //     $.vopen,
+        //     $._arg_type_signatures1,
+        //     $.vclose
+        // ),
+        //
+        // _arg_type_signatures1: $ => sepBy1($.semi, $._arg_type_signature),
+        //
+        // // A variant of _type_signature where any sub-sequence of names can be
         // // marked as hidden or irrelevant using braces and dots:
         // // {n1 .n2} n3 .n4 {n5} .{n6 n7} ... : Type.
-        // arg_type_signature: $ => choice(
-        //     seq($.arg_names, ':', $.expr),
-        //     seq('instance', prec.left(sepBy1($.semi, $.arg_type_signature)))
+        // _arg_type_signature: $ => choice(
+        //     seq(optional('overlap'), $.arg_names, ':', $.expr),
+        //     seq('instance', prec.left(sepBy1($.semi, $.arg_type_signatures)))
         // ),
-
+        //
         // // Record declarations, including an optional record constructor name.
-        // record_declarations: $ => choice(
-        //     $.record_directives1,
-        //     seq(optional($.record_directives1), $.semi, $._declarations1),
-        //     $._declarations1
+        // record_declarations: $ => seq(
+        //     $.vopen,
+        //     choice(
+        //         $.record_directives1,
+        //         seq(optional($.record_directives1), $.semi, $._declarations1),
+        //         $._declarations1
+        //     ),
+        //     $.vclose
         // ),
         //
         // record_directives1: $ => sepBy1($.semi, $.record_directive),
@@ -611,7 +652,20 @@ module.exports = grammar({
         //     'eta-equality',
         //     'no-eta-equality'
         // ),
-        //
+
+
+        // Arbitrary declarations
+        declarations: $ => seq(
+            $.vopen,
+            $._declarations1,
+            $.vclose
+        ),
+
+        // Arbitrary declarations (possibly empty)
+        _declarations0: $ => choice(
+            seq($.vopen, $.vclose),
+            $.declarations
+        ),
         _declarations1: $ => prec.right(sepBy1($.semi, $._declaration)),
     }
 });
