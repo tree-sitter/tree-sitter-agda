@@ -6,8 +6,8 @@
   "scripts": {
     "test": "npx tree-sitter test",
     "generate": "npx tree-sitter generate && npm install",
-    "iter": "npm run generate && npm test",
-    "rb": "npm rebuild && npm run iter"
+    "iterate": "npm run generate && npm test",
+    "rebuild": "npm rebuild && npm run iterate"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,11 @@
+==================
+Function declaration
+==================
+
+id : A -> A
+id a = a
+
+---
+
+(source_file
+    (declaration (name)))

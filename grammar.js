@@ -10,36 +10,15 @@ module.exports = grammar({
         /\s|\\n/
     ],
 
-    conflicts: $ => [
-        [$.instance],
-        [$.mutual],
-        [$.abstract],
-        [$.private],
-        [$.macro],
-        [$.postulate],
-        [$.open],
-        [$.syntax],
-        [$.where_clause],
-        [$.record],
-        [$.record, $.record_signature],
-        [$.record_declarations],
-        [$.module],
-        [$.data],
-        [$.data, $.data_signature],
-        [$.declarations1],
-        [$.infix],
-        [$.open_args1],
-        [$.rewrite_equations, $.with_expressions],
-        [$.record_directives1],
-        [$.module_application],
-        [$.arg_type_signature],
-        // [$.private],
-    ],
-
     rules: {
-        source_file: $ => repeat($.declaration),
+        source_file: $ => $.function_clause,
+        // source_file: $ => repeat($.declaration),
+        // source_file: $ => $.expr,
 
         int: $ => token(decimalLiteral),
+        literal: $ => 'literal: undefined',
+        set_n: $ => 'set_n: undefined',
+        begin_import_dir: $ => 'begin_import_dir: undefined',
 
         ////////////////////////////////////////////////////////////////////////
         // Name
@@ -49,6 +28,8 @@ module.exports = grammar({
         semi: $ => ';',
 
         name: $ => /[^\s\_\;\.\"\(\)\{\}\@]+(\_[^\s\_\;\.\"\(\)\{\}\@]+)*/,
+        // for var1@var2
+        name_at: $ => /[^\s\_\;\.\"\(\)\{\}\@]+(\_[^\s\_\;\.\"\(\)\{\}\@]+)*\@/,
         qualified_name: $ => /[^\s\_\;\.\"\(\)\{\}\@]+(\.[^\s\_\;\.\"\(\)\{\}\@]+)*/,
 
         // A binding variable, can be '_'
@@ -59,14 +40,14 @@ module.exports = grammar({
         anonymous_name: $ => '_',
 
         _maybe_dotted_name: $ => maybeDotted($.name),
-        _maybe_dotted_names: $ => repeat1(maybeDotted($.name)),
+        _maybe_dotted_names1: $ => repeat1(maybeDotted($.name)),
 
         // identifiers which may be surrounded by braces or dotted.
         arg_names: $ => repeat1($.arg_name),
         arg_name: $ => choice(
             $._maybe_dotted_name,
-            seq('{' , $._maybe_dotted_names, '}'),
-            seq('{{', $._maybe_dotted_names, '}}'),
+            seq('{' , $._maybe_dotted_names1, '}'),
+            seq('{{', $._maybe_dotted_names1, '}}'),
             seq('.' , '{',  repeat1($.name), '}'),
             seq('..', '{',  repeat1($.name), '}'),
             seq('.' , '{{', repeat1($.name), '}}'),
@@ -120,62 +101,59 @@ module.exports = grammar({
         // TODO: Undefined
         ////////////////////////////////////////////////////////////////////////
 
-        lambda_clauses: $ => 'lambda_clauses: undefined',
-        lambda_where_clauses: $ => 'lambda_where_clauses: undefined',
-        forall_bindings: $ => 'forall_bindings: undefined',
-        literal: $ => 'literal: undefined',
-        set_n: $ => 'set_n: undefined',
-        begin_import_dir: $ => 'begin_import_dir: undefined',
         ////////////////////////////////////////////////////////////////////////
         // Expressions
         ////////////////////////////////////////////////////////////////////////
 
         expr: $ => choice(
-            seq($.tele_arrow, $.expr),
-            seq($.expr3s1, '->', $.expr),
-            seq($.expr1, '=', $.expr),
+            prec(2, seq($.tele_arrow, $.expr)),
+            prec(2, seq($.atomic_exprs1, '->', $.expr)),
+            prec(2, seq($._expr1, '=', $.expr)),
+            $._expr1 // lowest precedence
         ),
 
-        // Level 2 Expressions: Application
-        expr1: $ => choice(
-            seq($.expr3s1, '|', $.expr1),
-            $.application
+        // Level 1 Expressions: Application
+        _expr1: $ => seq(
+            repeat(seq($.atomic_exprs1, '|')),
+            $._application
         ),
 
-        // expr3 expr3 expr3 ... expr3 expr2
-        application: $ => choice(
-            $.expr2,                        //  NIL
-            seq($.expr3, $.application)     //  CONS
+        _application: $ => seq(
+            repeat($.atomic_expr),
+            $._expr2
         ),
 
         // Level 2 Expressions: Lambdas and lets
-        expr2: $ => prec(2, choice(
+        _expr2: $ => choice(
+            // lambda bindings
             seq('\\', $.lambda_bindings, '->', $.expr),
-            $.extended_or_absurd_lambda,
-            seq('forall', $.forall_bindings, $.expr),
-            seq('let', repeat1($.declaration), optional(seq('in', $.expr))),
-            seq('do', repeat1($.do_stmt)),
-            $.expr3,
-            seq('forall', $.name, 'in', $.expr),
-            prec(4, seq('tactic', $.expr3s1)),
-            prec(4, seq('tactic', $.expr3s1, '|', $.expr1))
-        )),
-
-        extended_or_absurd_lambda: $ => choice(
             seq('\\',     '{', $.lambda_clauses, '}'),
             seq('\\', 'where', $.lambda_where_clauses),
-            seq('\\',          $.lambda_bindings)
+            seq('\\',          $.lambda_bindings),
+            // forall
+            seq('forall', $.forall_bindings, $.expr),
+            // let ... in
+            prec.left(seq('let', repeat1($.declaration), optional(seq('in', $.expr)))),
+
+            // TODO: do notation
+            // seq('do', repeat1($.do_stmt)),
+
+            prec(2, $.atomic_expr),
+            seq('quoteGoal', $.name, 'in', $.expr),
+            seq('tactic', $.atomic_exprs1),
+            seq('tactic', $.atomic_exprs1, '|', $._expr1)
         ),
 
-        expr3s1: $ => choice(
-            prec.left(3, $.expr3),
-            prec.left(2, seq($.expr3s1, $.expr3))
-        ),
 
         // Level 3 Expressions: Atoms
-        expr3_curly: $ => seq('{', optional($.expr), '}'),
+        atomic_exprs1: $ => prec.left(repeat1($.atomic_expr)),
+        atomic_expr: $ => choice(
+            $._atomic_expr_curly,
+            $._atomic_expr_no_curly
+        ),
 
-        expr3_no_curly: $ => choice(
+        _atomic_expr_curly: $ => seq('{', optional($.expr), '}'),
+        _atomic_expr_no_curly: $ => choice(
             $.qualified_name,
             $.literal,
             '?',
@@ -191,16 +169,11 @@ module.exports = grammar({
             seq('(|', $.expr, '|)'),
             seq('(', ')'),
             seq('{{', '}}'),
-            seq($.name, '@', $.expr3),
-            seq('.', $.expr3),
+            seq($.name_at, $.atomic_expr),
+            seq('.', $.atomic_expr),
             seq('record', '{', optional($.record_assignments1), '}'),
-            seq('record', $.expr3_no_curly, '{', optional($.field_assignments1), '}'),
+            seq('record', $._atomic_expr_no_curly, '{', optional($.field_assignments1), '}'),
             '...'
-        ),
-
-        expr3: $ => choice(
-            $.expr3_curly,
-            $.expr3_no_curly
         ),
 
         record_assignments1: $ => sepBy1(';', $.record_assignment),
@@ -215,9 +188,9 @@ module.exports = grammar({
         field_assignments1: $ => sepBy1(';', $.field_assignment),
         field_assignment: $ => seq($.name, '=', $.expr),
 
-        ////////////////////////////////////////////////////////////////////////
-        // Bindings
-        ////////////////////////////////////////////////////////////////////////
+        // ////////////////////////////////////////////////////////////////////////
+        // // Bindings
+        // ////////////////////////////////////////////////////////////////////////
 
         tele_arrow: $ => seq(
             repeat1($.typed_bindings),
@@ -225,30 +198,66 @@ module.exports = grammar({
         ),
 
         // "LamBinds"
-        lambda_bindings: $ => choice(
-            prec.right(2, seq($.untyped_bindings, $.lambda_bindings)),
-            prec.right(2, seq($.typed_bindings, $.lambda_bindings)),
+        lambda_bindings: $ => prec.left(choice(
+            seq($.untyped_bindings, $.lambda_bindings),
+            seq($.typed_bindings, $.lambda_bindings),
             $.untyped_bindings,
             $.typed_bindings,
             seq('(', ')'),
             seq('{', '}'),
             seq('{{', '}}')
+        )),
+
+        catchall_pragma: $ => "CatchallPragma: undefined",
+
+        non_absurd_lambda_clause: $ => seq(
+            optional($.catchall_pragma),
+            repeat($.atomic_expr),
+            '->',
+            $.expr
+        ),
+
+        absurd_lambda_clause: $ => seq(
+            optional($.catchall_pragma),
+            $._application
+        ),
+
+        lambda_clause: $ => choice(
+            $.non_absurd_lambda_clause,
+            $.absurd_lambda_clause
+        ),
+
+        // Parses all extended lambda clauses except for a single absurd clause,
+        // which is taken care of in absurd_lambda_clause
+        lambda_clauses: $ => choice(
+            seq($.lambda_clauses, $.semi, $.lambda_clause),
+            seq($.absurd_lambda_clause, $.semi, $.lambda_clause),
+            seq($.non_absurd_lambda_clause),
+        ),
+
+        // Parses all extended lambda clauses including a single absurd clause.
+        // For λ where this is not taken care of in AbsurdLambda
+        lambda_where_clauses: $ => prec.left(sepBy1($.semi, $.lambda_clause)),
+
+        forall_bindings: $ => seq(
+            $.typed_untyped_bindings1,
+            '->'
         ),
 
         // "DomainFreeBinding"
         untyped_bindings: $ => maybeDotted(choice(
                 seq('(', $.binding_name, ')'),
-                seq('{', $.application, '}'),
-                seq('{{', $.application, '}}')
+                seq('{', $._application, '}'),
+                seq('{{', $._application, '}}')
         )),
 
         // "TypedBindings"
         typed_bindings: $ => choice(
             maybeDotted(bracketed(seq(
-                $.application, ':', $.expr
+                $._application, ':', $.expr
             ))),
             seq('(', $.open, ')'),
-            seq('(', 'let', repeat1($.declaration), ')')
+            // seq('(', 'let', repeat1($.declaration), ')')
         ),
 
         typed_untyped_bindings1: $ => repeat1(choice(
@@ -256,19 +265,19 @@ module.exports = grammar({
             $.typed_bindings
         )),
 
-        ////////////////////////////////////////////////////////////////////////
-        // Do-notation
-        ////////////////////////////////////////////////////////////////////////
+        // ////////////////////////////////////////////////////////////////////////
+        // // Do-notation
+        // ////////////////////////////////////////////////////////////////////////
 
-        do_stmt: $ => seq(
-            prec(2, $.expr),
-            optional($.do_where)
-        ),
-
-        do_where: $ => seq(
-            'where',
-            $.lambda_where_clauses
-        ),
+        // do_stmt: $ => seq(
+        //     $.expr,
+        //     optional($.do_where)
+        // ),
+        //
+        // do_where: $ => seq(
+        //     'where',
+        //     $.lambda_where_clauses
+        // ),
 
         ////////////////////////////////////////////////////////////////////////
         // Module and Imports
@@ -294,50 +303,37 @@ module.exports = grammar({
         import_name: $ => seq(
             optional('module'), $.name
         ),
-        // comma_import_names: $ => optional($.comma_import_names1),
+
         comma_import_names1: $ => sepBy1(';', $.import_name),
-
-
-        // module: $ => seq(
-        //     'module',
-        //     choice(
-        //         $.qualified_name,
-        //         $.anonymous_name
-        //     ),
-        //     optional($.typed_untyped_bindings1),
-        //     'where'
-        // ),
-        //
 
         ////////////////////////////////////////////////////////////////////////
         // Function clauses
         ////////////////////////////////////////////////////////////////////////
 
-        lhs: $ => seq(
-            $.expr1,
+        lhs: $ => prec.right(seq(
+            $._expr1,
             optional($.rewrite_equations),
             optional($.with_expressions)
-        ),
+        )),
 
-        rewrite_equations: $ => seq('with', $.expr1),
-        with_expressions: $ => seq('with', $.expr1),
+        rewrite_equations: $ => seq('rewrite', $._expr1),
+        with_expressions: $ => seq('with', $._expr1),
 
-        hole_content: $ => choice(
-            $.expr,
-            optional($.rewrite_equations)
-        ),
+        // hole_content: $ => choice(
+        //     $.expr,
+        //     optional($.rewrite_equations)
+        // ),
+        //
+        where_clause: $ => prec.right(choice(
+            seq(                            'where', optional($._declarations1)),
+            seq('module', $.name,           'where', optional($._declarations1)),
+            seq('module', $.anonymous_name, 'where', optional($._declarations1))
+        )),
 
-        where_clause: $ => choice(
-            $.expr,
-            seq(                            'where', optional($.declarations1)),
-            seq('module', $.name,           'where', optional($.declarations1)),
-            seq('module', $.anonymous_name, 'where', optional($.declarations1))
-        ),
-
-        expr_where: $ => seq(
-            $.expr,
-            optional($.where_clause)
-        ),
+        // expr_where: $ => seq(
+        //     $.expr,
+        //     optional($.where_clause)
+        // ),
 
         ////////////////////////////////////////////////////////////////////////
         // Other kinds of declarations
@@ -345,27 +341,27 @@ module.exports = grammar({
 
         // Top-level definitions.
         declaration: $ => choice(
-            $.field,
+            // $.field,
             $.function_clause,
-            $.data,
-            $.data_signature,
-            $.record,
-            $.record_signature,
-            $.infix,
-            $.mutual,
-            $.abstract,
-            $.private,
-            $.instance,
-            $.macro,
-            $.postulate,
-            $.primitive,
-            $.open,
-            $.module_macro,
-            $.module,
-            $.pragma,
-            $.syntax,
-            $.patten_syn,
-            $.unquote_declaration
+            // $.data,
+            // $.data_signature,
+            // $.record,
+            // $.record_signature,
+            // $.infix,
+            // $.mutual,
+            // $.abstract,
+            // $.private,
+            // $.instance,
+            // $.macro,
+            // $.postulate,
+            // $.primitive,
+            // $.open,
+            // $.module_macro,
+            // $.module,
+            // $.pragma,
+            // $.syntax,
+            // $.patten_syn,
+            // $.unquote_declaration
         ),
 
 
@@ -373,68 +369,68 @@ module.exports = grammar({
         // to allow declarations like 'x::xs ++ ys = e', when '::' has higher
         // precedence than '++'.
         // function_clause also handle possibly dotted type signatures.
-        function_clause: $ => seq(
+        function_clause: $ => prec.right(seq(
             $.lhs,
             optional($.rhs),
-            $.where_clause
-        ),
+            optional($.where_clause)
+        )),
 
         rhs: $ => choice(
             seq('=', $.expr),
             seq(':', $.expr)
         ),
 
-        // Data declaration. Can be local.
-        data: $ => seq(
-            choice('data', 'codata'),
-            $.name,
-            optional($.typed_untyped_bindings1),
-            optional(seq(':', $.expr)),
-            'where',
-            optional($.declarations1)
-        ),
-
-        // Data type signature. Found in mutual blocks.
-        data_signature: $ => seq(
-            'data',
-            $.name,
-            optional($.typed_untyped_bindings1),
-            ':',
-            $.expr
-        ),
-
-        // Record declarations.
-        record: $ => seq(
-            'record',
-            $.expr3_no_curly,
-            optional($.typed_untyped_bindings1),
-            optional(seq(':', $.expr)),
-            'where',
-            optional($.record_declarations)
-        ),
-
-        // Record type signature. In mutual blocks.
-        record_signature: $ => seq(
-            'record',
-            $.expr3_no_curly,
-            optional($.typed_untyped_bindings1),
-            ':',
-            $.expr
-        ),
-
-        // Declaration of record constructor name.
-        record_constructor_name: $ => seq(
-            optional('instance'),
-            'constructor',
-            $.name
-        ),
-
-        // Fixity declarations.
-        infix: $ => seq(
-            choice('infix', 'infixl', 'infixr'),
-            $.int,
-            repeat1($.binding_name)
-        ),
+        // // Data declaration. Can be local.
+        // data: $ => seq(
+        //     choice('data', 'codata'),
+        //     $.name,
+        //     optional($.typed_untyped_bindings1),
+        //     optional(seq(':', $.expr)),
+        //     'where',
+        //     optional($._declarations1)
+        // ),
+        //
+        // // Data type signature. Found in mutual blocks.
+        // data_signature: $ => seq(
+        //     'data',
+        //     $.name,
+        //     optional($.typed_untyped_bindings1),
+        //     ':',
+        //     $.expr
+        // ),
+        //
+        // // Record declarations.
+        // record: $ => seq(
+        //     'record',
+        //     $.atomic_expr_no_curly,
+        //     optional($.typed_untyped_bindings1),
+        //     optional(seq(':', $.expr)),
+        //     'where',
+        //     optional($.record_declarations)
+        // ),
+        //
+        // // Record type signature. In mutual blocks.
+        // record_signature: $ => seq(
+        //     'record',
+        //     $.atomic_expr_no_curly,
+        //     optional($.typed_untyped_bindings1),
+        //     ':',
+        //     $.expr
+        // ),
+        //
+        // // Declaration of record constructor name.
+        // record_constructor_name: $ => seq(
+        //     optional('instance'),
+        //     'constructor',
+        //     $.name
+        // ),
+        //
+        // // Fixity declarations.
+        // infix: $ => seq(
+        //     choice('infix', 'infixl', 'infixr'),
+        //     $.int,
+        //     repeat1($.binding_name)
+        // ),
 
         // Field declarations.
         field: $ => seq(
@@ -442,181 +438,180 @@ module.exports = grammar({
             $.arg_type_signature
         ),
 
-        // Mutually recursive declarations.
-        mutual: $ => seq(
-            'mutual',
-            optional($.declarations1)
-        ),
-
-        // Abstract declarations.
-        abstract: $ => seq(
-            'abstract',
-            optional($.declarations1)
-        ),
-
-        // Private can only appear on the top-level (or rather the module level)
-        private: $ => seq(
-            'private',
-            optional($.declarations1)
-        ),
-
-        // Instance declarations.
-        instance: $ => seq(
-            'instance',
-            optional($.declarations1)
-        ),
-
-        // Macro declarations.
-        macro: $ => seq(
-            'macro',
-            optional($.declarations1)
-        ),
-
-        // Postulates.
-        postulate: $ => seq(
-            'postulate',
-            optional($.declarations1)
-        ),
-
-        // Primitives. Can only contain type signatures.
-        primitive: $ => seq(
-            'primitive',
-            $.type_signature
-        ),
-
-        // Unquoting declarations.
-        unquote_declaration: $ => choice(
-            seq('unquoteDecl',                  '=', $.expr),
-            seq('unquoteDecl', repeat1($.name), '=', $.expr),
-            seq('unquoteDef' , repeat1($.name), '=', $.expr)
-        ),
-
-        // Syntax declaration (To declare eg. mixfix binders)
-        syntax: $ => seq(
-                'syntax',
-                $.name,
-                $.hole_names1,
-                '=',
-                repeat1($.name)
-        ),
-
-        // Pattern synonyms.
-        patten_syn: $ => seq(
-            'pattern',
-            $.name,
-            optional($.lambda_bindings),
-            '=',
-            $.expr
-        ),
-
-        hole_names1: $ => repeat1($.hole_name),
-        hole_name: $ => choice(
-            $.name,
-            seq('(', '\\', $.name, '->', $.name, ')'),
-            seq('(', '\\', '_',    '->', $.name, ')'),
-            seq('{', $.simple_hole, '}'),
-            seq('{{', $.simple_hole, '}}'),
-            seq('{', $.simple_hole, '=', $.simple_hole, '}'),
-            seq('{{', $.simple_hole, '=', $.simple_hole, '}}')
-        ),
-
-        simple_hole: $ => choice(
-            $.name,
-            seq('\\', $.name, '->', $.name),
-            seq('\\', '_',    '->', $.name)
-        ),
-
+        // // Mutually recursive declarations.
+        // mutual: $ => seq(
+        //     'mutual',
+        //     optional($._declarations1)
+        // ),
+        //
+        // // Abstract declarations.
+        // abstract: $ => seq(
+        //     'abstract',
+        //     optional($._declarations1)
+        // ),
+        //
+        // // Private can only appear on the top-level (or rather the module level)
+        // private: $ => seq(
+        //     'private',
+        //     optional($._declarations1)
+        // ),
+        //
+        // // Instance declarations.
+        // instance: $ => seq(
+        //     'instance',
+        //     optional($._declarations1)
+        // ),
+        //
+        // // Macro declarations.
+        // macro: $ => seq(
+        //     'macro',
+        //     optional($._declarations1)
+        // ),
+        //
+        // // Postulates.
+        // postulate: $ => seq(
+        //     'postulate',
+        //     optional($._declarations1)
+        // ),
+        //
+        // // Primitives. Can only contain type signatures.
+        // primitive: $ => seq(
+        //     'primitive',
+        //     $.type_signature
+        // ),
+        //
+        // // Unquoting declarations.
+        // unquote_declaration: $ => choice(
+        //     seq('unquoteDecl',                  '=', $.expr),
+        //     seq('unquoteDecl', repeat1($.name), '=', $.expr),
+        //     seq('unquoteDef' , repeat1($.name), '=', $.expr)
+        // ),
+        //
+        // // Syntax declaration (To declare eg. mixfix binders)
+        // syntax: $ => seq(
+        //         'syntax',
+        //         $.name,
+        //         $.hole_names1,
+        //         '=',
+        //         repeat1($.name)
+        // ),
+        //
+        // // Pattern synonyms.
+        // patten_syn: $ => seq(
+        //     'pattern',
+        //     $.name,
+        //     optional($.lambda_bindings),
+        //     '=',
+        //     $.expr
+        // ),
+        //
+        // hole_names1: $ => repeat1($.hole_name),
+        // hole_name: $ => choice(
+        //     $.name,
+        //     seq('(', '\\', $.name, '->', $.name, ')'),
+        //     seq('(', '\\', '_',    '->', $.name, ')'),
+        //     seq('{', $.simple_hole, '}'),
+        //     seq('{{', $.simple_hole, '}}'),
+        //     seq('{', $.simple_hole, '=', $.simple_hole, '}'),
+        //     seq('{{', $.simple_hole, '=', $.simple_hole, '}}')
+        // ),
+        //
+        // simple_hole: $ => choice(
+        //     $.name,
+        //     seq('\\', $.name, '->', $.name),
+        //     seq('\\', '_',    '->', $.name)
+        // ),
+        //
         open: $ => choice(
             seq(        'import', $.qualified_name, optional($.open_args1), optional($.import_directives1)),
             seq('open', 'import', $.qualified_name, optional($.open_args1), optional($.import_directives1)),
             seq('open',           $.qualified_name, optional($.open_args1), optional($.import_directives1)),
-            seq('open',           $.qualified_name, '{{', '...', '}}', optional($.import_directives1))
         ),
 
-        open_args1: $ => repeat1($.expr3),
-
-        module_application: $ => choice(
-            seq($.qualified_name, '{{', '...', '}}'),
-            seq($.qualified_name, optional($.open_args1)),
-        ),
-
-        // Module instantiation
-        module_macro: $ => choice(
-            seq(
-                'module',
-                $.qualified_name,
-                optional($.typed_untyped_bindings1),
-                '=',
-                $.module_application,
-                optional($.import_directives1)
-            ),
-            seq(
-                'open',
-                'module',
-                $.name,
-                optional($.typed_untyped_bindings1),
-                '=',
-                $.module_application,
-                optional($.import_directives1)
-            )
-        ),
-
-        // Module
-        module: $ => seq(
-            'module',
-            choice($.qualified_name, $.anonymous_name),
-            optional($.typed_untyped_bindings1),
-            'where',
-            optional($.declarations1)
-        ),
-
-
-        ////////////////////////////////////////////////////////////////////////
-        // Sequence of declarations
-        ////////////////////////////////////////////////////////////////////////
-
-        // Type signatures of the form "n1 n2 n3 ... : Type", with at least
-        // one bound name.
-        type_signature: $ => seq(
-            repeat1($.name),
-            ':',
-            $.expr
-        ),
+        open_args1: $ => repeat1($.atomic_expr),
+        //
+        // module_application: $ => choice(
+        //     seq($.qualified_name, '{{', '...', '}}'),
+        //     seq($.qualified_name, optional($.open_args1)),
+        // ),
+        //
+        // // Module instantiation
+        // module_macro: $ => choice(
+        //     seq(
+        //         'module',
+        //         $.qualified_name,
+        //         optional($.typed_untyped_bindings1),
+        //         '=',
+        //         $.module_application,
+        //         optional($.import_directives1)
+        //     ),
+        //     seq(
+        //         'open',
+        //         'module',
+        //         $.name,
+        //         optional($.typed_untyped_bindings1),
+        //         '=',
+        //         $.module_application,
+        //         optional($.import_directives1)
+        //     )
+        // ),
+        //
+        // // Module
+        // module: $ => seq(
+        //     'module',
+        //     choice($.qualified_name, $.anonymous_name),
+        //     optional($.typed_untyped_bindings1),
+        //     'where',
+        //     optional($._declarations1)
+        // ),
+        //
+        //
+        // ////////////////////////////////////////////////////////////////////////
+        // // Sequence of declarations
+        // ////////////////////////////////////////////////////////////////////////
+        //
+        // // Type signatures of the form "n1 n2 n3 ... : Type", with at least
+        // // one bound name.
+        // type_signature: $ => seq(
+        //     repeat1($.name),
+        //     ':',
+        //     $.expr
+        // ),
 
         // A variant of type_signature where any sub-sequence of names can be
         // marked as hidden or irrelevant using braces and dots:
         // {n1 .n2} n3 .n4 {n5} .{n6 n7} ... : Type.
         arg_type_signature: $ => choice(
             seq($.arg_names, ':', $.expr),
-            seq('instance', sepBy1($.semi, $.arg_type_signature))
+            seq('instance', prec.left(sepBy1($.semi, $.arg_type_signature)))
         ),
 
-        // Record declarations, including an optional record constructor name.
-        record_declarations: $ => choice(
-            $.record_directives1,
-            seq(optional($.record_directives1), $.semi, $.declarations1),
-            $.declarations1
-        ),
-
-        record_directives1: $ => sepBy1($.semi, $.record_directive),
-
-        record_directive: $ => choice(
-            $.record_constructor_name,
-            $.record_induction,
-            $.record_eta,
-        ),
-
-        record_induction: $ => choice(
-            'inductive',
-            'coinductive'
-        ),
-
-        record_eta: $ => choice(
-            'eta-equality',
-            'no-eta-equality'
-        ),
-
-        declarations1: $ => sepBy1($.semi, $.declaration),
+        // // Record declarations, including an optional record constructor name.
+        // record_declarations: $ => choice(
+        //     $.record_directives1,
+        //     seq(optional($.record_directives1), $.semi, $._declarations1),
+        //     $._declarations1
+        // ),
+        //
+        // record_directives1: $ => sepBy1($.semi, $.record_directive),
+        //
+        // record_directive: $ => choice(
+        //     $.record_constructor_name,
+        //     $.record_induction,
+        //     $.record_eta,
+        // ),
+        //
+        // record_induction: $ => choice(
+        //     'inductive',
+        //     'coinductive'
+        // ),
+        //
+        // record_eta: $ => choice(
+        //     'eta-equality',
+        //     'no-eta-equality'
+        // ),
+        //
+        _declarations1: $ => prec.right(sepBy1($.semi, $.declaration)),
     }
 });
 

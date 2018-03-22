@@ -1,0 +1,23 @@
+==================
+Test
+==================
+
+id a = a
+    where
+        b = c
+
+
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atomic_expr (qualified_name))
+            (atomic_expr (qualified_name)))
+        (rhs
+            (expr (atomic_expr (qualified_name))))
+        (where_clause
+            (declaration
+                (function_clause
+                    (lhs (atomic_expr (qualified_name)))
+                    (rhs (expr (atomic_expr (qualified_name)))))))))
