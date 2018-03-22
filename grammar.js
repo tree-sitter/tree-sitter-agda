@@ -13,14 +13,16 @@ module.exports = grammar({
     externals: $ => [
         $._layout_semicolon,
         $._layout_open_brace,
-        $._layout_close_brace,
-        '->'
+        $._layout_close_brace
+        // '->'
     ],
 
     rules: {
-        // source_file: $ => $.function_clause,
-        source_file: $ => repeat($._declaration),
-        // source_file: $ => $.expr,
+        source_file: $ => seq(
+            $._vopen,
+            repeat(seq($._declaration,$.semi)),
+            optional($._vclose)
+        ),
 
         int: $ => token(decimalLiteral),
         literal: $ => 'literal: undefined',
@@ -37,7 +39,9 @@ module.exports = grammar({
             ';'
         ),
 
+        _vopen: $ => $._layout_open_brace,
         vopen: $ => $._layout_open_brace,
+        _vclose: $ => $._layout_close_brace,
         vclose: $ => $._layout_close_brace,
 
 
@@ -126,12 +130,9 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
 
         expr: $ => choice(
-            seq($.tele_arrow, $.expr),
+            seq($.tele_arrow    , '->', $.expr),
             seq($._atomic_exprs1, '->', $.expr),
             seq($._expr1, '=', $.expr),
-            // prec(2, seq($.tele_arrow, $.expr)),
-            // prec(2, seq($._atomic_exprs1, '->', $.expr)),
-            // prec(2, seq($._expr1, '=', $.expr)),
             prec(-1, $._expr1) // lowest precedence
         ),
 
@@ -151,7 +152,7 @@ module.exports = grammar({
             // lambda bindings
             // seq('\\', $.lambda_bindings, '->', $.expr),
             // seq('\\',     '{', $.lambda_clauses, '}'),
-            // seq('\\', 'where', $.vopen, $.lambda_where_clauses, $.vclose),
+            // seq('\\', 'where', $._vopen, $.lambda_where_clauses, $._vclose),
             // seq('\\',          $.lambda_bindings),
             // forall
             // seq('forall', $.forall_bindings, $.expr),
@@ -159,7 +160,7 @@ module.exports = grammar({
             // prec.left(seq('let', repeat1($._declaration), optional(seq('in', $.expr)))),
 
             // TODO: do notation
-            // seq('do', $.vopen, repeat1($.do_stmt), $.vclose),
+            // seq('do', $._vopen, repeat1($.do_stmt), $._vclose),
 
             // seq('quoteGoal', $.name, 'in', $.expr),
             // seq('tactic', $._atomic_exprs1),
@@ -216,10 +217,7 @@ module.exports = grammar({
         // // Bindings
         // ////////////////////////////////////////////////////////////////////////
 
-        tele_arrow: $ => seq(
-            repeat1($.typed_bindings),
-            '->'
-        ),
+        tele_arrow: $ => repeat1($.typed_bindings),
 
         // "LamBinds"
         lambda_bindings: $ => prec.right(choice(
@@ -300,7 +298,7 @@ module.exports = grammar({
         //
         // do_where: $ => seq(
         //     'where',
-        //     $.vopen,
+        //     $._vopen,
         //     $.lambda_where_clauses
         // ),
 
@@ -367,7 +365,7 @@ module.exports = grammar({
         // Top-level definitions.
         _declaration: $ => choice(
             // $.field,
-            $.function_clause,
+            $.function_clause
             // $.data,
             // $.data_signature,
             // $.record,
@@ -446,7 +444,7 @@ module.exports = grammar({
         // // Declaration of record constructor name.
         // record_constructor_name: $ => choice(
         //     seq('constructor', $.name),
-        //     seq('instance', $.vopen, 'constructor', $.name, $.vclose)
+        //     seq('instance', $._vopen, 'constructor', $.name, $._vclose)
         // )
         //
         // // Fixity declarations.
@@ -597,9 +595,9 @@ module.exports = grammar({
         // // Non-empty list of type signatures, with several identifiers allowed
         // // for every signature.
         // type_signatures: $ => seq(
-        //     $.vopen,
+        //     $._vopen,
         //     $._type_signatures1,
-        //     $.vclose
+        //     $._vclose
         // ),
         //
         // // Inside the layout block.
@@ -612,9 +610,9 @@ module.exports = grammar({
         //
         // A variant of TypeSignatures which uses ArgTypeSigs instead of _type_signature
         // arg_type_signatures: $ => seq(
-        //     $.vopen,
+        //     $._vopen,
         //     $._arg_type_signatures1,
-        //     $.vclose
+        //     $._vclose
         // ),
         //
         // _arg_type_signatures1: $ => sepBy1($.semi, $._arg_type_signature),
@@ -629,13 +627,13 @@ module.exports = grammar({
         //
         // // Record declarations, including an optional record constructor name.
         // record_declarations: $ => seq(
-        //     $.vopen,
+        //     $._vopen,
         //     choice(
         //         $.record_directives1,
         //         seq(optional($.record_directives1), $.semi, $._declarations1),
         //         $._declarations1
         //     ),
-        //     $.vclose
+        //     $._vclose
         // ),
         //
         // record_directives1: $ => sepBy1($.semi, $.record_directive),
@@ -659,17 +657,18 @@ module.exports = grammar({
 
         // Arbitrary declarations
         declarations: $ => seq(
-            $.vopen,
+            $._vopen,
             $._declarations1,
-            $.vclose
+            $._vclose
         ),
 
         // Arbitrary declarations (possibly empty)
         _declarations0: $ => choice(
-            seq($.vopen, $.vclose),
+            seq($._vopen, $._vclose),
             $.declarations
         ),
-        _declarations1: $ => sepBy1($.semi, $._declaration),
+
+        _declarations1: $ => prec.right(sepBy1($.semi, $._declaration)),
     }
 });
 

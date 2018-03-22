@@ -2,11 +2,41 @@
   "name": "agda",
   "rules": {
     "source_file": {
-      "type": "REPEAT",
-      "content": {
-        "type": "SYMBOL",
-        "name": "_declaration"
-      }
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_vopen"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_declaration"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "semi"
+              }
+            ]
+          }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_vclose"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
     },
     "int": {
       "type": "TOKEN",
@@ -52,9 +82,17 @@
         }
       ]
     },
+    "_vopen": {
+      "type": "SYMBOL",
+      "name": "_layout_open_brace"
+    },
     "vopen": {
       "type": "SYMBOL",
       "name": "_layout_open_brace"
+    },
+    "_vclose": {
+      "type": "SYMBOL",
+      "name": "_layout_close_brace"
     },
     "vclose": {
       "type": "SYMBOL",
@@ -450,6 +488,10 @@
               "name": "tele_arrow"
             },
             {
+              "type": "STRING",
+              "value": "->"
+            },
+            {
               "type": "SYMBOL",
               "name": "expr"
             }
@@ -751,20 +793,11 @@
       ]
     },
     "tele_arrow": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "REPEAT1",
-          "content": {
-            "type": "SYMBOL",
-            "name": "typed_bindings"
-          }
-        },
-        {
-          "type": "STRING",
-          "value": "->"
-        }
-      ]
+      "type": "REPEAT1",
+      "content": {
+        "type": "SYMBOL",
+        "name": "typed_bindings"
+      }
     },
     "lambda_bindings": {
       "type": "PREC_RIGHT",
@@ -1929,7 +1962,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "vopen"
+          "name": "_vopen"
         },
         {
           "type": "SYMBOL",
@@ -1937,7 +1970,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "vclose"
+          "name": "_vclose"
         }
       ]
     },
@@ -1949,11 +1982,11 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "vopen"
+              "name": "_vopen"
             },
             {
               "type": "SYMBOL",
-              "name": "vclose"
+              "name": "_vclose"
             }
           ]
         },
@@ -1964,29 +1997,33 @@
       ]
     },
     "_declarations1": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_declaration"
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "semi"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "_declaration"
-              }
-            ]
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_declaration"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "semi"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_declaration"
+                }
+              ]
+            }
           }
-        }
-      ]
+        ]
+      }
     }
   },
   "extras": [
@@ -2012,10 +2049,6 @@
     {
       "type": "SYMBOL",
       "name": "_layout_close_brace"
-    },
-    {
-      "type": "STRING",
-      "value": "->"
     }
   ],
   "inline": []
