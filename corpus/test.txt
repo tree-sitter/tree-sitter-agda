@@ -2,22 +2,17 @@
 Test
 ==================
 
-id a = a
-    where
-        b = c
-
+a : Set
+a = A
 
 ---
 
 (source_file
     (function_clause
         (lhs
-            (atomic_expr (qualified_name))
             (atomic_expr (qualified_name)))
         (rhs
-            (expr (atomic_expr (qualified_name))))
-        (where_clause
-            (declaration
-                (function_clause
-                    (lhs (atomic_expr (qualified_name)))
-                    (rhs (expr (atomic_expr (qualified_name)))))))))
+            (expr
+                (atomic_expr)
+                (atomic_expr (qualified_name))
+                (expr (atomic_expr (qualified_name)))))))
