@@ -20,7 +20,7 @@ module.exports = grammar({
     rules: {
         source_file: $ => seq(
             $._vopen,
-            repeat(seq($._declaration,$.semi)),
+            repeat(seq($._declaration,$._semi)),
             optional($._vclose)
         ),
 
@@ -34,15 +34,13 @@ module.exports = grammar({
         // Special lexemes
         ////////////////////////////////////////////////////////////////////////
 
-        semi: $ => choice(
+        _semi: $ => choice(
             $._layout_semicolon,
             ';'
         ),
 
         _vopen: $ => $._layout_open_brace,
-        vopen: $ => $._layout_open_brace,
         _vclose: $ => $._layout_close_brace,
-        vclose: $ => $._layout_close_brace,
 
 
         ////////////////////////////////////////////////////////////////////////
@@ -130,32 +128,32 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
 
         expr: $ => choice(
-            seq($.tele_arrow    , '->', $.expr),
-            seq($._atomic_exprs1, '->', $.expr),
+            seq($._typed_bindings1, '->', $.expr),
+            seq($._atoms1   , '->', $.expr),
             seq($._expr1, '=', $.expr),
             prec(-1, $._expr1) // lowest precedence
         ),
 
         // Level 1 Expressions: Application
         _expr1: $ => seq(
-            repeat(seq($._atomic_exprs1, '|')),
+            repeat(seq($._atoms1, '|')),
             $._application
         ),
 
         _application: $ => seq(
-            repeat($.atomic_expr),
+            repeat($.atom),
             $._expr2
         ),
 
         // Level 2 Expressions: Lambdas and lets
         _expr2: $ => choice(
             // lambda bindings
-            // seq('\\', $.lambda_bindings, '->', $.expr),
+            // seq('\\', $.lambda_binding, '->', $.expr),
             // seq('\\',     '{', $.lambda_clauses, '}'),
             // seq('\\', 'where', $._vopen, $.lambda_where_clauses, $._vclose),
-            // seq('\\',          $.lambda_bindings),
+            // seq('\\',          $.lambda_binding),
             // forall
-            // seq('forall', $.forall_bindings, $.expr),
+            seq('forall', $.forall_bindings, $.expr),
             // let ... in
             // prec.left(seq('let', repeat1($._declaration), optional(seq('in', $.expr)))),
 
@@ -163,22 +161,22 @@ module.exports = grammar({
             // seq('do', $._vopen, repeat1($.do_stmt), $._vclose),
 
             // seq('quoteGoal', $.name, 'in', $.expr),
-            // seq('tactic', $._atomic_exprs1),
-            // seq('tactic', $._atomic_exprs1, '|', $._expr1),
+            // seq('tactic', $._atoms1),
+            // seq('tactic', $._atoms1, '|', $._expr1),
 
-            prec(-1, $.atomic_expr),
+            prec(-1, $.atom),
         ),
 
 
         // Level 3 Expressions: Atoms
-        _atomic_exprs1: $ => repeat1($.atomic_expr),
-        atomic_expr: $ => choice(
-            $._atomic_expr_curly,
-            $._atomic_expr_no_curly
+        _atoms1: $ => repeat1($.atom),
+        atom: $ => choice(
+            $._atom_curly,
+            $._atom_no_curly
         ),
 
-        _atomic_expr_curly: $ => seq('{', optional($.expr), '}'),
-        _atomic_expr_no_curly: $ => choice(
+        _atom_curly: $ => seq('{', optional($.expr), '}'),
+        _atom_no_curly: $ => choice(
             $.qualified_name,
             $.literal,
             '?',
@@ -194,10 +192,10 @@ module.exports = grammar({
             seq('(|', $.expr, '|)'),
             seq('(', ')'),
             seq('{{', '}}'),
-            seq($.name_at, $.atomic_expr),
-            seq('.', $.atomic_expr),
+            seq($.name_at, $.atom),
+            seq('.', $.atom),
             // seq('record', '{', optional($.record_assignments1), '}'),
-            // seq('record', $._atomic_expr_no_curly, '{', optional($.field_assignments1), '}'),
+            // seq('record', $._atom_no_curly, '{', optional($.field_assignments1), '}'),
             '...'
         ),
 
@@ -217,14 +215,14 @@ module.exports = grammar({
         // // Bindings
         // ////////////////////////////////////////////////////////////////////////
 
-        tele_arrow: $ => repeat1($.typed_bindings),
+        _typed_bindings1: $ => repeat1($.typed_binding),
 
         // "LamBinds"
-        lambda_bindings: $ => prec.right(choice(
-            seq($.untyped_bindings, $.lambda_bindings),
-            seq($.typed_bindings, $.lambda_bindings),
-            $.untyped_bindings,
-            $.typed_bindings,
+        lambda_binding: $ => prec.right(choice(
+            seq($.untyped_binding, $.lambda_binding),
+            seq($.typed_binding, $.lambda_binding),
+            $.untyped_binding,
+            $.typed_binding,
             seq('(', ')'),
             seq('{', '}'),
             seq('{{', '}}')
@@ -234,7 +232,7 @@ module.exports = grammar({
 
         non_absurd_lambda_clause: $ => seq(
             optional($.catchall_pragma),
-            repeat($.atomic_expr),
+            repeat($.atom),
             '->',
             $.expr
         ),
@@ -252,29 +250,29 @@ module.exports = grammar({
         // Parses all extended lambda clauses except for a single absurd clause,
         // which is taken care of in absurd_lambda_clause
         lambda_clauses: $ => choice(
-            seq($.lambda_clauses, $.semi, $.lambda_clause),
-            seq($.absurd_lambda_clause, $.semi, $.lambda_clause),
+            seq($.lambda_clauses, $._semi, $.lambda_clause),
+            seq($.absurd_lambda_clause, $._semi, $.lambda_clause),
             seq($.non_absurd_lambda_clause),
         ),
 
         // Parses all extended lambda clauses including a single absurd clause.
         // For λ where this is not taken care of in AbsurdLambda
-        lambda_where_clauses: $ => prec.right(sepBy1($.semi, $.lambda_clause)),
+        lambda_where_clauses: $ => prec.right(sepBy1($._semi, $.lambda_clause)),
 
         forall_bindings: $ => seq(
-            $.typed_untyped_bindings1,
+            $._typed_untyped_binding1,
             '->'
         ),
 
         // "DomainFreeBinding"
-        untyped_bindings: $ => maybeDotted(choice(
+        untyped_binding: $ => maybeDotted(choice(
                 seq('(', $.binding_name, ')'),
                 seq('{', $._application, '}'),
                 seq('{{', $._application, '}}')
         )),
 
         // "TypedBindings"
-        typed_bindings: $ => choice(
+        typed_binding: $ => choice(
             maybeDotted(bracketed(seq(
                 $._application, ':', $.expr
             ))),
@@ -282,9 +280,9 @@ module.exports = grammar({
             // seq('(', 'let', repeat1($.declaration), ')')
         ),
 
-        typed_untyped_bindings1: $ => repeat1(choice(
-            $.untyped_bindings,
-            $.typed_bindings
+        _typed_untyped_binding1: $ => repeat1(choice(
+            $.untyped_binding,
+            $.typed_binding
         )),
 
         // ////////////////////////////////////////////////////////////////////////
@@ -407,7 +405,7 @@ module.exports = grammar({
         // data: $ => seq(
         //     choice('data', 'codata'),
         //     $.name,
-        //     optional($.typed_untyped_bindings1),
+        //     optional($._typed_untyped_binding1),
         //     optional(seq(':', $.expr)),
         //     'where',
         //     $._declarations0
@@ -417,7 +415,7 @@ module.exports = grammar({
         // data_signature: $ => seq(
         //     'data',
         //     $.name,
-        //     optional($.typed_untyped_bindings1),
+        //     optional($._typed_untyped_binding1),
         //     ':',
         //     $.expr
         // ),
@@ -425,8 +423,8 @@ module.exports = grammar({
         // // Record declarations.
         // record: $ => seq(
         //     'record',
-        //     $.atomic_expr_no_curly,
-        //     optional($.typed_untyped_bindings1),
+        //     $.atom_no_curly,
+        //     optional($._typed_untyped_binding1),
         //     optional(seq(':', $.expr)),
         //     'where',
         //     optional($.record_declarations)
@@ -435,8 +433,8 @@ module.exports = grammar({
         // // Record type signature. In mutual blocks.
         // record_signature: $ => seq(
         //     'record',
-        //     $.atomic_expr_no_curly,
-        //     optional($.typed_untyped_bindings1),
+        //     $.atom_no_curly,
+        //     optional($._typed_untyped_binding1),
         //     ':',
         //     $.expr
         // ),
@@ -522,7 +520,7 @@ module.exports = grammar({
         // patten_syn: $ => seq(
         //     'pattern',
         //     $.name,
-        //     optional($.lambda_bindings),
+        //     optional($.lambda_binding),
         //     '=',
         //     $.expr
         // ),
@@ -550,7 +548,7 @@ module.exports = grammar({
         //     seq('open',           $.qualified_name, optional($.open_args1), optional($.import_directives1)),
         // ),
 
-        // open_args1: $ => repeat1($.atomic_expr),
+        // open_args1: $ => repeat1($.atom),
         //
         // module_application: $ => choice(
         //     seq($.qualified_name, '{{', '...', '}}'),
@@ -562,7 +560,7 @@ module.exports = grammar({
         //     seq(
         //         'module',
         //         $.qualified_name,
-        //         optional($.typed_untyped_bindings1),
+        //         optional($._typed_untyped_binding1),
         //         '=',
         //         $.module_application,
         //         optional($.import_directives1)
@@ -571,7 +569,7 @@ module.exports = grammar({
         //         'open',
         //         'module',
         //         $.name,
-        //         optional($.typed_untyped_bindings1),
+        //         optional($._typed_untyped_binding1),
         //         '=',
         //         $.module_application,
         //         optional($.import_directives1)
@@ -582,7 +580,7 @@ module.exports = grammar({
         // module: $ => seq(
         //     'module',
         //     choice($.qualified_name, $.anonymous_name),
-        //     optional($.typed_untyped_bindings1),
+        //     optional($._typed_untyped_binding1),
         //     'where',
         //     $._declarations0
         // ),
@@ -601,7 +599,7 @@ module.exports = grammar({
         // ),
         //
         // // Inside the layout block.
-        // _type_signatures1: $ => sepBy1($.semi, $._type_signature),
+        // _type_signatures1: $ => sepBy1($._semi, $._type_signature),
         // _type_signature: $ => seq(
         //     repeat1($.name),
         //     ':',
@@ -615,14 +613,14 @@ module.exports = grammar({
         //     $._vclose
         // ),
         //
-        // _arg_type_signatures1: $ => sepBy1($.semi, $._arg_type_signature),
+        // _arg_type_signatures1: $ => sepBy1($._semi, $._arg_type_signature),
         //
         // // A variant of _type_signature where any sub-sequence of names can be
         // // marked as hidden or irrelevant using braces and dots:
         // // {n1 .n2} n3 .n4 {n5} .{n6 n7} ... : Type.
         // _arg_type_signature: $ => choice(
         //     seq(optional('overlap'), $.arg_names, ':', $.expr),
-        //     seq('instance', prec.left(sepBy1($.semi, $.arg_type_signatures)))
+        //     seq('instance', prec.left(sepBy1($._semi, $.arg_type_signatures)))
         // ),
         //
         // // Record declarations, including an optional record constructor name.
@@ -630,13 +628,13 @@ module.exports = grammar({
         //     $._vopen,
         //     choice(
         //         $.record_directives1,
-        //         seq(optional($.record_directives1), $.semi, $._declarations1),
+        //         seq(optional($.record_directives1), $._semi, $._declarations1),
         //         $._declarations1
         //     ),
         //     $._vclose
         // ),
         //
-        // record_directives1: $ => sepBy1($.semi, $.record_directive),
+        // record_directives1: $ => sepBy1($._semi, $.record_directive),
         //
         // record_directive: $ => choice(
         //     $.record_constructor_name,
@@ -668,7 +666,7 @@ module.exports = grammar({
             $.declarations
         ),
 
-        _declarations1: $ => prec.right(sepBy1($.semi, $._declaration)),
+        _declarations1: $ => prec.right(sepBy1($._semi, $._declaration)),
     }
 });
 
