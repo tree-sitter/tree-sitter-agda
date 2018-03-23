@@ -5,31 +5,35 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_vopen"
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "_declaration"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "_semi"
-              }
-            ]
-          }
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "vopen"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "CHOICE",
           "members": [
             {
               "type": "SYMBOL",
-              "name": "_vclose"
+              "name": "_declarations1"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "vclose"
             },
             {
               "type": "BLANK"
@@ -37,6 +41,10 @@
           ]
         }
       ]
+    },
+    "err": {
+      "type": "PATTERN",
+      "value": ".+"
     },
     "int": {
       "type": "TOKEN",
@@ -69,7 +77,7 @@
       "type": "STRING",
       "value": "begin_import_dir: undefined"
     },
-    "_semi": {
+    "semi": {
       "type": "CHOICE",
       "members": [
         {
@@ -82,13 +90,26 @@
         }
       ]
     },
-    "_vopen": {
+    "vopen": {
       "type": "SYMBOL",
       "name": "_layout_open_brace"
     },
-    "_vclose": {
+    "vclose": {
       "type": "SYMBOL",
       "name": "_layout_close_brace"
+    },
+    "close": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "vclose"
+        },
+        {
+          "type": "PATTERN",
+          "value": ".+"
+        }
+      ]
     },
     "_const_forall": {
       "type": "TOKEN",
@@ -714,7 +735,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_vopen"
+              "name": "vopen"
             },
             {
               "type": "SYMBOL",
@@ -722,7 +743,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_vclose"
+              "name": "close"
             }
           ]
         },
@@ -1105,7 +1126,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_semi"
+              "name": "semi"
             },
             {
               "type": "SYMBOL",
@@ -1122,7 +1143,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_semi"
+              "name": "semi"
             },
             {
               "type": "SYMBOL",
@@ -1152,7 +1173,7 @@
           },
           {
             "type": "SYMBOL",
-            "name": "_semi"
+            "name": "semi"
           }
         ]
       }
@@ -1989,12 +2010,16 @@
         }
       ]
     },
+    "test": {
+      "type": "STRING",
+      "value": "test"
+    },
     "_declaration": {
       "type": "CHOICE",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "function_clause"
+          "name": "test"
         }
       ]
     },
@@ -2067,7 +2092,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_vopen"
+          "name": "vopen"
         },
         {
           "type": "SYMBOL",
@@ -2075,7 +2100,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_vclose"
+          "name": "close"
         }
       ]
     },
@@ -2087,11 +2112,11 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "_vopen"
+              "name": "vopen"
             },
             {
               "type": "SYMBOL",
-              "name": "_vclose"
+              "name": "close"
             }
           ]
         },
@@ -2118,7 +2143,7 @@
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "_semi"
+                  "name": "semi"
                 },
                 {
                   "type": "SYMBOL",
