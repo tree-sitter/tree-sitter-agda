@@ -122,6 +122,22 @@
         ]
       }
     },
+    "_const_lambda": {
+      "type": "TOKEN",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "\\"
+          },
+          {
+            "type": "STRING",
+            "value": "λ"
+          }
+        ]
+      }
+    },
     "name": {
       "type": "PATTERN",
       "value": "[^\\s\\_\\;\\.\\\"\\(\\)\\{\\}\\@]+(\\_[^\\s\\_\\;\\.\\\"\\(\\)\\{\\}\\@]+)*"
@@ -647,8 +663,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "\\"
+              "type": "SYMBOL",
+              "name": "_const_lambda"
             },
             {
               "type": "SYMBOL",
@@ -668,8 +684,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "\\"
+              "type": "SYMBOL",
+              "name": "_const_lambda"
             },
             {
               "type": "STRING",
@@ -689,8 +705,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "\\"
+              "type": "SYMBOL",
+              "name": "_const_lambda"
             },
             {
               "type": "STRING",
@@ -714,8 +730,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "\\"
+              "type": "SYMBOL",
+              "name": "_const_lambda"
             },
             {
               "type": "SYMBOL",

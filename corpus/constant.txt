@@ -31,3 +31,19 @@ f : forall A -> ∀ B → A -> B
             (expr (forall_bindings (untyped_binding (binding_name (name))))
             (expr (atom (qualified_name))
             (expr (atom (qualified_name)))))))))
+
+==================
+Lambda
+==================
+
+f = \ x -> λ y → x
+
+---
+
+(source_file
+    (function_clause
+        (lhs (atom (qualified_name)))
+        (rhs
+            (expr (lambda (untyped_binding (binding_name (name)))
+            (expr (lambda (untyped_binding (binding_name (name)))
+            (expr (atom (qualified_name))))))))))

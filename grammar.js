@@ -59,6 +59,10 @@ module.exports = grammar({
             '→'
         )),
 
+        _const_lambda: $ => token(choice(
+            '\\',
+            'λ'
+        )),
         ////////////////////////////////////////////////////////////////////////
         // Name
         // http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.Names
@@ -181,10 +185,10 @@ module.exports = grammar({
         ),
 
         lambda: $ => choice(
-            seq('\\',          $._lambda_binding, $._const_right_arrow, $.expr),
-            seq('\\',     '{', $._lambda_clauses, '}'),
-            seq('\\', 'where', $._vopen, $._lambda_where_clauses, $._vclose),
-            seq('\\',          $._lambda_binding),
+            seq($._const_lambda,          $._lambda_binding, $._const_right_arrow, $.expr),
+            seq($._const_lambda,     '{', $._lambda_clauses, '}'),
+            seq($._const_lambda, 'where', $._vopen, $._lambda_where_clauses, $._vclose),
+            seq($._const_lambda,          $._lambda_binding),
         ),
 
         // Level 3 Expressions: Atoms
@@ -548,8 +552,8 @@ module.exports = grammar({
         // hole_names1: $ => repeat1($.hole_name),
         // hole_name: $ => choice(
         //     $.name,
-        //     seq('(', '\\', $.name, $._const_right_arrow, $.name, ')'),
-        //     seq('(', '\\', '_',    $._const_right_arrow, $.name, ')'),
+        //     seq('(', $._const_lambda, $.name, $._const_right_arrow, $.name, ')'),
+        //     seq('(', $._const_lambda, '_',    $._const_right_arrow, $.name, ')'),
         //     seq('{', $.simple_hole, '}'),
         //     seq('{{', $.simple_hole, '}}'),
         //     seq('{', $.simple_hole, '=', $.simple_hole, '}'),
@@ -558,8 +562,8 @@ module.exports = grammar({
         //
         // simple_hole: $ => choice(
         //     $.name,
-        //     seq('\\', $.name, $._const_right_arrow, $.name),
-        //     seq('\\', '_',    $._const_right_arrow, $.name)
+        //     seq($._const_lambda, $.name, $._const_right_arrow, $.name),
+        //     seq($._const_lambda, '_',    $._const_right_arrow, $.name)
         // ),
         //
         // open: $ => choice(
