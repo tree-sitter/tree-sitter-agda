@@ -168,7 +168,7 @@ module.exports = grammar({
             seq('\\',          $._lambda_binding, '->', $.expr),
             seq('\\',     '{', $._lambda_clauses, '}'),
             seq('\\', 'where', $._vopen, $._lambda_where_clauses, $._vclose),
-            // seq('\\',          $._lambda_binding),
+            seq('\\',          $._lambda_binding),
         ),
 
         // Level 3 Expressions: Atoms

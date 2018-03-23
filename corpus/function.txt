@@ -96,6 +96,7 @@ f = \ where
     ()
     b -> c
     b -> c
+f = \ (a : Set) b ()
 
 ---
 
@@ -124,4 +125,11 @@ f = \ where
                 (lambda_clause (atom (qualified_name)) (expr (atom (qualified_name))))
                 (lambda_clause_absurd (atom))
                 (lambda_clause (atom (qualified_name)) (expr (atom (qualified_name))))
-                (lambda_clause (atom (qualified_name)) (expr (atom (qualified_name)))))))))
+                (lambda_clause (atom (qualified_name)) (expr (atom (qualified_name))))))))
+    (function_clause
+        (lhs
+            (atom (qualified_name)))
+        (rhs
+            (expr (lambda
+                (typed_binding (atom (qualified_name)) (expr (atom)))
+                (untyped_binding (binding_name (name))))))))
