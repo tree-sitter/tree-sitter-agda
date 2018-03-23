@@ -148,10 +148,7 @@ module.exports = grammar({
         // Level 2 Expressions: Lambdas and lets
         _expr2: $ => choice(
             // lambda bindings
-            // seq('\\', $.lambda_binding, '->', $.expr),
-            // seq('\\',     '{', $.lambda_clauses, '}'),
-            // seq('\\', 'where', $._vopen, $.lambda_where_clauses, $._vclose),
-            // seq('\\',          $.lambda_binding),
+            $.lambda,
             // forall
             seq('forall', $.forall_bindings, $.expr),
             // let ... in
@@ -167,6 +164,12 @@ module.exports = grammar({
             prec(-1, $.atom),
         ),
 
+        lambda: $ => choice(
+            seq('\\',          $._lambda_binding, '->', $.expr),
+            seq('\\',     '{', $._lambda_clauses, '}'),
+            seq('\\', 'where', $._vopen, $._lambda_where_clauses, $._vclose),
+            // seq('\\',          $._lambda_binding),
+        ),
 
         // Level 3 Expressions: Atoms
         _atoms1: $ => repeat1($.atom),
@@ -218,46 +221,47 @@ module.exports = grammar({
         _typed_bindings1: $ => repeat1($.typed_binding),
 
         // "LamBinds"
-        lambda_binding: $ => prec.right(choice(
-            seq($.untyped_binding, $.lambda_binding),
-            seq($.typed_binding, $.lambda_binding),
+        _lambda_binding: $ => choice(
+            seq($.untyped_binding, $._lambda_binding),
+            seq($.typed_binding, $._lambda_binding),
             $.untyped_binding,
             $.typed_binding,
             seq('(', ')'),
             seq('{', '}'),
             seq('{{', '}}')
-        )),
+        ),
 
         catchall_pragma: $ => "CatchallPragma: undefined",
 
-        non_absurd_lambda_clause: $ => seq(
+        // "normal" lambda expressions that don't retract to "()"
+        lambda_clause: $ => seq(
             optional($.catchall_pragma),
             repeat($.atom),
             '->',
             $.expr
         ),
 
-        absurd_lambda_clause: $ => seq(
+        lambda_clause_absurd: $ => seq(
             optional($.catchall_pragma),
             $._application
         ),
 
-        lambda_clause: $ => choice(
-            $.non_absurd_lambda_clause,
-            $.absurd_lambda_clause
+        _lambda_clause: $ => choice(
+            $.lambda_clause,
+            $.lambda_clause_absurd
         ),
 
         // Parses all extended lambda clauses except for a single absurd clause,
-        // which is taken care of in absurd_lambda_clause
-        lambda_clauses: $ => choice(
-            seq($.lambda_clauses, $._semi, $.lambda_clause),
-            seq($.absurd_lambda_clause, $._semi, $.lambda_clause),
-            seq($.non_absurd_lambda_clause),
+        // which is taken care of in _absurd_lambda_clause
+        _lambda_clauses: $ => choice(
+            seq($._lambda_clauses, $._semi, $._lambda_clause),
+            seq($.lambda_clause_absurd, $._semi, $._lambda_clause),
+            seq($.lambda_clause),
         ),
 
         // Parses all extended lambda clauses including a single absurd clause.
         // For λ where this is not taken care of in AbsurdLambda
-        lambda_where_clauses: $ => prec.right(sepBy1($._semi, $.lambda_clause)),
+        _lambda_where_clauses: $ => repeat1(seq($._lambda_clause, $._semi)),
 
         forall_bindings: $ => seq(
             $._typed_untyped_binding1,
@@ -266,7 +270,7 @@ module.exports = grammar({
 
         // "DomainFreeBinding"
         untyped_binding: $ => maybeDotted(choice(
-                seq('(', $.binding_name, ')'),
+                seq($.binding_name),
                 seq('{', $._application, '}'),
                 seq('{{', $._application, '}}')
         )),
@@ -520,7 +524,7 @@ module.exports = grammar({
         // patten_syn: $ => seq(
         //     'pattern',
         //     $.name,
-        //     optional($.lambda_binding),
+        //     optional($._lambda_binding),
         //     '=',
         //     $.expr
         // ),

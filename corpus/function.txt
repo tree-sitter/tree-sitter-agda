@@ -81,3 +81,47 @@ g : {A : Set} -> A
         (rhs
             (expr (typed_binding (atom (qualified_name)) (expr (atom)))
             (expr (atom (qualified_name)))))))
+
+==================
+Lambda Expressions
+==================
+
+f = \ (a : Set) b () -> a
+f = \ { a -> b
+      ; b -> c
+      ; ()
+      }
+f = \ where
+    b -> c
+    ()
+    b -> c
+    b -> c
+
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name)))
+        (rhs
+            (expr (lambda
+                (typed_binding (atom (qualified_name)) (expr (atom)))
+                (untyped_binding (binding_name (name)))
+                (expr (atom (qualified_name)))))))
+    (function_clause
+        (lhs
+            (atom (qualified_name)))
+        (rhs
+            (expr (lambda
+                (lambda_clause (atom (qualified_name)) (expr (atom (qualified_name))))
+                (lambda_clause (atom (qualified_name)) (expr (atom (qualified_name))))
+                (lambda_clause_absurd (atom))))))
+    (function_clause
+        (lhs
+            (atom (qualified_name)))
+        (rhs
+            (expr (lambda
+                (lambda_clause (atom (qualified_name)) (expr (atom (qualified_name))))
+                (lambda_clause_absurd (atom))
+                (lambda_clause (atom (qualified_name)) (expr (atom (qualified_name))))
+                (lambda_clause (atom (qualified_name)) (expr (atom (qualified_name)))))))))

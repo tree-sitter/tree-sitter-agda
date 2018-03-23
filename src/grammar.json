@@ -578,6 +578,10 @@
       "type": "CHOICE",
       "members": [
         {
+          "type": "SYMBOL",
+          "name": "lambda"
+        },
+        {
           "type": "SEQ",
           "members": [
             {
@@ -601,6 +605,78 @@
             "type": "SYMBOL",
             "name": "atom"
           }
+        }
+      ]
+    },
+    "lambda": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "\\"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_lambda_binding"
+            },
+            {
+              "type": "STRING",
+              "value": "->"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "expr"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "\\"
+            },
+            {
+              "type": "STRING",
+              "value": "{"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_lambda_clauses"
+            },
+            {
+              "type": "STRING",
+              "value": "}"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "\\"
+            },
+            {
+              "type": "STRING",
+              "value": "where"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_vopen"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_lambda_where_clauses"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_vclose"
+            }
+          ]
         }
       ]
     },
@@ -808,93 +884,89 @@
         "name": "typed_binding"
       }
     },
-    "lambda_binding": {
-      "type": "PREC_RIGHT",
-      "value": 0,
-      "content": {
-        "type": "CHOICE",
-        "members": [
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "untyped_binding"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "lambda_binding"
-              }
-            ]
-          },
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "typed_binding"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "lambda_binding"
-              }
-            ]
-          },
-          {
-            "type": "SYMBOL",
-            "name": "untyped_binding"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "typed_binding"
-          },
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "("
-              },
-              {
-                "type": "STRING",
-                "value": ")"
-              }
-            ]
-          },
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "{"
-              },
-              {
-                "type": "STRING",
-                "value": "}"
-              }
-            ]
-          },
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "{{"
-              },
-              {
-                "type": "STRING",
-                "value": "}}"
-              }
-            ]
-          }
-        ]
-      }
+    "_lambda_binding": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "untyped_binding"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_lambda_binding"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "typed_binding"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_lambda_binding"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "untyped_binding"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "typed_binding"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "{"
+            },
+            {
+              "type": "STRING",
+              "value": "}"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "{{"
+            },
+            {
+              "type": "STRING",
+              "value": "}}"
+            }
+          ]
+        }
+      ]
     },
     "catchall_pragma": {
       "type": "STRING",
       "value": "CatchallPragma: undefined"
     },
-    "non_absurd_lambda_clause": {
+    "lambda_clause": {
       "type": "SEQ",
       "members": [
         {
@@ -926,7 +998,7 @@
         }
       ]
     },
-    "absurd_lambda_clause": {
+    "lambda_clause_absurd": {
       "type": "SEQ",
       "members": [
         {
@@ -947,20 +1019,20 @@
         }
       ]
     },
-    "lambda_clause": {
+    "_lambda_clause": {
       "type": "CHOICE",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "non_absurd_lambda_clause"
+          "name": "lambda_clause"
         },
         {
           "type": "SYMBOL",
-          "name": "absurd_lambda_clause"
+          "name": "lambda_clause_absurd"
         }
       ]
     },
-    "lambda_clauses": {
+    "_lambda_clauses": {
       "type": "CHOICE",
       "members": [
         {
@@ -968,7 +1040,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "lambda_clauses"
+              "name": "_lambda_clauses"
             },
             {
               "type": "SYMBOL",
@@ -976,7 +1048,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "lambda_clause"
+              "name": "_lambda_clause"
             }
           ]
         },
@@ -985,7 +1057,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "absurd_lambda_clause"
+              "name": "lambda_clause_absurd"
             },
             {
               "type": "SYMBOL",
@@ -993,7 +1065,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "lambda_clause"
+              "name": "_lambda_clause"
             }
           ]
         },
@@ -1002,37 +1074,24 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "non_absurd_lambda_clause"
+              "name": "lambda_clause"
             }
           ]
         }
       ]
     },
-    "lambda_where_clauses": {
-      "type": "PREC_RIGHT",
-      "value": 0,
+    "_lambda_where_clauses": {
+      "type": "REPEAT1",
       "content": {
         "type": "SEQ",
         "members": [
           {
             "type": "SYMBOL",
-            "name": "lambda_clause"
+            "name": "_lambda_clause"
           },
           {
-            "type": "REPEAT",
-            "content": {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "_semi"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "lambda_clause"
-                }
-              ]
-            }
+            "type": "SYMBOL",
+            "name": "_semi"
           }
         ]
       }
@@ -1060,16 +1119,8 @@
               "type": "SEQ",
               "members": [
                 {
-                  "type": "STRING",
-                  "value": "("
-                },
-                {
                   "type": "SYMBOL",
                   "name": "binding_name"
-                },
-                {
-                  "type": "STRING",
-                  "value": ")"
                 }
               ]
             },
@@ -1123,16 +1174,8 @@
                   "type": "SEQ",
                   "members": [
                     {
-                      "type": "STRING",
-                      "value": "("
-                    },
-                    {
                       "type": "SYMBOL",
                       "name": "binding_name"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": ")"
                     }
                   ]
                 },
@@ -1188,16 +1231,8 @@
                   "type": "SEQ",
                   "members": [
                     {
-                      "type": "STRING",
-                      "value": "("
-                    },
-                    {
                       "type": "SYMBOL",
                       "name": "binding_name"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": ")"
                     }
                   ]
                 },
