@@ -90,6 +90,38 @@
       "type": "SYMBOL",
       "name": "_layout_close_brace"
     },
+    "_const_forall": {
+      "type": "TOKEN",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "forall"
+          },
+          {
+            "type": "STRING",
+            "value": "∀"
+          }
+        ]
+      }
+    },
+    "_const_right_arrow": {
+      "type": "TOKEN",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "->"
+          },
+          {
+            "type": "STRING",
+            "value": "→"
+          }
+        ]
+      }
+    },
     "name": {
       "type": "PATTERN",
       "value": "[^\\s\\_\\;\\.\\\"\\(\\)\\{\\}\\@]+(\\_[^\\s\\_\\;\\.\\\"\\(\\)\\{\\}\\@]+)*"
@@ -480,8 +512,8 @@
               "name": "_typed_bindings1"
             },
             {
-              "type": "STRING",
-              "value": "->"
+              "type": "SYMBOL",
+              "name": "_const_right_arrow"
             },
             {
               "type": "SYMBOL",
@@ -497,8 +529,8 @@
               "name": "_atoms1"
             },
             {
-              "type": "STRING",
-              "value": "->"
+              "type": "SYMBOL",
+              "name": "_const_right_arrow"
             },
             {
               "type": "SYMBOL",
@@ -585,8 +617,8 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "forall"
+              "type": "SYMBOL",
+              "name": "_const_forall"
             },
             {
               "type": "SYMBOL",
@@ -623,8 +655,8 @@
               "name": "_lambda_binding"
             },
             {
-              "type": "STRING",
-              "value": "->"
+              "type": "SYMBOL",
+              "name": "_const_right_arrow"
             },
             {
               "type": "SYMBOL",
@@ -1002,8 +1034,8 @@
           }
         },
         {
-          "type": "STRING",
-          "value": "->"
+          "type": "SYMBOL",
+          "name": "_const_right_arrow"
         },
         {
           "type": "SYMBOL",
@@ -1117,8 +1149,8 @@
           "name": "_typed_untyped_binding1"
         },
         {
-          "type": "STRING",
-          "value": "->"
+          "type": "SYMBOL",
+          "name": "_const_right_arrow"
         }
       ]
     },

@@ -2,6 +2,9 @@ const
       digit = /[0-9]/,
       decimalLiteral = seq(digit, repeat(digit));
 
+
+
+
 module.exports = grammar({
     name: 'agda',
 
@@ -14,7 +17,6 @@ module.exports = grammar({
         $._layout_semicolon,
         $._layout_open_brace,
         $._layout_close_brace
-        // '->'
     ],
 
     rules: {
@@ -42,6 +44,20 @@ module.exports = grammar({
         _vopen: $ => $._layout_open_brace,
         _vclose: $ => $._layout_close_brace,
 
+
+        ////////////////////////////////////////////////////////////////////////
+        // Constants
+        ////////////////////////////////////////////////////////////////////////
+
+        _const_forall: $ => token(choice(
+            'forall',
+            '∀'
+        )),
+
+        _const_right_arrow: $ => token(choice(
+            '->',
+            '→'
+        )),
 
         ////////////////////////////////////////////////////////////////////////
         // Name
@@ -128,8 +144,8 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
 
         expr: $ => choice(
-            seq($._typed_bindings1, '->', $.expr),
-            seq($._atoms1   , '->', $.expr),
+            seq($._typed_bindings1, $._const_right_arrow, $.expr),
+            seq($._atoms1   , $._const_right_arrow, $.expr),
             seq($._expr1, '=', $.expr),
             prec(-1, $._expr1) // lowest precedence
         ),
@@ -150,7 +166,7 @@ module.exports = grammar({
             // lambda bindings
             $.lambda,
             // forall
-            seq('forall', $.forall_bindings, $.expr),
+            seq($._const_forall, $.forall_bindings, $.expr),
             // let ... in
             // prec.left(seq('let', repeat1($._declaration), optional(seq('in', $.expr)))),
 
@@ -165,7 +181,7 @@ module.exports = grammar({
         ),
 
         lambda: $ => choice(
-            seq('\\',          $._lambda_binding, '->', $.expr),
+            seq('\\',          $._lambda_binding, $._const_right_arrow, $.expr),
             seq('\\',     '{', $._lambda_clauses, '}'),
             seq('\\', 'where', $._vopen, $._lambda_where_clauses, $._vclose),
             seq('\\',          $._lambda_binding),
@@ -237,7 +253,7 @@ module.exports = grammar({
         lambda_clause: $ => seq(
             optional($.catchall_pragma),
             repeat($.atom),
-            '->',
+            $._const_right_arrow,
             $.expr
         ),
 
@@ -265,7 +281,7 @@ module.exports = grammar({
 
         forall_bindings: $ => seq(
             $._typed_untyped_binding1,
-            '->'
+            $._const_right_arrow
         ),
 
         // "DomainFreeBinding"
@@ -532,8 +548,8 @@ module.exports = grammar({
         // hole_names1: $ => repeat1($.hole_name),
         // hole_name: $ => choice(
         //     $.name,
-        //     seq('(', '\\', $.name, '->', $.name, ')'),
-        //     seq('(', '\\', '_',    '->', $.name, ')'),
+        //     seq('(', '\\', $.name, $._const_right_arrow, $.name, ')'),
+        //     seq('(', '\\', '_',    $._const_right_arrow, $.name, ')'),
         //     seq('{', $.simple_hole, '}'),
         //     seq('{{', $.simple_hole, '}}'),
         //     seq('{', $.simple_hole, '=', $.simple_hole, '}'),
@@ -542,8 +558,8 @@ module.exports = grammar({
         //
         // simple_hole: $ => choice(
         //     $.name,
-        //     seq('\\', $.name, '->', $.name),
-        //     seq('\\', '_',    '->', $.name)
+        //     seq('\\', $.name, $._const_right_arrow, $.name),
+        //     seq('\\', '_',    $._const_right_arrow, $.name)
         // ),
         //
         // open: $ => choice(
