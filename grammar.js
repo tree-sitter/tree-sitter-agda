@@ -177,9 +177,9 @@ module.exports = grammar({
             seq($._const_forall, $.forall_bindings, $.expr),
             // let ... in
             $.let,
+            // do
+            $.do,
 
-            // TODO: do notation
-            // seq('do', $._vopen, repeat1($.do_stmt), $._close),
 
             // seq('quoteGoal', $.name, 'in', $.expr),
             // seq('tactic', $._atoms1),
@@ -187,6 +187,8 @@ module.exports = grammar({
 
             prec(-1, $.atom),
         ),
+
+        do: $ => seq('do', $._vopen, repeat1(seq($._do_stmt, $._semi)), $._close),
 
         let: $ => prec.right(seq('let', $._declarations, seq('in', $.expr))),
 
@@ -247,7 +249,7 @@ module.exports = grammar({
         _typed_bindings1: $ => repeat1($.typed_binding),
 
         // "LamBinds"
-        _lambda_binding: $ => choice(
+        _lambda_binding: $ => prec.right(choice(
             seq($.untyped_binding, $._lambda_binding),
             seq($.typed_binding, $._lambda_binding),
             $.untyped_binding,
@@ -255,7 +257,7 @@ module.exports = grammar({
             seq('(', ')'),
             seq('{', '}'),
             seq('{{', '}}')
-        ),
+        )),
 
         catchall_pragma: $ => "CatchallPragma: undefined",
 
@@ -319,17 +321,17 @@ module.exports = grammar({
         // // Do-notation
         // ////////////////////////////////////////////////////////////////////////
 
-        // do_stmt: $ => seq(
-        //     $.expr,
-        //     optional($.do_where)
-        // ),
-        //
-        // do_where: $ => seq(
-        //     'where',
-        //     $._vopen,
-        //     $.lambda_where_clauses,
-        //     $._close
-        // ),
+        _do_stmt: $ => seq(
+            $.expr,
+            optional($.do_where)
+        ),
+
+        do_where: $ => seq(
+            'where',
+            $._vopen,
+            $._lambda_where_clauses,
+            $._close
+        ),
 
         ////////////////////////////////////////////////////////////////////////
         // Module and Imports
