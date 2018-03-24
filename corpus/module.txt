@@ -3,19 +3,23 @@ Simple
 ==================
 
 module Test.Simple where
-
-module _ where
-    module A where
-
-module _ where
-    module A where
-
+    module _ where
 
 ---
 
 (source_file
     (module (qualified_name)
-        (module (anonymous_name)
-            (module (qualified_name)
-                (module (anonymous_name)
-                    (module (qualified_name)))))))
+        (module (anonymous_name))))
+
+==================
+Parameterized
+==================
+
+module Test.Simple (A : Set) {B : _} where
+
+---
+
+(source_file
+    (module (qualified_name)
+        (typed_binding (atom (qualified_name)) (expr (atom)))
+        (typed_binding (atom (qualified_name)) (expr (atom)))))
