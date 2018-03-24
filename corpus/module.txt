@@ -1,0 +1,21 @@
+==================
+Simple
+==================
+
+module Test.Simple where
+
+module _ where
+    module A where
+
+module _ where
+    module A where
+
+
+---
+
+(source_file
+    (module (qualified_name)
+        (module (anonymous_name)
+            (module (qualified_name)
+                (module (anonymous_name)
+                    (module (qualified_name)))))))

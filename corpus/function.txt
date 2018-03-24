@@ -81,3 +81,27 @@ g : {A : Set} -> A
         (rhs
             (expr (typed_binding (atom (qualified_name)) (expr (atom)))
             (expr (atom (qualified_name)))))))
+
+==================
+With-expressions
+==================
+
+f a with g a
+... | b = _
+
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name))
+            (atom (qualified_name))
+            (with_expressions
+                (atom (qualified_name))
+                (atom (qualified_name)))))
+    (function_clause
+        (lhs
+            (atom)
+            (atom (qualified_name)))
+        (rhs
+            (expr (atom)))))
