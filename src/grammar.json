@@ -5,35 +5,31 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "vopen"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "_vopen"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_declaration"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_semi"
+              }
+            ]
+          }
         },
         {
           "type": "CHOICE",
           "members": [
             {
               "type": "SYMBOL",
-              "name": "_declarations1"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "vclose"
+              "name": "_vclose"
             },
             {
               "type": "BLANK"
@@ -77,7 +73,7 @@
       "type": "STRING",
       "value": "begin_import_dir: undefined"
     },
-    "semi": {
+    "_semi": {
       "type": "CHOICE",
       "members": [
         {
@@ -90,24 +86,20 @@
         }
       ]
     },
-    "vopen": {
+    "_vopen": {
       "type": "SYMBOL",
       "name": "_layout_open_brace"
     },
-    "vclose": {
+    "_vclose": {
       "type": "SYMBOL",
       "name": "_layout_close_brace"
     },
-    "close": {
+    "_close": {
       "type": "CHOICE",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "vclose"
-        },
-        {
-          "type": "PATTERN",
-          "value": ".+"
+          "name": "_vclose"
         }
       ]
     },
@@ -735,7 +727,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "vopen"
+              "name": "_vopen"
             },
             {
               "type": "SYMBOL",
@@ -743,7 +735,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "close"
+              "name": "_close"
             }
           ]
         },
@@ -1126,7 +1118,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "semi"
+              "name": "_semi"
             },
             {
               "type": "SYMBOL",
@@ -1143,7 +1135,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "semi"
+              "name": "_semi"
             },
             {
               "type": "SYMBOL",
@@ -1173,7 +1165,7 @@
           },
           {
             "type": "SYMBOL",
-            "name": "semi"
+            "name": "_semi"
           }
         ]
       }
@@ -2010,16 +2002,12 @@
         }
       ]
     },
-    "test": {
-      "type": "STRING",
-      "value": "test"
-    },
     "_declaration": {
       "type": "CHOICE",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "test"
+          "name": "function_clause"
         }
       ]
     },
@@ -2092,7 +2080,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "vopen"
+          "name": "_vopen"
         },
         {
           "type": "SYMBOL",
@@ -2100,7 +2088,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "close"
+          "name": "_close"
         }
       ]
     },
@@ -2112,11 +2100,11 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "vopen"
+              "name": "_vopen"
             },
             {
               "type": "SYMBOL",
-              "name": "close"
+              "name": "_close"
             }
           ]
         },
@@ -2143,7 +2131,7 @@
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "semi"
+                  "name": "_semi"
                 },
                 {
                   "type": "SYMBOL",

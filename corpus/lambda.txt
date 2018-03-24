@@ -1,0 +1,74 @@
+==================
+Common
+==================
+
+f = \ (a : Set) b () -> a
+
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name)))
+        (rhs
+            (expr (lambda
+                (typed_binding (atom (qualified_name)) (expr (atom)))
+                (untyped_binding (binding_name (name)))
+                (expr (atom (qualified_name))))))))
+
+==================
+Clauses in braces
+==================
+f = \ { a -> b
+      ; b -> c
+      ; ()
+      }
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name)))
+        (rhs
+            (expr (lambda
+                (lambda_clause (atom (qualified_name)) (expr (atom (qualified_name))))
+                (lambda_clause (atom (qualified_name)) (expr (atom (qualified_name))))
+                (lambda_clause_absurd (atom)))))))
+
+==================
+Clauses in where
+==================
+f = \ where
+    b -> c
+    ()
+    b -> c
+    b -> c
+
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name)))
+        (rhs
+            (expr (lambda
+                (lambda_clause (atom (qualified_name)) (expr (atom (qualified_name))))
+                (lambda_clause_absurd (atom))
+                (lambda_clause (atom (qualified_name)) (expr (atom (qualified_name))))
+                (lambda_clause (atom (qualified_name)) (expr (atom (qualified_name)))))))))
+
+==================
+Bindings only
+==================
+f = \ (A : Set) b ()
+
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name)))
+        (rhs
+            (expr (lambda
+                (typed_binding (atom (qualified_name)) (expr (atom)))
+                (untyped_binding (binding_name (name))))))))
