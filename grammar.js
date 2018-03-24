@@ -229,7 +229,7 @@ module.exports = grammar({
             // seq('record', $._atom_no_curly, '{', optional($.field_assignments1), '}'),
             '...'
         ),
-
+        //
         // record_assignments1: $ => sepR(';', $.record_assignment),
         // record_assignment: $ => choice(
         //     $.field_assignment,
@@ -397,7 +397,7 @@ module.exports = grammar({
         _declaration: $ => choice(
             // $.field,
             $.function_clause,
-            // $.data,
+            $.data,
             // $.data_signature,
             // $.record,
             // $.record_signature,
@@ -434,16 +434,16 @@ module.exports = grammar({
             seq(':', $.expr)
         ),
 
-        // // Data declaration. Can be local.
-        // data: $ => seq(
-        //     choice('data', 'codata'),
-        //     $.name,
-        //     optional($._typed_untyped_binding1),
-        //     optional(seq(':', $.expr)),
-        //     'where',
-        //     $._declarations0
-        // ),
-        //
+        // Data declaration. Can be local.
+        data: $ => seq(
+            choice('data', 'codata'),
+            $.name,
+            optional($._typed_untyped_binding1),
+            optional(seq(':', $.expr)),
+            'where',
+            $._declarations0_
+        ),
+
         // // Data type signature. Found in mutual blocks.
         // data_signature: $ => seq(
         //     'data',

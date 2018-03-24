@@ -1,0 +1,22 @@
+==================
+Data: Nat
+==================
+
+data Nat : Set where
+    zero : Nat
+    succ : Nat -> Nat
+
+---
+
+(source_file
+    (data
+        (name) (expr (atom))
+        (function_clause
+            (lhs (atom (qualified_name)))
+            (rhs
+                (expr (atom (qualified_name)))))
+        (function_clause
+            (lhs (atom (qualified_name)))
+            (rhs
+                (expr (atom (qualified_name))
+                (expr (atom (qualified_name))))))))

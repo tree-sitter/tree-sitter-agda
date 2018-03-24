@@ -2132,6 +2132,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "data"
+        },
+        {
+          "type": "SYMBOL",
           "name": "module"
         }
       ]
@@ -2201,6 +2205,69 @@
               "name": "expr"
             }
           ]
+        }
+      ]
+    },
+    "data": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "data"
+            },
+            {
+              "type": "STRING",
+              "value": "codata"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "name"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_typed_untyped_binding1"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": ":"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "expr"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "where"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_declarations0_"
         }
       ]
     },
