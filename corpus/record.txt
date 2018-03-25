@@ -1,0 +1,91 @@
+==================
+Directives only
+==================
+
+record Pair (A B : Set) : Set where
+    constructor _,_
+    inductive
+    instance
+        constructor _,_
+    eta-equality
+
+---
+
+(source_file
+    (record
+        (qualified_name)
+        (typed_binding
+            (atom (qualified_name))
+            (atom (qualified_name))
+            (expr (atom)))
+        (expr (atom))
+        (record_declarations_block
+            (record_constructor_name (name))
+            (record_induction)
+            (record_constructor_name (name))
+            (record_eta))))
+
+==================
+Declarations only
+==================
+
+record Pair (A B : Set) : Set where
+    field
+        fst : A
+        overlap snd : B
+        instance
+            a : A
+            b : B
+        something : C
+
+---
+
+(source_file
+    (record
+        (qualified_name)
+        (typed_binding
+            (atom (qualified_name))
+            (atom (qualified_name))
+            (expr (atom)))
+        (expr (atom))
+        (record_declarations_block
+            (field
+                (arg_type_signature (arg_name (name)) (expr (atom (qualified_name))))
+                (arg_type_signature (arg_name (name)) (expr (atom (qualified_name))))
+                (arg_type_signature
+                    (arg_type_signature (arg_name (name)) (expr (atom (qualified_name))))
+                    (arg_type_signature (arg_name (name)) (expr (atom (qualified_name)))))
+                (arg_type_signature (arg_name (name)) (expr (atom (qualified_name))))))))
+
+==================
+Directives with declarations
+==================
+
+record Pair (A B : Set) : Set where
+    constructor _,_
+    inductive
+    instance
+        constructor _,_
+    eta-equality
+    field
+        fst : A
+        snd : B
+
+---
+
+(source_file
+    (record
+        (qualified_name)
+        (typed_binding
+            (atom (qualified_name))
+            (atom (qualified_name))
+            (expr (atom)))
+        (expr (atom))
+        (record_declarations_block
+            (record_constructor_name (name))
+            (record_induction)
+            (record_constructor_name (name))
+            (record_eta)
+            (field
+                (arg_type_signature (arg_name (name)) (expr (atom (qualified_name))))
+                (arg_type_signature (arg_name (name)) (expr (atom (qualified_name))))))))

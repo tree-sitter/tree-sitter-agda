@@ -72,8 +72,10 @@ module.exports = grammar({
         // http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.Names
         ////////////////////////////////////////////////////////////////////////
 
+        // underscores are allowed
+        name: $ => /[^\s\;\.\"\(\)\{\}\@]+/,
 
-        name: $ => /[^\s\_\;\.\"\(\)\{\}\@]+(\_[^\s\_\;\.\"\(\)\{\}\@]+)*/,
+
         // for var1@var2
         name_at: $ => /[^\s\_\;\.\"\(\)\{\}\@]+(\_[^\s\_\;\.\"\(\)\{\}\@]+)*\@/,
         qualified_name: $ => /[^\s\_\;\.\"\(\)\{\}\@]+(\.[^\s\_\;\.\"\(\)\{\}\@]+)*/,
@@ -89,7 +91,7 @@ module.exports = grammar({
         _maybe_dotted_names1: $ => repeat1(maybeDotted($.name)),
 
         // identifiers which may be surrounded by braces or dotted.
-        arg_names: $ => repeat1($.arg_name),
+        _arg_names: $ => repeat1($.arg_name),
         arg_name: $ => choice(
             $._maybe_dotted_name,
             seq('{' , $._maybe_dotted_names1, '}'),
@@ -153,8 +155,8 @@ module.exports = grammar({
 
         expr: $ => choice(
             seq($._typed_bindings1, $._const_right_arrow, $.expr),
-            seq($._atoms1   , $._const_right_arrow, $.expr),
-            seq($._expr1, '=', $.expr),
+            seq($._atoms1         , $._const_right_arrow, $.expr),
+            seq($._expr1          , '='                 , $.expr),
             prec(-1, $._expr1) // lowest precedence
         ),
 
@@ -364,6 +366,16 @@ module.exports = grammar({
         // Function clauses
         ////////////////////////////////////////////////////////////////////////
 
+        // Function declarations. The left hand side is parsed as an expression
+        // to allow declarations like 'x::xs ++ ys = e', when '::' has higher
+        // precedence than '++'.
+        // function_clause also handle possibly dotted type signatures.
+        function_clause: $ => prec.right(seq(
+            $.lhs,
+            optional($.rhs),
+            optional($.where_clause)
+        )),
+
         lhs: $ => prec.right(seq(
             $._expr1,
             optional($.rewrite_equations),
@@ -373,21 +385,96 @@ module.exports = grammar({
         rewrite_equations: $ => seq('rewrite', $._expr1),
         with_expressions: $ => seq('with', $._expr1),
 
-        // hole_content: $ => choice(
-        //     $.expr,
-        //     optional($.rewrite_equations)
-        // ),
-        //
+        rhs: $ => choice(
+            seq('=', $.expr),
+            seq(':', $.expr)
+        ),
+
         where_clause: $ => choice(
             seq(                            'where', $._declarations0),
             seq('module', $.name,           'where', $._declarations0),
             seq('module', $.anonymous_name, 'where', $._declarations0)
         ),
 
-        // expr_where: $ => seq(
-        //     $.expr,
-        //     optional($.where_clause)
-        // ),
+        ////////////////////////////////////////////////////////////////////////
+        // Record
+        ////////////////////////////////////////////////////////////////////////
+
+        record: $ => seq(
+            'record',
+            $._atom_no_curly,
+            optional($._typed_untyped_binding1),
+            optional(seq(':', $.expr)),
+            'where',
+            optional($.record_declarations_block)
+        ),
+
+        // Record declarations, including an optional record constructor name.
+        record_declarations_block: $ => seq(
+            $._vopen,
+            choice(
+                optional($._record_directives1),   // directives only
+                $._declarations1_,      // declarations only
+
+                // first directives then declarations
+                seq(optional($._record_directives1), $._declarations1_),
+            ),
+            $._close
+        ),
+
+        _record_directives1: $ => repeat1(seq($._record_directive, $._semi)),
+        // record_directives1: $ => prec.left(sepL($._semi, $.record_directive)),
+
+        _record_directive: $ => choice(
+            $.record_constructor_name,
+            $.record_induction,
+            $.record_eta,
+        ),
+
+        // Declaration of record constructor name.
+        record_constructor_name: $ => choice(
+            seq('constructor', $.name),
+            seq('instance', $._vopen, 'constructor', $.name, $._semi, $._vclose)
+        ),
+
+        record_induction: $ => choice(
+            'inductive',
+            'coinductive'
+        ),
+
+        record_eta: $ => choice(
+            'eta-equality',
+            'no-eta-equality'
+        ),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Field (in records)
+        ////////////////////////////////////////////////////////////////////////
+
+        // Field declarations.
+        field: $ => seq(
+            'field',
+            $._arg_type_signatures_block
+        ),
+
+        // A variant of TypeSignatures which uses arg_type_signatures instead of
+        // _type_signature
+        _arg_type_signatures_block: $ => seq(
+            $._vopen,
+            $._arg_type_signatures1,
+            $._close
+        ),
+
+        _arg_type_signatures1: $ => repeat1(seq($.arg_type_signature, $._semi)),
+
+        // A variant of _type_signature where any sub-sequence of names can be
+        // marked as hidden or irrelevant using braces and dots:
+        // {n1 .n2} n3 .n4 {n5} .{n6 n7} ... : Type.
+        arg_type_signature: $ => choice(
+            seq(optional('overlap'), $._arg_names, ':', $.expr),
+            seq('instance', $._arg_type_signatures_block)
+        ),
+
 
         ////////////////////////////////////////////////////////////////////////
         // Other kinds of declarations
@@ -395,11 +482,11 @@ module.exports = grammar({
 
         // Top-level definitions.
         _declaration: $ => choice(
-            // $.field,
+            $.field,
             $.function_clause,
             $.data,
-            // $.data_signature,
-            // $.record,
+            $.data_declaration_only,
+            $.record,
             // $.record_signature,
             // $.infix,
             // $.mutual,
@@ -419,21 +506,6 @@ module.exports = grammar({
         ),
 
 
-        // Function declarations. The left hand side is parsed as an expression
-        // to allow declarations like 'x::xs ++ ys = e', when '::' has higher
-        // precedence than '++'.
-        // function_clause also handle possibly dotted type signatures.
-        function_clause: $ => prec.right(seq(
-            $.lhs,
-            optional($.rhs),
-            optional($.where_clause)
-        )),
-
-        rhs: $ => choice(
-            seq('=', $.expr),
-            seq(':', $.expr)
-        ),
-
         // Data declaration. Can be local.
         data: $ => seq(
             choice('data', 'codata'),
@@ -444,25 +516,16 @@ module.exports = grammar({
             $._declarations0_
         ),
 
-        // // Data type signature. Found in mutual blocks.
-        // data_signature: $ => seq(
-        //     'data',
-        //     $.name,
-        //     optional($._typed_untyped_binding1),
-        //     ':',
-        //     $.expr
-        // ),
-        //
-        // // Record declarations.
-        // record: $ => seq(
-        //     'record',
-        //     $.atom_no_curly,
-        //     optional($._typed_untyped_binding1),
-        //     optional(seq(':', $.expr)),
-        //     'where',
-        //     optional($.record_declarations)
-        // ),
-        //
+        // Data type signature. Found in mutual blocks.
+        data_declaration_only: $ => seq(
+            'data',
+            $.name,
+            optional($._typed_untyped_binding1),
+            ':',
+            $.expr
+        ),
+
+
         // // Record type signature. In mutual blocks.
         // record_signature: $ => seq(
         //     'record',
@@ -471,24 +534,12 @@ module.exports = grammar({
         //     ':',
         //     $.expr
         // ),
-        //
-        // // Declaration of record constructor name.
-        // record_constructor_name: $ => choice(
-        //     seq('constructor', $.name),
-        //     seq('instance', $._vopen, 'constructor', $.name, $._vclose)
-        // )
-        //
+
         // // Fixity declarations.
         // infix: $ => seq(
         //     choice('infix', 'infixl', 'infixr'),
         //     $.int,
         //     repeat1($.binding_name)
-        // ),
-
-        // Field declarations.
-        // field: $ => seq(
-        //     'field',
-        //     $.arg_type_signatures
         // ),
 
         // // Mutually recursive declarations.
@@ -639,53 +690,6 @@ module.exports = grammar({
         //     $.expr
         // ),
         //
-        // A variant of TypeSignatures which uses ArgTypeSigs instead of _type_signature
-        // arg_type_signatures: $ => seq(
-        //     $._vopen,
-        //     $._arg_type_signatures1,
-        //     $._close
-        // ),
-        //
-        // _arg_type_signatures1: $ => sepL($._semi, $._arg_type_signature),
-        //
-        // // A variant of _type_signature where any sub-sequence of names can be
-        // // marked as hidden or irrelevant using braces and dots:
-        // // {n1 .n2} n3 .n4 {n5} .{n6 n7} ... : Type.
-        // _arg_type_signature: $ => choice(
-        //     seq(optional('overlap'), $.arg_names, ':', $.expr),
-        //     seq('instance', prec.left(_arg_type_signatures1))
-        // ),
-        //
-        // // Record declarations, including an optional record constructor name.
-        // record_declarations: $ => seq(
-        //     $._vopen,
-        //     choice(
-        //         $.record_directives1,
-        //         seq(optional($.record_directives1), $._semi, $._declarations1),
-        //         $._declarations1
-        //     ),
-        //     $._close
-        // ),
-        //
-        // record_directives1: $ => sepL($._semi, $.record_directive),
-        //
-        // record_directive: $ => choice(
-        //     $.record_constructor_name,
-        //     $.record_induction,
-        //     $.record_eta,
-        // ),
-        //
-        // record_induction: $ => choice(
-        //     'inductive',
-        //     'coinductive'
-        // ),
-        //
-        // record_eta: $ => choice(
-        //     'eta-equality',
-        //     'no-eta-equality'
-        // ),
-
-
         // Arbitrary declarations
         _declarations: $ => seq(
             $._vopen,

@@ -18,5 +18,17 @@ data Nat : Set where
         (function_clause
             (lhs (atom (qualified_name)))
             (rhs
-                (expr (atom (qualified_name))
-                (expr (atom (qualified_name))))))))
+                (expr
+                    (atom (qualified_name))
+                    (expr (atom (qualified_name))))))))
+==================
+Data declaration only (mutual)
+==================
+
+data Nat : Set
+
+---
+
+(source_file
+    (data_declaration_only
+        (name) (expr (atom))))
