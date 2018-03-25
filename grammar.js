@@ -19,6 +19,10 @@ module.exports = grammar({
         $._layout_close_brace
     ],
 
+    conflicts: $ => [
+        [$._record_directives1]
+    ],
+
     rules: {
         source_file: $ => seq(
             $._vopen,
@@ -397,6 +401,29 @@ module.exports = grammar({
         ),
 
         ////////////////////////////////////////////////////////////////////////
+        // Data
+        ////////////////////////////////////////////////////////////////////////
+
+        // Data declaration. Can be local.
+        data: $ => seq(
+            choice('data', 'codata'),
+            $.name,
+            optional($._typed_untyped_binding1),
+            optional(seq(':', $.expr)),
+            'where',
+            $._declarations0_
+        ),
+
+        // Data type signature. Found in mutual blocks.
+        data_signature_only: $ => seq(
+            'data',
+            $.name,
+            optional($._typed_untyped_binding1),
+            ':',
+            $.expr
+        ),
+
+        ////////////////////////////////////////////////////////////////////////
         // Record
         ////////////////////////////////////////////////////////////////////////
 
@@ -409,12 +436,22 @@ module.exports = grammar({
             optional($.record_declarations_block)
         ),
 
+        // Record type signature. In mutual blocks.
+        record_signature_only: $ => seq(
+            'record',
+            $._atom_no_curly,
+            optional($._typed_untyped_binding1),
+            ':',
+            $.expr
+        ),
+
+
         // Record declarations, including an optional record constructor name.
         record_declarations_block: $ => seq(
             $._vopen,
             choice(
-                optional($._record_directives1),   // directives only
-                $._declarations1_,      // declarations only
+                optional($._record_directives1),    // directives only
+                $._declarations1_,                  // declarations only
 
                 // first directives then declarations
                 seq(optional($._record_directives1), $._declarations1_),
@@ -423,7 +460,6 @@ module.exports = grammar({
         ),
 
         _record_directives1: $ => repeat1(seq($._record_directive, $._semi)),
-        // record_directives1: $ => prec.left(sepL($._semi, $.record_directive)),
 
         _record_directive: $ => choice(
             $.record_constructor_name,
@@ -433,8 +469,8 @@ module.exports = grammar({
 
         // Declaration of record constructor name.
         record_constructor_name: $ => choice(
-            seq('constructor', $.name),
-            seq('instance', $._vopen, 'constructor', $.name, $._semi, $._vclose)
+            seq('instance', $._vopen, 'constructor', $.name, $._semi, $._vclose),
+            seq('constructor', $.name)
         ),
 
         record_induction: $ => choice(
@@ -475,7 +511,6 @@ module.exports = grammar({
             seq('instance', $._arg_type_signatures_block)
         ),
 
-
         ////////////////////////////////////////////////////////////////////////
         // Other kinds of declarations
         ////////////////////////////////////////////////////////////////////////
@@ -485,14 +520,14 @@ module.exports = grammar({
             $.field,
             $.function_clause,
             $.data,
-            $.data_declaration_only,
+            $.data_signature_only,
             $.record,
-            // $.record_signature,
-            // $.infix,
-            // $.mutual,
-            // $.abstract,
-            // $.private,
-            // $.instance,
+            $.record_signature_only,
+            $.infix,
+            $.mutual,
+            $.abstract,
+            $.private,
+            $.instance,
             // $.macro,
             // $.postulate,
             // $.primitive,
@@ -505,67 +540,37 @@ module.exports = grammar({
             // $.unquote_declaration
         ),
 
+        // Fixity declarations.
+        infix: $ => seq(
+            choice('infix', 'infixl', 'infixr'),
+            $.int,
+            repeat1($.binding_name)
+        ),
 
-        // Data declaration. Can be local.
-        data: $ => seq(
-            choice('data', 'codata'),
-            $.name,
-            optional($._typed_untyped_binding1),
-            optional(seq(':', $.expr)),
-            'where',
+        // Mutually recursive declarations.
+        mutual: $ => seq(
+            'mutual',
             $._declarations0_
         ),
 
-        // Data type signature. Found in mutual blocks.
-        data_declaration_only: $ => seq(
-            'data',
-            $.name,
-            optional($._typed_untyped_binding1),
-            ':',
-            $.expr
+        // Abstract declarations.
+        abstract: $ => seq(
+            'abstract',
+            $._declarations0_
         ),
 
+        // Private can only appear on the top-level (or rather the module level)
+        private: $ => seq(
+            'private',
+            $._declarations0_
+        ),
 
-        // // Record type signature. In mutual blocks.
-        // record_signature: $ => seq(
-        //     'record',
-        //     $.atom_no_curly,
-        //     optional($._typed_untyped_binding1),
-        //     ':',
-        //     $.expr
-        // ),
+        // Instance declarations.
+        instance: $ => seq(
+            'instance',
+            $._declarations0_
+        ),
 
-        // // Fixity declarations.
-        // infix: $ => seq(
-        //     choice('infix', 'infixl', 'infixr'),
-        //     $.int,
-        //     repeat1($.binding_name)
-        // ),
-
-        // // Mutually recursive declarations.
-        // mutual: $ => seq(
-        //     'mutual',
-        //     $._declarations0
-        // ),
-        //
-        // // Abstract declarations.
-        // abstract: $ => seq(
-        //     'abstract',
-        //     $._declarations0
-        // ),
-        //
-        // // Private can only appear on the top-level (or rather the module level)
-        // private: $ => seq(
-        //     'private',
-        //     $._declarations0
-        // ),
-        //
-        // // Instance declarations.
-        // instance: $ => seq(
-        //     'instance',
-        //     $._declarations0
-        // ),
-        //
         // // Macro declarations.
         // macro: $ => seq(
         //     'macro',

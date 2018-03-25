@@ -1,0 +1,99 @@
+==================
+Infix
+==================
+
+infix 30 _and_
+infixr 20 _⇒_
+infixl 20 _⇒’_ _⇒_
+
+---
+
+(source_file
+    (infix (int) (binding_name (name)))
+    (infix (int) (binding_name (name)))
+    (infix (int) (binding_name (name)) (binding_name (name))))
+
+==================
+Mutual (old syntax)
+==================
+
+mutual
+    f : A
+    f = a
+
+    g : B
+    g = b
+
+---
+
+(source_file
+    (mutual
+        (function_clause
+            (lhs (atom (qualified_name)))
+            (rhs (expr (atom (qualified_name)))))
+        (function_clause
+            (lhs (atom (qualified_name)))
+            (rhs (expr (atom (qualified_name)))))
+        (function_clause
+            (lhs (atom (qualified_name)))
+            (rhs (expr (atom (qualified_name)))))
+        (function_clause
+            (lhs (atom (qualified_name)))
+            (rhs (expr (atom (qualified_name)))))))
+
+==================
+Abstract
+==================
+
+abstract
+    f : A
+    f = a
+
+---
+
+(source_file
+    (abstract
+        (function_clause
+            (lhs (atom (qualified_name)))
+            (rhs (expr (atom (qualified_name)))))
+        (function_clause
+            (lhs (atom (qualified_name)))
+            (rhs (expr (atom (qualified_name)))))))
+
+==================
+Private
+==================
+
+private
+    f : A
+    f = a
+
+---
+
+(source_file
+    (private
+        (function_clause
+            (lhs (atom (qualified_name)))
+            (rhs (expr (atom (qualified_name)))))
+        (function_clause
+            (lhs (atom (qualified_name)))
+            (rhs (expr (atom (qualified_name)))))))
+
+==================
+Instance
+==================
+
+instance
+    f : A
+    f = a
+
+---
+
+(source_file
+    (instance
+        (function_clause
+            (lhs (atom (qualified_name)))
+            (rhs (expr (atom (qualified_name)))))
+        (function_clause
+            (lhs (atom (qualified_name)))
+            (rhs (expr (atom (qualified_name)))))))

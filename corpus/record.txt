@@ -64,9 +64,11 @@ Directives with declarations
 record Pair (A B : Set) : Set where
     constructor _,_
     inductive
+    eta-equality
     instance
         constructor _,_
-    eta-equality
+    instance
+        a : b
     field
         fst : A
         snd : B
@@ -84,8 +86,29 @@ record Pair (A B : Set) : Set where
         (record_declarations_block
             (record_constructor_name (name))
             (record_induction)
-            (record_constructor_name (name))
             (record_eta)
+            (record_constructor_name (name))
+            (instance
+                (function_clause
+                    (lhs (atom (qualified_name)))
+                    (rhs (expr (atom (qualified_name))))))
             (field
                 (arg_type_signature (arg_name (name)) (expr (atom (qualified_name))))
                 (arg_type_signature (arg_name (name)) (expr (atom (qualified_name))))))))
+
+==================
+Signature only (found in mutual blocks)
+==================
+
+record Pair (A B : Set) : Set
+
+---
+
+(source_file
+    (record_signature_only
+        (qualified_name)
+        (typed_binding
+            (atom (qualified_name))
+            (atom (qualified_name))
+            (expr (atom)))
+        (expr (atom))))
