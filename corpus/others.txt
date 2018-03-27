@@ -142,3 +142,18 @@ postulate
         (function_clause
             (lhs (atom (qualified_name)))
             (rhs (expr (atom (qualified_name)))))))
+
+==================
+Primitive
+==================
+
+primitive
+    f : A
+    f : A
+
+---
+
+(source_file
+    (primitive
+        (type_signature (name) (expr (atom (qualified_name))))
+        (type_signature (name) (expr (atom (qualified_name))))))

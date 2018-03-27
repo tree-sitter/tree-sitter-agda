@@ -344,15 +344,22 @@ module.exports = grammar({
         // http://agda.readthedocs.io/en/v2.5.3/language/module-system.html
         ////////////////////////////////////////////////////////////////////////
 
-        import_directives1: $ => repeat1(choice(
+        open: $ => choice(
+            seq(        'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
+            seq('open', 'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
+            seq('open',           $.qualified_name, optional($._open_args1), repeat($.import_directive)),
+        ),
+        _open_args1: $ => repeat1($.atom),
+
+        import_directive: $ => choice(
             'public',
-            seq('using', '(', $.comma_import_names1 ,')'),
-            seq('hiding', '(', $.comma_import_names1 ,')'),
-            seq('renaming', '(', repeat1($.renaming) ,')'),
+            seq('using', '(', $._comma_import_names1 ,')'),
+            seq('hiding', '(', $._comma_import_names1 ,')'),
+            seq('renaming', '(', sepR(';', $.renaming) ,')'),
             seq('using', '(' ,')'),
             seq('hiding', '(' ,')'),
             seq('renaming', '(' ,')')
-        )),
+        ),
 
         renaming: $ => seq(
             optional('module'),
@@ -360,11 +367,11 @@ module.exports = grammar({
             'to',
             $.name
         ),
-        import_name: $ => seq(
+        _import_name: $ => seq(
             optional('module'), $.name
         ),
 
-        comma_import_names1: $ => sepR(';', $.import_name),
+        _comma_import_names1: $ => sepR(';', $._import_name),
 
         ////////////////////////////////////////////////////////////////////////
         // Function clauses
@@ -511,6 +518,7 @@ module.exports = grammar({
             seq('instance', $._arg_type_signatures_block)
         ),
 
+
         ////////////////////////////////////////////////////////////////////////
         // Other kinds of declarations
         ////////////////////////////////////////////////////////////////////////
@@ -530,8 +538,8 @@ module.exports = grammar({
             $.instance,
             $.macro,
             $.postulate,
-            // $.primitive,
-            // $.open,
+            $.primitive,
+            $.open,
             // $.module_macro,
             $.module,
             // $.pragma,
@@ -582,13 +590,13 @@ module.exports = grammar({
             'postulate',
             $._declarations0_
         ),
-        //
-        // // Primitives. Can only contain type signatures.
-        // primitive: $ => seq(
-        //     'primitive',
-        //     $.type_signatures
-        // ),
-        //
+
+        // Primitives. Can only contain type signatures.
+        primitive: $ => seq(
+            'primitive',
+            $._type_signatures
+        ),
+
         // // Unquoting declarations.
         // unquote_declaration: $ => choice(
         //     seq('unquoteDecl',                  '=', $.expr),
@@ -631,14 +639,6 @@ module.exports = grammar({
         //     seq($._const_lambda, '_',    $._const_right_arrow, $.name)
         // ),
         //
-        // open: $ => choice(
-        //     seq(        'import', $.qualified_name, optional($.open_args1), optional($.import_directives1)),
-        //     seq('open', 'import', $.qualified_name, optional($.open_args1), optional($.import_directives1)),
-        //     seq('open',           $.qualified_name, optional($.open_args1), optional($.import_directives1)),
-        // ),
-
-        // open_args1: $ => repeat1($.atom),
-        //
         // module_application: $ => choice(
         //     seq($.qualified_name, '{{', '...', '}}'),
         //     seq($.qualified_name, optional($.open_args1)),
@@ -675,26 +675,26 @@ module.exports = grammar({
         ),
 
 
-        // ////////////////////////////////////////////////////////////////////////
-        // // Sequence of declarations
-        // ////////////////////////////////////////////////////////////////////////
-        //
-        // // Non-empty list of type signatures, with several identifiers allowed
-        // // for every signature.
-        // type_signatures: $ => seq(
-        //     $._vopen,
-        //     $._type_signatures1,
-        //     $._close
-        // ),
-        //
-        // // Inside the layout block.
-        // _type_signatures1: $ => sepL($._semi, $._type_signature),
-        // _type_signature: $ => seq(
-        //     repeat1($.name),
-        //     ':',
-        //     $.expr
-        // ),
-        //
+        ////////////////////////////////////////////////////////////////////////
+        // Sequence of declarations
+        ////////////////////////////////////////////////////////////////////////
+
+        // Non-empty list of type signatures, with several identifiers allowed
+        // for every signature.
+        _type_signatures: $ => seq(
+            $._vopen,
+            $._type_signatures1,
+            $._close
+        ),
+
+        // Inside the layout block.
+        _type_signatures1: $ => repeat1(seq($.type_signature, $._semi)),
+        type_signature: $ => seq(
+            repeat1($.name),
+            ':',
+            $.expr
+        ),
+
         // Arbitrary declarations
         _declarations: $ => seq(
             $._vopen,
