@@ -1,6 +1,7 @@
 #include <tree_sitter/parser.h>
 #include <vector>
 #include <cwctype>
+#include <cassert>
 
 namespace {
 
@@ -23,8 +24,11 @@ struct Scanner {
     buffer[i++] = queued_close_brace_count;
 
     vector<uint16_t>::iterator
-      iter = indent_length_stack.begin() + 1,
+      iter = indent_length_stack.begin(),
       end = indent_length_stack.end();
+    assert(iter != end && *iter == 0);
+    ++iter;
+
     for (; iter != end && i < TREE_SITTER_SERIALIZATION_BUFFER_SIZE; ++iter) {
       buffer[i++] = *iter;
     }
@@ -46,6 +50,18 @@ struct Scanner {
 
   void advance(TSLexer *lexer) {
     lexer->advance(lexer, false);
+  }
+
+  bool isolated_sequence(TSLexer *lexer, const char *sequence) {
+    for (const char *c = sequence; *c; c++) {
+      if (lexer->lookahead == *c) {
+        advance(lexer);
+      } else {
+        return false;
+      }
+    }
+
+    return lexer->lookahead == 0 || iswspace(lexer->lookahead);
   }
 
   bool scan(TSLexer *lexer, const bool *valid_symbols) {
@@ -88,44 +104,32 @@ struct Scanner {
 
     lexer->mark_end(lexer);
 
-    if (lexer->lookahead == 'i') {
-      advance(lexer);
-      if (lexer->lookahead == 'n') {
-        advance(lexer);
-        if (iswspace(lexer->lookahead)) {
+    if (isolated_sequence(lexer, "in")) {
+      if (valid_symbols[LAYOUT_CLOSE_BRACE]) {
+        indent_length_stack.pop_back();
+        lexer->result_symbol = LAYOUT_CLOSE_BRACE;
+        return true;
+      } else {
+        if (valid_symbols[LAYOUT_SEMICOLON]) {
           indent_length_stack.pop_back();
-          if (valid_symbols[LAYOUT_CLOSE_BRACE]) {
-            lexer->result_symbol = LAYOUT_CLOSE_BRACE;
-            return true;
-          } else {
-            queued_close_brace_count++;
-            if (valid_symbols[LAYOUT_SEMICOLON]) {
-              lexer->result_symbol = LAYOUT_SEMICOLON;
-              return true;
-            }
-          }
+          queued_close_brace_count++;
+          lexer->result_symbol = LAYOUT_SEMICOLON;
+          return true;
         }
       }
     }
 
-    if (!valid_symbols[ARROW]) {
-      if (lexer->lookahead == '-') {
-        advance(lexer);
-        if (lexer->lookahead == '>') {
-          advance(lexer);
-          if (iswspace(lexer->lookahead)) {
-            indent_length_stack.pop_back();
-            if (valid_symbols[LAYOUT_CLOSE_BRACE]) {
-              lexer->result_symbol = LAYOUT_CLOSE_BRACE;
-              return true;
-            } else {
-              queued_close_brace_count++;
-              if (valid_symbols[LAYOUT_SEMICOLON]) {
-                lexer->result_symbol = LAYOUT_SEMICOLON;
-                return true;
-              }
-            }
-          }
+    if (!valid_symbols[ARROW] && isolated_sequence(lexer, "->")) {
+      if (valid_symbols[LAYOUT_CLOSE_BRACE]) {
+        indent_length_stack.pop_back();
+        lexer->result_symbol = LAYOUT_CLOSE_BRACE;
+        return true;
+      } else {
+        if (valid_symbols[LAYOUT_SEMICOLON] && indent_length_stack.size() > 1) {
+          indent_length_stack.pop_back();
+          queued_close_brace_count++;
+          lexer->result_symbol = LAYOUT_SEMICOLON;
+          return true;
         }
       }
     }
@@ -168,9 +172,22 @@ struct Scanner {
     }
 
     if (!next_token_is_comment) {
+      if (isolated_sequence(lexer, "in")) {
+        if (valid_symbols[LAYOUT_CLOSE_BRACE]) {
+          indent_length_stack.pop_back();
+          lexer->result_symbol = LAYOUT_CLOSE_BRACE;
+          return true;
+        } else {
+          if (valid_symbols[LAYOUT_SEMICOLON]) {
+            indent_length_stack.pop_back();
+            queued_close_brace_count++;
+            lexer->result_symbol = LAYOUT_SEMICOLON;
+            return true;
+          }
+        }
+      }
+
       if (indent_length < indent_length_stack.back()) {
-        indent_length_stack.pop_back();
-        queued_close_brace_count++;
         while (indent_length < indent_length_stack.back()) {
           indent_length_stack.pop_back();
           queued_close_brace_count++;
