@@ -157,3 +157,31 @@ primitive
     (primitive
         (type_signature (name) (expr (atom (qualified_name))))
         (type_signature (name) (expr (atom (qualified_name))))))
+
+==================
+Syntax
+==================
+
+syntax Plus R x y = x [ R ]⁺ y
+syntax ∄-syntax (λ x → B) = ∄[ x ] B
+
+---
+
+(source_file
+    (syntax (name) (hole_name (name)) (hole_name (name)) (hole_name (name)) (name) (name) (name) (name) (name))
+    (syntax (name) (hole_name (name) (name)) (name) (name) (name) (name)))
+
+==================
+Pattern
+==================
+
+pattern 0b = zero
+pattern 1b = 1+ zero
+pattern ⊥b = 1+ 1+ ()
+
+---
+
+(source_file
+    (pattern (name) (expr (atom (qualified_name))))
+    (pattern (name) (expr (atom (qualified_name)) (atom (qualified_name))))
+    (pattern (name) (expr (atom (qualified_name)) (atom (qualified_name)) (atom))))

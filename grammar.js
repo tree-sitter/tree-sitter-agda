@@ -608,9 +608,9 @@ module.exports = grammar({
             $.module_macro,
             $.module,
             $.pragma,
-            // $.syntax,
-            // $.patten_syn,
-            // $.unquote_declaration
+            $.syntax,
+            $.pattern,
+            $.unquote_declaration
         ),
 
         // Fixity declarations.
@@ -662,48 +662,46 @@ module.exports = grammar({
             $._type_signatures
         ),
 
-        // // Unquoting declarations.
-        // unquote_declaration: $ => choice(
-        //     seq('unquoteDecl',                  '=', $.expr),
-        //     seq('unquoteDecl', repeat1($.name), '=', $.expr),
-        //     seq('unquoteDef' , repeat1($.name), '=', $.expr)
-        // ),
-        //
-        // // Syntax declaration (To declare eg. mixfix binders)
-        // syntax: $ => seq(
-        //         'syntax',
-        //         $.name,
-        //         $.hole_names1,
-        //         '=',
-        //         repeat1($.name)
-        // ),
-        //
-        // // Pattern synonyms.
-        // patten_syn: $ => seq(
-        //     'pattern',
-        //     $.name,
-        //     optional($._lambda_binding),
-        //     '=',
-        //     $.expr
-        // ),
-        //
-        // hole_names1: $ => repeat1($.hole_name),
-        // hole_name: $ => choice(
-        //     $.name,
-        //     seq('(', $._const_lambda, $.name, $._const_right_arrow, $.name, ')'),
-        //     seq('(', $._const_lambda, '_',    $._const_right_arrow, $.name, ')'),
-        //     seq('{', $.simple_hole, '}'),
-        //     seq('{{', $.simple_hole, '}}'),
-        //     seq('{', $.simple_hole, '=', $.simple_hole, '}'),
-        //     seq('{{', $.simple_hole, '=', $.simple_hole, '}}')
-        // ),
-        //
-        // simple_hole: $ => choice(
-        //     $.name,
-        //     seq($._const_lambda, $.name, $._const_right_arrow, $.name),
-        //     seq($._const_lambda, '_',    $._const_right_arrow, $.name)
-        // ),
-        //
+        hole_name: $ => choice(
+            $.name,
+            seq('(', $._const_lambda, $.name, $._const_right_arrow, $.name, ')'),
+            seq('(', $._const_lambda, '_',    $._const_right_arrow, $.name, ')'),
+            seq('{', $.simple_hole, '}'),
+            seq('{{', $.simple_hole, '}}'),
+            seq('{', $.simple_hole, '=', $.simple_hole, '}'),
+            seq('{{', $.simple_hole, '=', $.simple_hole, '}}')
+        ),
+
+        simple_hole: $ => choice(
+            $.name,
+            seq($._const_lambda, $.name, $._const_right_arrow, $.name),
+            seq($._const_lambda, '_',    $._const_right_arrow, $.name)
+        ),
+
+        // Syntax declaration (To declare eg. mixfix binders)
+        syntax: $ => seq(
+                'syntax',
+                $.name,
+                repeat1($.hole_name),
+                '=',
+                repeat1($.name)
+        ),
+
+        // Pattern synonyms.
+        pattern: $ => seq(
+            'pattern',
+            $.name,
+            optional($._lambda_binding),
+            '=',
+            $.expr
+        ),
+
+        // Unquoting declarations.
+        unquote_declaration: $ => choice(
+            seq('unquoteDecl',                  '=', $.expr),
+            seq('unquoteDecl', repeat1($.name), '=', $.expr),
+            seq('unquoteDef' , repeat1($.name), '=', $.expr)
+        ),
 
 
         ////////////////////////////////////////////////////////////////////////
