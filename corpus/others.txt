@@ -127,3 +127,18 @@ macro
                     (expr (atom (qualified_name))
                         (atom (qualified_name))
                             (atom (expr (atom (qualified_name)) (atom (qualified_name)))))))))))
+
+==================
+Postulate
+==================
+
+postulate
+    f : A
+
+---
+
+(source_file
+    (postulate
+        (function_clause
+            (lhs (atom (qualified_name)))
+            (rhs (expr (atom (qualified_name)))))))

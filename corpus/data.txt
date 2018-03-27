@@ -38,7 +38,6 @@ Empty
 ==================
 
 data Nat : Set where
-
 data Nat : Set where
 
 ---

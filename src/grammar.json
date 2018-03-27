@@ -2249,16 +2249,8 @@
           "value": "where"
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "_declarations0_"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "_declarations0_"
         }
       ]
     },
@@ -2697,6 +2689,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "postulate"
+        },
+        {
+          "type": "SYMBOL",
           "name": "module"
         }
       ]
@@ -2792,6 +2788,19 @@
         {
           "type": "STRING",
           "value": "macro"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_declarations0_"
+        }
+      ]
+    },
+    "postulate": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "postulate"
         },
         {
           "type": "SYMBOL",
@@ -2901,6 +2910,23 @@
               "type": "BLANK"
             }
           ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_close"
+        }
+      ]
+    },
+    "_declarations2_": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_vopen"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_declarations1_"
         },
         {
           "type": "SYMBOL",
