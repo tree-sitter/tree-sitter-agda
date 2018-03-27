@@ -242,7 +242,7 @@ module.exports = grammar({
         //     $.module_assignment,
         // ),
         //
-        // module_assignment: $ => seq($.qualified_name, optional($.open_args1), optional($.import_directives1)),
+        // module_assignment: $ => seq($.qualified_name, optional($.open_args1), repeat($.import_directive)),
         //
         //
         // field_assignments1: $ => sepR(';', $.field_assignment),
@@ -344,6 +344,34 @@ module.exports = grammar({
         // http://agda.readthedocs.io/en/v2.5.3/language/module-system.html
         ////////////////////////////////////////////////////////////////////////
 
+        module_application: $ => choice(
+            prec(1, seq($.qualified_name, '{{', '...', '}}')),
+            seq($.qualified_name, optional($._open_args1)),
+        ),
+
+        // Module instantiation
+        module_macro: $ => choice(
+            seq(
+                'module',
+                $.qualified_name,
+                optional($._typed_untyped_binding1),
+                '=',
+                $.module_application,
+                repeat($.import_directive)
+            ),
+            seq(
+                'open',
+                'module',
+                $.name,
+                optional($._typed_untyped_binding1),
+                '=',
+                $.module_application,
+                repeat($.import_directive)
+            )
+        ),
+
+
+
         open: $ => choice(
             seq(        'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
             seq('open', 'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
@@ -367,6 +395,7 @@ module.exports = grammar({
             'to',
             $.name
         ),
+
         _import_name: $ => seq(
             optional('module'), $.name
         ),
@@ -540,7 +569,7 @@ module.exports = grammar({
             $.postulate,
             $.primitive,
             $.open,
-            // $.module_macro,
+            $.module_macro,
             $.module,
             // $.pragma,
             // $.syntax,
@@ -639,31 +668,6 @@ module.exports = grammar({
         //     seq($._const_lambda, '_',    $._const_right_arrow, $.name)
         // ),
         //
-        // module_application: $ => choice(
-        //     seq($.qualified_name, '{{', '...', '}}'),
-        //     seq($.qualified_name, optional($.open_args1)),
-        // ),
-        //
-        // // Module instantiation
-        // module_macro: $ => choice(
-        //     seq(
-        //         'module',
-        //         $.qualified_name,
-        //         optional($._typed_untyped_binding1),
-        //         '=',
-        //         $.module_application,
-        //         optional($.import_directives1)
-        //     ),
-        //     seq(
-        //         'open',
-        //         'module',
-        //         $.name,
-        //         optional($._typed_untyped_binding1),
-        //         '=',
-        //         $.module_application,
-        //         optional($.import_directives1)
-        //     )
-        // ),
 
         // Module
         module: $ => seq(
