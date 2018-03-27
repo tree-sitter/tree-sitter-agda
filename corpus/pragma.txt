@@ -1,0 +1,18 @@
+==================
+Pragmas
+==================
+
+-- something
+{-# NON_TERMINATING #-}
+{-# IMPORT "something" #-}
+{-# CATCHALL #-}
+{-# NO_POSITIVITY_CHECK #-}
+
+---
+
+(source_file
+    (comment)
+    (pragma)
+    (pragma (string))
+    (pragma)
+    (pragma))

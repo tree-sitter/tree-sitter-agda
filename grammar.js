@@ -71,6 +71,13 @@ module.exports = grammar({
             '\\',
             'λ'
         )),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Literals
+        ////////////////////////////////////////////////////////////////////////
+
+        string: $ => /\".*\"/,
+
         ////////////////////////////////////////////////////////////////////////
         // Name
         // http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.Names
@@ -122,32 +129,6 @@ module.exports = grammar({
                 /-}\r?\n/
             )
         )),
-
-        ////////////////////////////////////////////////////////////////////////
-        // Pragma
-        // http://agda.readthedocs.io/en/latest/language/pragmas.html
-        ////////////////////////////////////////////////////////////////////////
-
-        pragma: $ => seq(
-            '{-#',
-            $.pragma_name,
-            repeat($._pragma_argument),
-            '#-}'
-        ),
-        pragma_name: $ => choice(
-            'BUILTIN',
-            'CATCHALL',
-            'COMPILE',
-            'FOREIGN',
-            'NO_POSITIVITY_CHECK',
-            'NO_TERMINATION_CHECK',
-            'TERMINATING',
-            'NON_TERMINATING',
-            'POLARITY',
-            'STATIC',
-            /\S+/
-        ),
-        _pragma_argument: $ => /\S+/,
 
         ////////////////////////////////////////////////////////////////////////
         // TODO: Undefined
@@ -265,7 +246,7 @@ module.exports = grammar({
             seq('{{', '}}')
         )),
 
-        catchall_pragma: $ => "CatchallPragma: undefined",
+        catchall_pragma: $ => seq('{-#', 'CATCHALL', '#-}'),
 
         // "normal" lambda expressions that don't retract to "()"
         lambda_clause: $ => seq(
@@ -323,9 +304,9 @@ module.exports = grammar({
             $.typed_binding
         )),
 
-        // ////////////////////////////////////////////////////////////////////////
-        // // Do-notation
-        // ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        // Do-notation
+        ////////////////////////////////////////////////////////////////////////
 
         _do_stmt: $ => seq(
             $.expr,
@@ -370,7 +351,14 @@ module.exports = grammar({
             )
         ),
 
-
+        // Module
+        module: $ => seq(
+            'module',
+            choice($.qualified_name, $.anonymous_name),
+            optional($._typed_untyped_binding1),
+            'where',
+            $._declarations0_
+        ),
 
         open: $ => choice(
             seq(        'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
@@ -547,6 +535,54 @@ module.exports = grammar({
             seq('instance', $._arg_type_signatures_block)
         ),
 
+        ////////////////////////////////////////////////////////////////////////
+        // Pragma
+        // http://agda.readthedocs.io/en/latest/language/pragmas.html
+        ////////////////////////////////////////////////////////////////////////
+
+        pragma: $ => seq(
+            '{-#',
+            choice(
+                $._builtin_pragma,
+                $._nullary_pragma,
+                $._unary_pragma,
+                $._n_ary_pragma1,
+                $._n_ary_pragma2,
+            ),
+            '#-}'
+        ),
+        _builtin_pragma: $ => choice(
+            seq('BUILTIN', $.string, $.string),
+            seq('BUILTIN', 'REWRITE', $.string)
+        ),
+
+        _nullary_pragma: $ => choice(
+            'NO_TERMINATION_CHECK', 'NON_TERMINATING', 'TERMINATING', 'CATCHALL',
+            'IMPOSSIBLE', 'NO_POSITIVITY_CHECK'
+        ),
+        _unary_pragma: $ => seq(
+            choice(
+                'REWRITE', 'STATIC', 'INLINE', 'INJECTIVE', 'ETA', 'MEASURE',
+                'IMPORT', 'IMPORT_UHC'
+            ),
+            $.string
+        ),
+        _n_ary_pragma1: $ => seq(
+            choice(
+                'COMPILED', 'COMPILED_EXPORT', 'COMPILED_TYPE', 'COMPILED_JS',
+                'COMPILED_UHC', 'DISPLAY', 'POLARITY'
+            ),
+            $.string,
+            repeat($.string)
+        ),
+        _n_ary_pragma2: $ => seq(
+            choice(
+                'COMPILED_DATA', 'COMPILED_DATA_UHC', 'COMPILE'
+            ),
+            $.string, $.string,
+            repeat($.string)
+        ),
+
 
         ////////////////////////////////////////////////////////////////////////
         // Other kinds of declarations
@@ -571,7 +607,7 @@ module.exports = grammar({
             $.open,
             $.module_macro,
             $.module,
-            // $.pragma,
+            $.pragma,
             // $.syntax,
             // $.patten_syn,
             // $.unquote_declaration
@@ -668,15 +704,6 @@ module.exports = grammar({
         //     seq($._const_lambda, '_',    $._const_right_arrow, $.name)
         // ),
         //
-
-        // Module
-        module: $ => seq(
-            'module',
-            choice($.qualified_name, $.anonymous_name),
-            optional($._typed_untyped_binding1),
-            'where',
-            $._declarations0_
-        ),
 
 
         ////////////////////////////////////////////////////////////////////////
