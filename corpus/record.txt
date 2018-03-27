@@ -66,8 +66,6 @@ record Pair (A B : Set) : Set where
     inductive
     eta-equality
     instance
-        constructor _,_
-    instance
         a : b
     field
         fst : A
@@ -87,7 +85,6 @@ record Pair (A B : Set) : Set where
             (record_constructor_name (name))
             (record_induction)
             (record_eta)
-            (record_constructor_name (name))
             (instance
                 (function_clause
                     (lhs (atom (qualified_name)))

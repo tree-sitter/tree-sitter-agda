@@ -411,7 +411,7 @@ module.exports = grammar({
             optional($._typed_untyped_binding1),
             optional(seq(':', $.expr)),
             'where',
-            $._declarations0_
+            optional($._declarations0_)
         ),
 
         // Data type signature. Found in mutual blocks.
@@ -528,7 +528,7 @@ module.exports = grammar({
             $.abstract,
             $.private,
             $.instance,
-            // $.macro,
+            $.macro,
             // $.postulate,
             // $.primitive,
             // $.open,
@@ -571,12 +571,12 @@ module.exports = grammar({
             $._declarations0_
         ),
 
-        // // Macro declarations.
-        // macro: $ => seq(
-        //     'macro',
-        //     $._declarations0
-        // ),
-        //
+        // Macro declarations.
+        macro: $ => seq(
+            'macro',
+            $._declarations0_
+        ),
+
         // // Postulates.
         // postulate: $ => seq(
         //     'postulate',

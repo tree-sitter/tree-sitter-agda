@@ -2249,8 +2249,16 @@
           "value": "where"
         },
         {
-          "type": "SYMBOL",
-          "name": "_declarations0_"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_declarations0_"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },
@@ -2438,23 +2446,19 @@
       ]
     },
     "_record_directives1": {
-      "type": "PREC_RIGHT",
-      "value": 0,
+      "type": "REPEAT1",
       "content": {
-        "type": "REPEAT1",
-        "content": {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "_record_directive"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "_semi"
-            }
-          ]
-        }
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_record_directive"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_semi"
+          }
+        ]
       }
     },
     "_record_directive": {
@@ -2689,6 +2693,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "macro"
+        },
+        {
+          "type": "SYMBOL",
           "name": "module"
         }
       ]
@@ -2771,6 +2779,19 @@
         {
           "type": "STRING",
           "value": "instance"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_declarations0_"
+        }
+      ]
+    },
+    "macro": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "macro"
         },
         {
           "type": "SYMBOL",
@@ -2939,7 +2960,11 @@
       "value": "\\s|\\\\n"
     }
   ],
-  "conflicts": [],
+  "conflicts": [
+    [
+      "_record_directives1"
+    ]
+  ],
   "externals": [
     {
       "type": "SYMBOL",

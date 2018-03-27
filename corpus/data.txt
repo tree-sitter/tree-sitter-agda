@@ -1,5 +1,5 @@
 ==================
-Data: Nat
+Simple
 ==================
 
 data Nat : Set where
@@ -32,3 +32,16 @@ data Nat : Set
 (source_file
     (data_signature_only
         (name) (expr (atom))))
+
+==================
+Empty
+==================
+
+data Nat : Set where
+data Nat : Set where
+
+---
+
+(source_file
+    (data (name) (expr (atom)))
+    (data (name) (expr (atom))))

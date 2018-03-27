@@ -97,3 +97,33 @@ instance
         (function_clause
             (lhs (atom (qualified_name)))
             (rhs (expr (atom (qualified_name)))))))
+
+==================
+Macro
+==================
+
+macro
+  by-magic : Term → TC ⊤
+  by-magic hole =
+    bindTC (inferType hole) λ goal →
+    unify hole (magic goal)
+
+---
+
+(source_file
+    (macro
+        (function_clause
+            (lhs (atom (qualified_name)))
+            (rhs
+                (expr (atom (qualified_name))
+                    (expr (atom (qualified_name))
+                        (atom (qualified_name))))))
+        (function_clause
+            (lhs (atom (qualified_name)) (atom (qualified_name)))
+            (rhs (expr
+                (atom (qualified_name))
+                (atom (expr (atom (qualified_name)) (atom (qualified_name))))
+                (lambda (untyped_binding (binding_name (name)))
+                    (expr (atom (qualified_name))
+                        (atom (qualified_name))
+                            (atom (expr (atom (qualified_name)) (atom (qualified_name)))))))))))
