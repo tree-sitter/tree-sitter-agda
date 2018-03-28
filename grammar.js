@@ -212,26 +212,30 @@ module.exports = grammar({
             seq('{{', '}}'),
             seq($.name_at, $.atom),
             seq('.', $.atom),
-            // seq('record', '{', optional($.record_assignments1), '}'),
-            // seq('record', $._atom_no_curly, '{', optional($.field_assignments1), '}'),
+            seq('record', '{', optional($._record_assignments1), '}'),
+            seq('record', $._atom_no_curly, '{', optional($._field_assignments1), '}'),
             '...'
         ),
-        //
-        // record_assignments1: $ => sepR(';', $.record_assignment),
-        // record_assignment: $ => choice(
-        //     $.field_assignment,
-        //     $.module_assignment,
-        // ),
-        //
-        // module_assignment: $ => seq($.qualified_name, optional($.open_args1), repeat($.import_directive)),
-        //
-        //
-        // field_assignments1: $ => sepR(';', $.field_assignment),
-        // field_assignment: $ => seq($.name, '=', $.expr),
 
-        // ////////////////////////////////////////////////////////////////////////
-        // // Bindings
-        // ////////////////////////////////////////////////////////////////////////
+        _record_assignments1: $ => sepR(';', $._record_assignment),
+        _record_assignment: $ => choice(
+            $.field_assignment,
+            $.module_assignment,
+        ),
+
+        module_assignment: $ => seq(
+            $.qualified_name,
+            optional($._open_args1),
+            repeat($.import_directive)
+        ),
+
+
+        _field_assignments1: $ => sepR(';', $.field_assignment),
+        field_assignment: $ => seq($.name, '=', $.expr),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Bindings
+        ////////////////////////////////////////////////////////////////////////
 
         _typed_bindings1: $ => repeat1($.typed_binding),
 
@@ -295,8 +299,8 @@ module.exports = grammar({
             maybeDotted(bracketed(seq(
                 $._application, ':', $.expr
             ))),
-            // seq('(', $.open, ')'),
-            // seq('(', 'let', repeat1($.declaration), ')')
+            seq('(', $.open, ')'),
+            seq('(', 'let', $._declarations, ')')
         ),
 
         _typed_untyped_binding1: $ => repeat1(choice(
@@ -419,9 +423,9 @@ module.exports = grammar({
         ),
 
         where_clause: $ => choice(
-            seq(                            'where', $._declarations0),
-            seq('module', $.name,           'where', $._declarations0),
-            seq('module', $.anonymous_name, 'where', $._declarations0)
+            seq(                            'where', $._declarations0_),
+            seq('module', $.name,           'where', $._declarations0_),
+            seq('module', $.anonymous_name, 'where', $._declarations0_)
         ),
 
         ////////////////////////////////////////////////////////////////////////
@@ -727,28 +731,17 @@ module.exports = grammar({
         // Arbitrary declarations
         _declarations: $ => seq(
             $._vopen,
-            $._declarations1,
+            $._declarations1_,
             $._close
         ),
 
         // Arbitrary declarations (possibly empty)
-        _declarations0: $ => seq(
-            $._vopen,
-            optional($._declarations1),
-            $._close
-        ),
         _declarations0_: $ => seq(
             $._vopen,
             optional($._declarations1_),
             $._close
         ),
-        _declarations2_: $ => seq(
-            $._vopen,
-            $._declarations1_,
-            $._close
-        ),
 
-        _declarations1: $ => sepR($._semi, $._declaration),
         _declarations1_: $ => repeat1(seq($._declaration, $._semi)),
     }
 });
