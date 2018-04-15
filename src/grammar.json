@@ -430,7 +430,7 @@
               },
               {
                 "type": "PATTERN",
-                "value": "[^#].*\\r?\\n?"
+                "value": "[^\\#].*\\r?\\n?"
               },
               {
                 "type": "REPEAT",
@@ -450,7 +450,7 @@
               },
               {
                 "type": "PATTERN",
-                "value": "-}\\r?\\n"
+                "value": "-}"
               }
             ]
           }

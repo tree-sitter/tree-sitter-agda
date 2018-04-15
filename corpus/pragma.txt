@@ -2,7 +2,6 @@
 Pragmas
 ==================
 
--- something
 {-# NON_TERMINATING #-}
 {-# IMPORT "something" #-}
 {-# CATCHALL #-}
@@ -11,7 +10,6 @@ Pragmas
 ---
 
 (source_file
-    (comment)
     (pragma)
     (pragma (string))
     (pragma)

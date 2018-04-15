@@ -6,7 +6,7 @@ Line comment
 --this is a line comment
 --- this is a line comment
 ---this is a line comment
--- -----------------------------------------------------------------------------
+----------------------------------------------------------this is a line comment
 
 ---
 
@@ -22,6 +22,7 @@ Block comment
 ==================
 
 {- this is a block comment -}
+{-# TERMINATING #-}
 {- this is a
     block comment
 -}
@@ -31,5 +32,7 @@ Block comment
 ---
 
 (source_file
+    (comment)
+    (pragma)
     (comment)
     (comment))
