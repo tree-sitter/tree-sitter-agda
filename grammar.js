@@ -2,9 +2,6 @@ const
       digit = /[0-9]/,
       decimalLiteral = seq(digit, repeat(digit));
 
-
-
-
 module.exports = grammar({
     name: 'agda',
 
@@ -16,7 +13,10 @@ module.exports = grammar({
     externals: $ => [
         $._layout_semicolon,
         $._layout_open_brace,
-        $._layout_close_brace
+        $._layout_close_brace,
+        $._arrow,
+        $._qualified_module_dot,
+        $._initialize_layout
     ],
 
     conflicts: $ => [

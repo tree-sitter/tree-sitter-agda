@@ -4019,6 +4019,18 @@
     {
       "type": "SYMBOL",
       "name": "_layout_close_brace"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_arrow"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_qualified_module_dot"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_initialize_layout"
     }
   ],
   "inline": []
