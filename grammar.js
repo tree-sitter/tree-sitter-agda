@@ -1,6 +1,13 @@
 const
       digit = /[0-9]/,
       decimalLiteral = seq(digit, repeat(digit));
+      name_part = /[^\s\_\;\.\"\(\)\{\}\@]+/;
+      name = seq(
+          optional('_'),
+          sepL('_', name_part),
+          optional('_')
+      );
+
 
 module.exports = grammar({
     name: 'agda',
@@ -17,7 +24,7 @@ module.exports = grammar({
     ],
 
     conflicts: $ => [
-        [$._record_directives1]
+        [$._record_directives1],
     ],
 
     rules: {
@@ -78,6 +85,7 @@ module.exports = grammar({
             $.int
         ),
         string: $ => /\".*\"/,
+        // string: $ => token(/\".*\"/),
         int: $ => token(decimalLiteral),
 
 
@@ -86,20 +94,18 @@ module.exports = grammar({
         // http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.Names
         ////////////////////////////////////////////////////////////////////////
 
-        // underscores are allowed
-        name: $ => /[^\s\;\.\"\(\)\{\}\@]+/,
-
-
+        // seperated by '_'
+        name          : $ => token(name),
         // for var1@var2
-        name_at: $ => /[^\s\_\;\.\"\(\)\{\}\@]+(\_[^\s\_\;\.\"\(\)\{\}\@]+)*\@/,
-        qualified_name: $ => /[^\s\_\;\.\"\(\)\{\}\@]+(\.[^\s\_\;\.\"\(\)\{\}\@]+)*/,
+        // name_at       : $ => /[^\s\_\;\.\"\(\)\{\}\@]+(\_[^\s\_\;\.\"\(\)\{\}\@]+)*\@/,
+        qualified_name: $ => token(sepL('.', name)),
 
-        // A binding variable, can be '_'
-        binding_name: $ => choice(
-            '_',
-            $.name
-        ),
         anonymous_name: $ => '_',
+        // A binding variable, can be '_'
+        _binding_name: $ => choice(
+            $.name,
+            $.anonymous_name,
+        ),
 
         _maybe_dotted_name: $ => maybeDotted($.name),
         _maybe_dotted_names1: $ => repeat1(maybeDotted($.name)),
@@ -209,26 +215,40 @@ module.exports = grammar({
             // seq('{{', '}}'),
             // seq($.name_at, $.atom),
             // seq('.', $.atom),
-            // seq('record', '{', optional($._record_assignments1), '}'),
-            // seq('record', $._atom_no_curly, '{', optional($._field_assignments1), '}'),
+            seq('record', '{', optional($._record_assignments1), '}'),
+            seq('record', $._atom_no_curly, '{', optional($._field_assignments1), '}'),
             // '...'
         ),
 
-        // _record_assignments1: $ => sepR(';', $._record_assignment),
-        // _record_assignment: $ => choice(
-        //     $.field_assignment,
-        //     $.module_assignment,
+
+        _record_assignments1: $ => sepR(';', $._record_assignment),
+        // _record_assignment: $ => seq(
+        //     $.name,
+        //     choice(
+        //         seq(
+        //             optional(seq('.', $.qualified_name)),
+        //             optional($._open_args1),
+        //             repeat($.import_directive)
+        //         ),
+        //         seq('=', $.expr)
+        //     )
         // ),
-        //
-        // module_assignment: $ => seq(
-        //     $.qualified_name,
-        //     optional($._open_args1),
-        //     repeat($.import_directive)
-        // ),
-        //
-        //
-        // _field_assignments1: $ => sepR(';', $.field_assignment),
-        // field_assignment: $ => seq($.name, '=', $.expr),
+        _record_assignment: $ => choice(
+            $.field_assignment,
+            $.module_assignment,
+        ),
+
+        module_assignment: $ => seq(
+            $.qualified_name,
+            optional($._open_args1),
+            repeat($.import_directive)
+        ),
+
+
+        _field_assignments1: $ => sepR(';', $.field_assignment),
+        field_assignment: $ => seq($.name, '=', $.expr),
+
+
         //
         ////////////////////////////////////////////////////////////////////////
         // Bindings
@@ -286,7 +306,7 @@ module.exports = grammar({
 
         // "DomainFreeBinding"
         untyped_binding: $ => maybeDotted(choice(
-                seq($.binding_name),
+                seq($._binding_name),
                 seq('{', $._application, '}'),
                 seq('{{', $._application, '}}')
         )),
@@ -366,31 +386,31 @@ module.exports = grammar({
         //     seq('open', 'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
         //     seq('open',           $.qualified_name, optional($._open_args1), repeat($.import_directive)),
         // ),
-        // _open_args1: $ => repeat1($.atom),
-        //
-        // import_directive: $ => choice(
-        //     'public',
-        //     seq('using', '(', $._comma_import_names1 ,')'),
-        //     seq('hiding', '(', $._comma_import_names1 ,')'),
-        //     seq('renaming', '(', sepR(';', $.renaming) ,')'),
-        //     seq('using', '(' ,')'),
-        //     seq('hiding', '(' ,')'),
-        //     seq('renaming', '(' ,')')
-        // ),
-        //
-        // renaming: $ => seq(
-        //     optional('module'),
-        //     $.name,
-        //     'to',
-        //     $.name
-        // ),
-        //
-        // _import_name: $ => seq(
-        //     optional('module'), $.name
-        // ),
-        //
-        // _comma_import_names1: $ => sepR(';', $._import_name),
-        //
+        _open_args1: $ => repeat1($.atom),
+
+        import_directive: $ => choice(
+            'public',
+            seq('using', '(', $._comma_import_names1 ,')'),
+            seq('hiding', '(', $._comma_import_names1 ,')'),
+            seq('renaming', '(', sepR(';', $.renaming) ,')'),
+            seq('using', '(' ,')'),
+            seq('hiding', '(' ,')'),
+            seq('renaming', '(' ,')')
+        ),
+
+        renaming: $ => seq(
+            optional('module'),
+            $.name,
+            'to',
+            $.name
+        ),
+
+        _import_name: $ => seq(
+            optional('module'), $.name
+        ),
+
+        _comma_import_names1: $ => sepR(';', $._import_name),
+
         ////////////////////////////////////////////////////////////////////////
         // Function clauses
         ////////////////////////////////////////////////////////////////////////
@@ -589,7 +609,7 @@ module.exports = grammar({
         infix: $ => seq(
             choice('infix', 'infixl', 'infixr'),
             $.int,
-            repeat1($.binding_name)
+            repeat1($._binding_name)
         ),
 
         // // Mutually recursive declarations.
