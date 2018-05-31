@@ -12,7 +12,8 @@ DEFS_Debug := \
 	'-D_FILE_OFFSET_BITS=64' \
 	'-DBUILDING_NODE_EXTENSION' \
 	'-DDEBUG' \
-	'-D_DEBUG'
+	'-D_DEBUG' \
+	'-DV8_ENABLE_CHECKS'
 
 # Flags passed to all source files.
 CFLAGS_Debug := \
@@ -45,10 +46,10 @@ CFLAGS_OBJC_Debug :=
 CFLAGS_OBJCC_Debug :=
 
 INCS_Debug := \
-	-I/Users/banacorn/.atom/.node-gyp/.node-gyp/iojs-1.7.11/include/node \
-	-I/Users/banacorn/.atom/.node-gyp/.node-gyp/iojs-1.7.11/src \
-	-I/Users/banacorn/.atom/.node-gyp/.node-gyp/iojs-1.7.11/deps/uv/include \
-	-I/Users/banacorn/.atom/.node-gyp/.node-gyp/iojs-1.7.11/deps/v8/include \
+	-I/Users/banacorn/.node-gyp/8.10.0/include/node \
+	-I/Users/banacorn/.node-gyp/8.10.0/src \
+	-I/Users/banacorn/.node-gyp/8.10.0/deps/uv/include \
+	-I/Users/banacorn/.node-gyp/8.10.0/deps/v8/include \
 	-I$(srcdir)/node_modules/nan \
 	-I$(srcdir)/src
 
@@ -93,10 +94,10 @@ CFLAGS_OBJC_Release :=
 CFLAGS_OBJCC_Release :=
 
 INCS_Release := \
-	-I/Users/banacorn/.atom/.node-gyp/.node-gyp/iojs-1.7.11/include/node \
-	-I/Users/banacorn/.atom/.node-gyp/.node-gyp/iojs-1.7.11/src \
-	-I/Users/banacorn/.atom/.node-gyp/.node-gyp/iojs-1.7.11/deps/uv/include \
-	-I/Users/banacorn/.atom/.node-gyp/.node-gyp/iojs-1.7.11/deps/v8/include \
+	-I/Users/banacorn/.node-gyp/8.10.0/include/node \
+	-I/Users/banacorn/.node-gyp/8.10.0/src \
+	-I/Users/banacorn/.node-gyp/8.10.0/deps/uv/include \
+	-I/Users/banacorn/.node-gyp/8.10.0/deps/v8/include \
 	-I$(srcdir)/node_modules/nan \
 	-I$(srcdir)/src
 
