@@ -561,7 +561,7 @@ module.exports = grammar({
             $.function_clause,
             $.data_signature_only,
             $.record_signature_only,
-            // $.infix,
+            $.infix,
             // $.open,
             // $.module_macro,
             $.pragma,
@@ -694,13 +694,6 @@ module.exports = grammar({
         //     repeat1($.name),
         //     ':',
         //     $.expr
-        // ),
-        //
-        // // Arbitrary declarations
-        // _declarations: $ => seq(
-        //     $._vopen,
-        //     $._declarations1,
-        //     $._close
         // ),
         //
 

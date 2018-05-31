@@ -1833,6 +1833,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "infix"
+        },
+        {
+          "type": "SYMBOL",
           "name": "pragma"
         }
       ]

@@ -11,6 +11,6 @@ Pragmas
 
 (source_file
     (pragma)
-    (pragma (string))
+    (pragma)
     (pragma)
     (pragma))
