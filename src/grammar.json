@@ -1496,26 +1496,10 @@
           "name": "_indent"
         },
         {
-          "type": "CHOICE",
+          "type": "SEQ",
           "members": [
             {
               "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "_record_directives1"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            },
-            {
-              "type": "SYMBOL",
-              "name": "_declarations1_"
-            },
-            {
-              "type": "SEQ",
               "members": [
                 {
                   "type": "CHOICE",
@@ -1532,6 +1516,27 @@
                 {
                   "type": "SYMBOL",
                   "name": "_declarations1_"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "_record_directives1"
+                        },
+                        {
+                          "type": "BLANK"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_declarations1_"
+                    }
+                  ]
                 }
               ]
             }
@@ -1603,20 +1608,30 @@
           "value": "instance"
         },
         {
-          "type": "SYMBOL",
-          "name": "_indent"
-        },
-        {
-          "type": "STRING",
-          "value": "constructor"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "name"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_dedent"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_indent"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "constructor"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "name"
+                }
+              ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_dedent"
+            }
+          ]
         }
       ]
     },
@@ -1697,8 +1712,13 @@
           "name": "_indent"
         },
         {
-          "type": "SYMBOL",
-          "name": "_arg_type_signatures1"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_arg_type_signatures1"
+            }
+          ]
         },
         {
           "type": "SYMBOL",
@@ -1877,8 +1897,13 @@
               "name": "_indent"
             },
             {
-              "type": "SYMBOL",
-              "name": "_declarations1_"
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_declarations1_"
+                }
+              ]
             },
             {
               "type": "SYMBOL",

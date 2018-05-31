@@ -471,8 +471,7 @@ module.exports = grammar({
 
 
         // Record declarations, including an optional record constructor name.
-        record_declarations_block: $ => seq(
-            $._indent,
+        record_declarations_block: $ => indent($,
             choice(
                 // 1. directives only (none or many)
                 optional($._record_directives1),
@@ -480,18 +479,17 @@ module.exports = grammar({
                 $._declarations1_,
                 // 3. both directives (none or many) and declarations
                 seq(optional($._record_directives1), $._declarations1_),
-            ),
-            $._dedent
+            )
         ),
 
-        _record_directives1: $ => lineOrBlock(
+        _record_directives1: $ => block(
             $._record_directive,
             $.record_constructor_instance,
             $._newline
         ),
 
         // Declaration of record constructor name.
-        record_constructor_instance: $ => seq('instance', $._indent, 'constructor', $.name, $._dedent),
+        record_constructor_instance: $ => seq('instance', indent($, 'constructor', $.name)),
         record_constructor: $ => seq('constructor', $.name),
 
 
@@ -523,10 +521,8 @@ module.exports = grammar({
 
         // A variant of TypeSignatures which uses arg_type_signatures instead of
         // _type_signature
-        _arg_type_signatures_block: $ => seq(
-            $._indent,
-            $._arg_type_signatures1,
-            $._dedent
+        _arg_type_signatures_block: $ => indent($,
+            $._arg_type_signatures1
         ),
 
         _arg_type_signatures1: $ => repeat1($.arg_type_signature),
@@ -706,11 +702,7 @@ module.exports = grammar({
         // Arbitrary declarations (possibly empty)
         _declarations0_: $ => choice(
             $._newline,
-            seq(
-                $._indent,
-                $._declarations1_,
-                $._dedent
-            )
+            indent($, $._declarations1_)
         ),
         _declarations1_: $ => repeat1(seq($._declaration, $._newline)),
     }
@@ -728,8 +720,8 @@ function sepL(sep, rule) {
     return seq(repeat(seq(rule, sep)), rule)
 }
 
-// lefty
-function lineOrBlock(line, block, sep) {
+// lines that ends with some separator or blocks (that does not end with a separator)
+function block(line, block, sep) {
     return seq(
         repeat(choice(
             seq(line, sep),   // a single line
@@ -740,6 +732,15 @@ function lineOrBlock(line, block, sep) {
             block,            // or a single block
         )
     )
+}
+
+// indent and then dedent
+function indent($, ...rules) {
+    return seq(
+        $._indent,
+        seq(...rules),
+        $._dedent
+    );
 }
 
 ////////////////////////////////////////////////////////////////////////
