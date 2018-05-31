@@ -2,14 +2,62 @@
   "name": "agda",
   "rules": {
     "source_file": {
-      "type": "SEQ",
+      "type": "CHOICE",
       "members": [
         {
-          "type": "REPEAT",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_declaration"
-          }
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "_declaration"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "_newline"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_declaration_block"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_declaration"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_newline"
+                    }
+                  ]
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_declaration_block"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "BLANK"
         }
       ]
     },
@@ -1249,7 +1297,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_declarations0_"
+              "name": "_declarations0"
             }
           ]
         },
@@ -1270,7 +1318,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_declarations0_"
+              "name": "_declarations0"
             }
           ]
         },
@@ -1291,7 +1339,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_declarations0_"
+              "name": "_declarations0"
             }
           ]
         }
@@ -1356,7 +1404,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_declarations0_"
+          "name": "_declarations0"
         }
       ]
     },
@@ -1515,7 +1563,7 @@
                 },
                 {
                   "type": "SYMBOL",
-                  "name": "_declarations1_"
+                  "name": "_declarations1"
                 },
                 {
                   "type": "SEQ",
@@ -1534,7 +1582,7 @@
                     },
                     {
                       "type": "SYMBOL",
-                      "name": "_declarations1_"
+                      "name": "_declarations1"
                     }
                   ]
                 }
@@ -1821,23 +1869,11 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "field"
-        },
-        {
-          "type": "SYMBOL",
           "name": "function_clause"
         },
         {
           "type": "SYMBOL",
-          "name": "data"
-        },
-        {
-          "type": "SYMBOL",
           "name": "data_signature_only"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "record"
         },
         {
           "type": "SYMBOL",
@@ -1846,6 +1882,23 @@
         {
           "type": "SYMBOL",
           "name": "pragma"
+        }
+      ]
+    },
+    "_declaration_block": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "field"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "data"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "record"
         }
       ]
     },
@@ -1882,7 +1935,7 @@
         }
       ]
     },
-    "_declarations0_": {
+    "_declarations0": {
       "type": "CHOICE",
       "members": [
         {
@@ -1901,7 +1954,7 @@
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "_declarations1_"
+                  "name": "_declarations1"
                 }
               ]
             },
@@ -1913,7 +1966,7 @@
         }
       ]
     },
-    "_declarations1_": {
+    "_declarations1": {
       "type": "REPEAT1",
       "content": {
         "type": "SEQ",
@@ -1940,11 +1993,7 @@
       "value": "\\s|\\\\n"
     }
   ],
-  "conflicts": [
-    [
-      "_record_directives1"
-    ]
-  ],
+  "conflicts": [],
   "externals": [
     {
       "type": "SYMBOL",

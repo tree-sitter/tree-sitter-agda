@@ -17,16 +17,21 @@ module.exports = grammar({
     ],
 
     conflicts: $ => [
-        [$._record_directives1]
+        // [$._record_directives1]
     ],
 
     rules: {
-        source_file: $ => seq(
-            repeat($._declaration)
-            // $._vopen,
-            // repeat(seq($._declaration, $._semi)),
-            // optional($._vclose)
-        ),
+        source_file: $ => optional(block(
+            $._declaration,
+            $._declaration_block,
+            $._newline
+        )),
+        // seq(
+        //     repeat($._declaration)
+        //     // $._vopen,
+        //     // repeat(seq($._declaration, $._semi)),
+        //     // optional($._vclose)
+        // ),
 
         // err: $ => /.+/,
         //
@@ -357,7 +362,7 @@ module.exports = grammar({
         //     choice($.qualified_name, $.anonymous_name),
         //     optional($._typed_untyped_binding1),
         //     'where',
-        //     $._declarations0_
+        //     $._declarations0
         // ),
         //
         // open: $ => choice(
@@ -419,9 +424,9 @@ module.exports = grammar({
         ),
 
         where_clause: $ => choice(
-            seq(                            'where', $._declarations0_),
-            seq('module', $.name,           'where', $._declarations0_),
-            seq('module', $.anonymous_name, 'where', $._declarations0_)
+            seq(                            'where', $._declarations0),
+            seq('module', $.name,           'where', $._declarations0),
+            seq('module', $.anonymous_name, 'where', $._declarations0)
         ),
 
         ////////////////////////////////////////////////////////////////////////
@@ -435,7 +440,7 @@ module.exports = grammar({
             optional($._typed_untyped_binding1),
             optional(seq(':', $.expr)),
             'where',
-            $._declarations0_
+            $._declarations0
         ),
 
         // Data type signature. Found in mutual blocks.
@@ -476,9 +481,9 @@ module.exports = grammar({
                 // 1. directives only (none or many)
                 optional($._record_directives1),
                 // 2. declarations only
-                $._declarations1_,
+                $._declarations1,
                 // 3. both directives (none or many) and declarations
-                seq(optional($._record_directives1), $._declarations1_),
+                seq(optional($._record_directives1), $._declarations1),
             )
         ),
 
@@ -555,15 +560,25 @@ module.exports = grammar({
         // Other kinds of declarations
         ////////////////////////////////////////////////////////////////////////
 
-        // Top-level definitions.
+        // Top-level definitions that ends with newline.
         _declaration: $ => choice(
-            $.field,
             $.function_clause,
-            $.data,
             $.data_signature_only,
-            $.record,
             $.record_signature_only,
             // $.infix,
+            // $.open,
+            // $.module_macro,
+            $.pragma,
+            // $.syntax,
+            // $.pattern,
+            // $.unquote_declaration
+        ),
+
+        // Top-level definitions that indents.
+        _declaration_block: $ => choice(
+            $.field,
+            $.data,
+            $.record,
             // $.mutual,
             // $.abstract,
             // $.private,
@@ -571,13 +586,7 @@ module.exports = grammar({
             // $.macro,
             // $.postulate,
             // $.primitive,
-            // $.open,
-            // $.module_macro,
             // $.module,
-            $.pragma,
-            // $.syntax,
-            // $.pattern,
-            // $.unquote_declaration
         ),
 
         // Fixity declarations.
@@ -590,37 +599,37 @@ module.exports = grammar({
         // // Mutually recursive declarations.
         // mutual: $ => seq(
         //     'mutual',
-        //     $._declarations0_
+        //     $._declarations0
         // ),
         //
         // // Abstract declarations.
         // abstract: $ => seq(
         //     'abstract',
-        //     $._declarations0_
+        //     $._declarations0
         // ),
         //
         // // Private can only appear on the top-level (or rather the module level)
         // private: $ => seq(
         //     'private',
-        //     $._declarations0_
+        //     $._declarations0
         // ),
         //
         // // Instance declarations.
         // instance: $ => seq(
         //     'instance',
-        //     $._declarations0_
+        //     $._declarations0
         // ),
         //
         // // Macro declarations.
         // macro: $ => seq(
         //     'macro',
-        //     $._declarations0_
+        //     $._declarations0
         // ),
         //
         // // Postulates.
         // postulate: $ => seq(
         //     'postulate',
-        //     $._declarations0_
+        //     $._declarations0
         // ),
         //
         // // Primitives. Can only contain type signatures.
@@ -694,17 +703,17 @@ module.exports = grammar({
         // // Arbitrary declarations
         // _declarations: $ => seq(
         //     $._vopen,
-        //     $._declarations1_,
+        //     $._declarations1,
         //     $._close
         // ),
         //
 
         // Arbitrary declarations (possibly empty)
-        _declarations0_: $ => choice(
+        _declarations0: $ => choice(
             $._newline,
-            indent($, $._declarations1_)
+            indent($, $._declarations1)
         ),
-        _declarations1_: $ => repeat1(seq($._declaration, $._newline)),
+        _declarations1: $ => repeat1(seq($._declaration, $._newline)),
     }
 });
 
