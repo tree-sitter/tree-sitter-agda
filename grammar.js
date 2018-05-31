@@ -17,15 +17,11 @@ module.exports = grammar({
     ],
 
     conflicts: $ => [
-        // [$._record_directives1]
+        [$._record_directives1]
     ],
 
     rules: {
-        source_file: $ => optional(block(
-            $._declaration,
-            $._declaration_block,
-            $._newline
-        )),
+        source_file: $ => optional($._declarations1),
         // seq(
         //     repeat($._declaration)
         //     // $._vopen,
@@ -582,7 +578,7 @@ module.exports = grammar({
             // $.mutual,
             // $.abstract,
             // $.private,
-            // $.instance,
+            $.instance,
             // $.macro,
             // $.postulate,
             // $.primitive,
@@ -613,12 +609,12 @@ module.exports = grammar({
         //     'private',
         //     $._declarations0
         // ),
-        //
-        // // Instance declarations.
-        // instance: $ => seq(
-        //     'instance',
-        //     $._declarations0
-        // ),
+
+        // Instance declarations.
+        instance: $ => seq(
+            'instance',
+            $._declarations0
+        ),
         //
         // // Macro declarations.
         // macro: $ => seq(
@@ -713,7 +709,12 @@ module.exports = grammar({
             $._newline,
             indent($, $._declarations1)
         ),
-        _declarations1: $ => repeat1(seq($._declaration, $._newline)),
+
+        _declarations1: $ => block(
+            $._declaration,
+            $._declaration_block,
+            $._newline
+        ),
     }
 });
 
