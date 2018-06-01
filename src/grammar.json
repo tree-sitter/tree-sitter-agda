@@ -332,15 +332,28 @@
         "type": "CHOICE",
         "members": [
           {
+            "type": "PREC",
+            "value": 100,
+            "content": {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "--"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": ".*"
+                }
+              ]
+            }
+          },
+          {
             "type": "SEQ",
             "members": [
               {
                 "type": "STRING",
-                "value": "--"
-              },
-              {
-                "type": "PATTERN",
-                "value": ".*"
+                "value": "{--}"
               }
             ]
           },

@@ -5,7 +5,7 @@ Line comment
 -- this is a line comment
 --this is a line comment
 --- this is a line comment
----this is a line comment
+---this
 ----------------------------------------------------------this is a line comment
 
 ---
@@ -28,11 +28,13 @@ Block comment
 -}
 {- this is a
     block comment -}
+{--}
 
 ---
 
 (source_file
     (comment)
     (pragma)
+    (comment)
     (comment)
     (comment))
