@@ -222,20 +222,10 @@ module.exports = grammar({
 
 
         _record_assignments1: $ => sepR(';', $._record_assignment),
-        // _record_assignment: $ => seq(
-        //     $.name,
-        //     choice(
-        //         seq(
-        //             optional(seq('.', $.qualified_name)),
-        //             optional($._open_args1),
-        //             repeat($.import_directive)
-        //         ),
-        //         seq('=', $.expr)
-        //     )
-        // ),
+
         _record_assignment: $ => choice(
             $.field_assignment,
-            $.module_assignment,
+            $.module_assignment
         ),
 
         module_assignment: $ => seq(
@@ -246,10 +236,12 @@ module.exports = grammar({
 
 
         _field_assignments1: $ => sepR(';', $.field_assignment),
-        field_assignment: $ => seq($.name, '=', $.expr),
 
+        // the name should just be $.name rather than $.qualified_name,
+        // made it more permissive to resolve conflicts
+        // between $.field_assignment and $.module_assignment
+        field_assignment: $ => seq($.qualified_name, '=', $.expr),
 
-        //
         ////////////////////////////////////////////////////////////////////////
         // Bindings
         ////////////////////////////////////////////////////////////////////////

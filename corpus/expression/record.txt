@@ -10,8 +10,8 @@ f = record { fst = 2; snd = 3 }
     (function_clause
         (lhs (atom (qualified_name)))
         (rhs (expr (atom
-            (field_assignment (name) (expr (atom (literal (int)))))
-            (field_assignment (name) (expr (atom (literal (int))))))))))
+            (field_assignment (qualified_name) (expr (atom (literal (int)))))
+            (field_assignment (qualified_name) (expr (atom (literal (int))))))))))
 
 ==================
 Building records from modules
@@ -25,5 +25,4 @@ r = record { M public }
     (function_clause
         (lhs (atom (qualified_name)))
         (rhs (expr (atom
-            (module_assignment (qualified_name))
-            )))))
+            (module_assignment (qualified_name) (import_directive)))))))
