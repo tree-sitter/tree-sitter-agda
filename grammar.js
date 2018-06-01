@@ -1,12 +1,32 @@
-const
-      digit = /[0-9]/,
-      decimalLiteral = seq(digit, repeat(digit));
-      name_part = /[^\s\_\;\.\"\(\)\{\}\@]+/;
-      name = seq(
-          optional('_'),
-          sepL('_', name_part),
-          optional('_')
-      );
+// Lexer: https://github.com/agda/agda/blob/master/src/full/Agda/Syntax/Parser/Lexer.x
+// Names: http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.Names
+
+// const idstart     = /[0-9A-Za-z_\-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:]/;
+//                          [^\s\;\.\"\(\)\{\}\@\'\\]
+// const idchar      = /[0-9A-Za-z_\-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:\'\\]/;
+//                          [^\s\;\.\"\(\)\{\}\@]
+// const nonalpha    = /[0-9       \-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:\'\\]/;
+//                          [^a-zA-Z]
+// const nonalphanum = /[          \-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:\'\\]/;
+//                          [^0-9a-zA-Z]
+// const white       = /[\ \t\n\f\v\r]/;
+// const white_notab = /[\   \n\f\v\r]/;
+// const white_nl    = /[\     \f\v\r]/;
+
+// numbers and literals
+const number = /0x[0-9a-fA-F]+|[0-9]+/;
+const integer = /\-?(0x[0-9a-fA-F]+|[0-9]+)/;
+const exponent = /[eE][-+]?(0x[0-9a-fA-F]+|[0-9]+)/;
+const float = /(\-?(0x[0-9a-fA-F]+|[0-9]+)\.(0x[0-9a-fA-F]+|[0-9]+)([eE][-+]?(0x[0-9a-fA-F]+|[0-9]+))?)|((0x[0-9a-fA-F]+|[0-9]+)[eE][-+]?(0x[0-9a-fA-F]+|[0-9]+))/;
+
+// names
+// const name = /((([0-9A-Za-z\-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:]|(\\[0-9\-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:\'\\]))[0-9A-Za-z_\-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:\'\\]*)|(\_[0-9A-Za-z_\-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:\'\\]+))/;
+const name = /([^\s\;\.\"\(\)\{\}\@\'\\\_]|\\[^\sa-zA-Z]|\_[^\s\;\.\"\(\)\{\}\@])[^\s\;\.\"\(\)\{\}\@]*/;
+// const name = /([^\s\;\.\"\(\)\{\}\@])[^\s\;\.\"\(\)\{\}\@]*/;
+// const name = /[^\s\;\.\"\(\)\{\}\@]+/;
+// const qualified_name = / (((([0-9A-Za-z\-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:]|(\\[0-9\-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:\'\\]))[0-9A-Za-z_\-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:\'\\]*)|(\_[0-9A-Za-z_\-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:\'\\]+))\.)*((([0-9A-Za-z\-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:]|(\\[0-9\-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:\'\\]))[0-9A-Za-z_\-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:\'\\]*)|(\_[0-9A-Za-z_\-\!\#\$\%\&\*\+\/\<\=\>\^\|\~\?\`\[\]\,\:\'\\]+))/;
+const qualified_name = /(([^\s\;\.\"\(\)\{\}\@\'\\\_]|\\[^\sa-zA-Z]|\_[^\s\;\.\"\(\)\{\}\@])[^\s\;\.\"\(\)\{\}\@]*\.)*([^\s\;\.\"\(\)\{\}\@\'\\\_]|\\[^\sa-zA-Z]|\_[^\s\;\.\"\(\)\{\}\@])[^\s\;\.\"\(\)\{\}\@]*/;
+// const qualified_name = /[^\s\_\;\.\"\(\)\{\}\@]+(\.[^\s\_\;\.\"\(\)\{\}\@]+)*/;
 
 
 module.exports = grammar({
@@ -80,28 +100,27 @@ module.exports = grammar({
         // Literals
         ////////////////////////////////////////////////////////////////////////
 
-        literal: $ => choice(
-            $.string,
-            $.int
-        ),
+        // -- Literals
+        // <0,code> \'             { litChar }
+        // <0,code,pragma_> \"     { litString }
+        // <0,code> @integer       { literal LitNat }
+        // <0,code> @float         { literal LitFloat }
+        integer: $ => integer,
         string: $ => /\".*\"/,
-        // string: $ => token(/\".*\"/),
-        int: $ => token(decimalLiteral),
-
+        literal: $ => choice(
+            integer,
+            /\".*\"/,
+        ),
 
         ////////////////////////////////////////////////////////////////////////
         // Name
         // http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.Names
         ////////////////////////////////////////////////////////////////////////
 
-        // seperated by '_'
-        name          : $ => token(name),
-        // for var1@var2
-        // name_at       : $ => /[^\s\_\;\.\"\(\)\{\}\@]+(\_[^\s\_\;\.\"\(\)\{\}\@]+)*\@/,
-        qualified_name: $ => token(sepL('.', name)),
+        name: $ => name,
+        qualified_name: $ => qualified_name,
 
         anonymous_name: $ => '_',
-        // A binding variable, can be '_'
         _binding_name: $ => choice(
             $.name,
             $.anonymous_name,
@@ -600,7 +619,7 @@ module.exports = grammar({
         // Fixity declarations.
         infix: $ => seq(
             choice('infix', 'infixl', 'infixr'),
-            $.int,
+            $.integer,
             repeat1($._binding_name)
         ),
 

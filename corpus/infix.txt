@@ -9,6 +9,6 @@ infixr 5 _-_ _-_
 ---
 
 (source_file
-    (infix (int) (name))
-    (infix (int) (name))
-    (infix (int) (name) (name)))
+    (infix (integer) (name))
+    (infix (integer) (name))
+    (infix (integer) (name) (name)))
