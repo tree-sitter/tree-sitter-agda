@@ -17,7 +17,7 @@ f = record { fst = 2; snd = 3 }
 Building records from modules
 ==================
 
-r = record { M public }
+r = record { M hiding (y); M2 a renaming (w to y) }
 
 ---
 
@@ -25,4 +25,37 @@ r = record { M public }
     (function_clause
         (lhs (atom (qualified_name)))
         (rhs (expr (atom
-            (module_assignment (qualified_name) (import_directive)))))))
+            (module_assignment (qualified_name) (import_directive (name)))
+            (module_assignment (qualified_name) (atom (qualified_name))
+                (import_directive (renaming (name) (name)))))))))
+
+==================
+Record update
+==================
+
+a = record old { a = 0; c = 5 }
+
+---
+
+(source_file
+    (function_clause
+        (lhs (atom (qualified_name)))
+        (rhs (expr (atom (qualified_name)
+            (field_assignment (qualified_name) (expr (atom (literal))))
+            (field_assignment (qualified_name) (expr (atom (literal)))))))))
+
+==================
+Record update in fields
+==================
+
+a = record { MyRecord old; a = 0; c = 5}
+
+---
+
+(source_file
+    (function_clause
+        (lhs (atom (qualified_name)))
+        (rhs (expr (atom
+            (module_assignment (qualified_name) (atom (qualified_name)))
+            (field_assignment (qualified_name) (expr (atom (literal))))
+            (field_assignment (qualified_name) (expr (atom (literal)))))))))
