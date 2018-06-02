@@ -45,7 +45,6 @@ module.exports = grammar({
 
         // err: $ => /.+/,
         //
-        // set_n: $ => 'set_n: undefined',
         // begin_import_dir: $ => 'begin_import_dir: undefined',
         //
 
@@ -199,12 +198,11 @@ module.exports = grammar({
             $.literal,
             '?',
             "_",
-            'Prop',
             'Set',
+            'Prop',
             'quote',
             'quoteTerm',
             'unquote',
-            // $.set_n,
             seq('{{', $.expr, '}}'),
             seq('(', $.expr, ')'),
             seq('(|', $.expr, '|)'),
@@ -217,6 +215,12 @@ module.exports = grammar({
             '...'
         ),
 
+        //
+        // set: $ => choice(
+        //     prec(10000, /Set[0-9\u2080-\u2089]/),
+        //     'Set0',
+        //     'Set',
+        // ),
 
         _record_assignments1: $ => sepR(';', $._record_assignment),
 
@@ -529,24 +533,24 @@ module.exports = grammar({
         // Field declarations.
         field: $ => seq(
             'field',
-            $._arg_type_signatures_block
+            indent($, $._arg_type_signatures_block)
         ),
 
         // A variant of TypeSignatures which uses arg_type_signatures instead of
         // _type_signature
-        _arg_type_signatures_block: $ => indent($,
-            $._arg_type_signatures1
+        _arg_type_signatures_block: $ => block(
+            $.arg_type_signature,
+            $.arg_type_signature_instance,
+            $._newline
         ),
-
-        _arg_type_signatures1: $ => repeat1($.arg_type_signature),
-            // sepL($._newline, $.arg_type_signature),
 
         // A variant of _type_signature where any sub-sequence of names can be
         // marked as hidden or irrelevant using braces and dots:
         // {n1 .n2} n3 .n4 {n5} .{n6 n7} ... : Type.
-        arg_type_signature: $ => choice(
-            seq(optional('overlap'), $._arg_names, ':', $.expr),
-            seq('instance', $._arg_type_signatures_block)
+        arg_type_signature: $ => seq(optional('overlap'), $._arg_names, ':', $.expr),
+        arg_type_signature_instance: $ => seq(
+            'instance',
+            indent($, $._arg_type_signatures_block)
         ),
 
         ////////////////////////////////////////////////////////////////////////

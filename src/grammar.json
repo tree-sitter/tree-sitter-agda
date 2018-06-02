@@ -676,11 +676,11 @@
         },
         {
           "type": "STRING",
-          "value": "Prop"
+          "value": "Set"
         },
         {
           "type": "STRING",
-          "value": "Set"
+          "value": "Prop"
         },
         {
           "type": "STRING",
@@ -2811,8 +2811,26 @@
           "value": "field"
         },
         {
-          "type": "SYMBOL",
-          "name": "_arg_type_signatures_block"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_indent"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_arg_type_signatures_block"
+                }
+              ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_dedent"
+            }
+          ]
         }
       ]
     },
@@ -2820,73 +2838,109 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_indent"
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "arg_type_signature"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_newline"
+                  }
+                ]
+              },
+              {
+                "type": "SYMBOL",
+                "name": "arg_type_signature_instance"
+              }
+            ]
+          }
         },
         {
-          "type": "SEQ",
+          "type": "CHOICE",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "_arg_type_signatures1"
-            }
-          ]
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_dedent"
-        }
-      ]
-    },
-    "_arg_type_signatures1": {
-      "type": "REPEAT1",
-      "content": {
-        "type": "SYMBOL",
-        "name": "arg_type_signature"
-      }
-    },
-    "arg_type_signature": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "CHOICE",
+              "type": "SEQ",
               "members": [
                 {
-                  "type": "STRING",
-                  "value": "overlap"
+                  "type": "SYMBOL",
+                  "name": "arg_type_signature"
                 },
                 {
-                  "type": "BLANK"
+                  "type": "SYMBOL",
+                  "name": "_newline"
                 }
               ]
             },
             {
               "type": "SYMBOL",
-              "name": "_arg_names"
-            },
-            {
-              "type": "STRING",
-              "value": ":"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "expr"
+              "name": "arg_type_signature_instance"
             }
           ]
+        }
+      ]
+    },
+    "arg_type_signature": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "overlap"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_arg_names"
+        },
+        {
+          "type": "STRING",
+          "value": ":"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expr"
+        }
+      ]
+    },
+    "arg_type_signature_instance": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "instance"
         },
         {
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "instance"
+              "type": "SYMBOL",
+              "name": "_indent"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_arg_type_signatures_block"
+                }
+              ]
             },
             {
               "type": "SYMBOL",
-              "name": "_arg_type_signatures_block"
+              "name": "_dedent"
             }
           ]
         }
