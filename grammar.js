@@ -332,51 +332,52 @@ module.exports = grammar({
         //     $._close
         // ),
         //
-        // ////////////////////////////////////////////////////////////////////////
-        // // Module and Imports
-        // // http://agda.readthedocs.io/en/v2.5.3/language/module-system.html
-        // ////////////////////////////////////////////////////////////////////////
-        //
-        // module_application: $ => choice(
-        //     prec(1, seq($.qualified_name, '{{', '...', '}}')),
-        //     seq($.qualified_name, optional($._open_args1)),
-        // ),
-        //
-        // // Module instantiation
-        // module_macro: $ => choice(
-        //     seq(
-        //         'module',
-        //         $.qualified_name,
-        //         optional($._typed_untyped_binding1),
-        //         '=',
-        //         $.module_application,
-        //         repeat($.import_directive)
-        //     ),
-        //     seq(
-        //         'open',
-        //         'module',
-        //         $.name,
-        //         optional($._typed_untyped_binding1),
-        //         '=',
-        //         $.module_application,
-        //         repeat($.import_directive)
-        //     )
-        // ),
-        //
-        // // Module
-        // module: $ => seq(
-        //     'module',
-        //     choice($.qualified_name, $.anonymous_name),
-        //     optional($._typed_untyped_binding1),
-        //     'where',
-        //     $._declarations0
-        // ),
-        //
-        // open: $ => choice(
-        //     seq(        'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
-        //     seq('open', 'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
-        //     seq('open',           $.qualified_name, optional($._open_args1), repeat($.import_directive)),
-        // ),
+        ////////////////////////////////////////////////////////////////////////
+        // Module and Imports
+        // http://agda.readthedocs.io/en/v2.5.3/language/module-system.html
+        ////////////////////////////////////////////////////////////////////////
+
+        module_application: $ => choice(
+            prec(1, seq($.qualified_name, '{{', '...', '}}')),
+            seq($.qualified_name, optional($._open_args1)),
+        ),
+
+        // Module instantiation
+        module_macro: $ => choice(
+            seq(
+                'module',
+                $.qualified_name,
+                optional($._typed_untyped_binding1),
+                '=',
+                $.module_application,
+                repeat($.import_directive)
+            ),
+            seq(
+                'open',
+                'module',
+                $.name,
+                optional($._typed_untyped_binding1),
+                '=',
+                $.module_application,
+                repeat($.import_directive)
+            )
+        ),
+
+        // Module
+        module: $ => seq(
+            'module',
+            choice($.qualified_name, $.anonymous_name),
+            optional($._typed_untyped_binding1),
+            'where',
+            $._declarations0
+        ),
+
+        open: $ => choice(
+            seq(        'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
+            seq('open', 'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
+            seq('open',           $.qualified_name, optional($._open_args1), repeat($.import_directive)),
+        ),
+
         _open_args1: $ => repeat1($.atom),
 
         import_directive: $ => choice(
@@ -573,7 +574,7 @@ module.exports = grammar({
             $.data_signature_only,
             $.record_signature_only,
             $.infix,
-            // $.open,
+            $.open,
             // $.module_macro,
             $.pragma,
             // $.syntax,
@@ -593,7 +594,7 @@ module.exports = grammar({
             // $.macro,
             // $.postulate,
             // $.primitive,
-            // $.module,
+            $.module,
         ),
 
         // Fixity declarations.

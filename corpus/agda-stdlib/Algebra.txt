@@ -1,0 +1,21 @@
+==================
+module imports
+==================
+
+module Algebra where
+
+open import Relation.Binary
+open import Algebra.FunctionProperties
+open import Algebra.Structures
+open import Function
+open import Level
+
+---
+
+(source_file
+    (module (qualified_name))
+    (open (qualified_name))
+    (open (qualified_name))
+    (open (qualified_name))
+    (open (qualified_name))
+    (open (qualified_name)))

@@ -37,9 +37,9 @@ Run this after editting the grammar:
 npm run iterate
 ```
 
-### Test it on `language-atom`
+### Test it on `language-agda`
 
-First, go to the directory of `language-atom` and switch to the brach `tree-sitter`
+First, go to the directory of `language-agda` and switch to the brach `tree-sitter`
 
 ```bash
 git checkout tree-sitter
