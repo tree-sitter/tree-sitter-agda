@@ -36,13 +36,6 @@ module.exports = grammar({
 
     rules: {
         source_file: $ => optional($._declarations1),
-        // seq(
-        //     repeat($._declaration)
-        //     // $._vopen,
-        //     // repeat(seq($._declaration, $._semi)),
-        //     // optional($._vclose)
-        // ),
-
         // err: $ => /.+/,
         //
         // begin_import_dir: $ => 'begin_import_dir: undefined',
@@ -102,15 +95,12 @@ module.exports = grammar({
             $.anonymous_name,
         ),
 
-        _maybe_dotted_name: $ => maybeDotted($.name),
-        _maybe_dotted_names1: $ => repeat1(maybeDotted($.name)),
-
         // identifiers which may be surrounded by braces or dotted.
         _arg_names: $ => repeat1($.arg_name),
         arg_name: $ => choice(
-            $._maybe_dotted_name,
-            seq('{' , $._maybe_dotted_names1, '}'),
-            seq('{{', $._maybe_dotted_names1, '}}'),
+            maybeDotted($.name),
+            seq('{' , repeat1(maybeDotted($.name)), '}' ),
+            seq('{{', repeat1(maybeDotted($.name)), '}}'),
             seq('.' , '{',  repeat1($.name), '}'),
             seq('..', '{',  repeat1($.name), '}'),
             seq('.' , '{{', repeat1($.name), '}}'),
@@ -161,22 +151,22 @@ module.exports = grammar({
         _expr2: $ => choice(
             // lambda bindings
             $.lambda,
-            // // forall
-            // seq($._const_forall, $.forall_bindings, $.expr),
-            // // let ... in
-            // $.let,
-            // // do
+            // forall
+            seq($._const_forall, $.forall_bindings, $.expr),
+            // let ... in
+            $.let,
+            // do
             // $.do,
-            // seq('quoteGoal', $.name, 'in', $.expr),
-            // seq('tactic', $._atoms1),
-            // seq('tactic', $._atoms1, '|', $._expr1),
-
+            
+            seq('quoteGoal', $.name, 'in', $.expr),
+            seq('tactic', $._atoms1),
+            seq('tactic', $._atoms1, '|', $._expr1),
             prec(-1, $.atom),
         ),
 
         // do: $ => seq('do', $._vopen, repeat1(seq($._do_stmt, $._semi)), $._close),
-        //
-        // let: $ => prec.right(seq('let', $._declarations, seq('in', $.expr))),
+
+        let: $ => prec.right(seq('let', $._declarations, seq('in', $.expr))),
 
         lambda: $ => choice(
             seq($._const_lambda,          $._lambda_binding, $._const_right_arrow, $.expr),
@@ -291,8 +281,6 @@ module.exports = grammar({
         // Parses all extended lambda clauses including a single absurd clause.
         // For λ where this is not taken care of in AbsurdLambda
         _lambda_where_clauses: $ => repeat1(seq($._lambda_clause, $._newline)),
-        // sepL(, $._lambda_clause),
-        // _lambda_where_clauses: $ => sepL(';', $._lambda_clause),
 
         forall_bindings: $ => seq(
             $._typed_untyped_binding1,
@@ -311,8 +299,8 @@ module.exports = grammar({
             maybeDotted(bracketed(seq(
                 $._application, ':', $.expr
             ))),
-            // seq('(', $.open, ')'),
-            // seq('(', 'let', $._declarations, ')')
+            seq('(', $.open, ')'),
+            seq('(', 'let', $._declarations, ')')
         ),
 
         _typed_untyped_binding1: $ => repeat1(choice(
@@ -708,10 +696,13 @@ module.exports = grammar({
         ),
 
 
+        // Arbitrary declarations (NOT empty)
+        _declarations: $ => indent($, $._declarations1),
+
         // Arbitrary declarations (possibly empty)
         _declarations0: $ => choice(
             $._newline,
-            indent($, $._declarations1)
+            $._declarations
         ),
 
         _declarations1: $ => block(
