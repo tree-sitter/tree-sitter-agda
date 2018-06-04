@@ -157,7 +157,7 @@ module.exports = grammar({
             $.let,
             // do
             // $.do,
-            
+
             seq('quoteGoal', $.name, 'in', $.expr),
             seq('tactic', $._atoms1),
             seq('tactic', $._atoms1, '|', $._expr1),
@@ -170,7 +170,7 @@ module.exports = grammar({
 
         lambda: $ => choice(
             seq($._const_lambda,          $._lambda_binding, $._const_right_arrow, $.expr),
-            seq($._const_lambda,     '{', $._lambda_clauses, '}'),
+            seq($._const_lambda,     '{', $._lambda_clauses_no_single_absurd, '}'),
             seq($._const_lambda, 'where', indent($, $._lambda_where_clauses)),
             seq($._const_lambda,          $._lambda_binding),
         ),
@@ -265,22 +265,30 @@ module.exports = grammar({
             $._application
         ),
 
+
         _lambda_clause: $ => choice(
             $.lambda_clause,
             $.lambda_clause_absurd
         ),
 
-        // Parses all extended lambda clauses except for a single absurd clause,
-        // which is taken care of in _absurd_lambda_clause
-        _lambda_clauses: $ => choice(
-            seq($._lambda_clauses, ';', $._lambda_clause),
+
+
+
+        // Appears inside a pair of brackets: λ { ... }
+        // Parses all extended lambda clauses except for a single absurd clause
+        _lambda_clauses_no_single_absurd: $ => choice(
+            // length of 2 or above
+            seq($._lambda_clauses_no_single_absurd, ';', $._lambda_clause),
+            // length of 2
             seq($.lambda_clause_absurd, ';', $._lambda_clause),
+            // length of 1
             seq($.lambda_clause),
         ),
 
         // Parses all extended lambda clauses including a single absurd clause.
         // For λ where this is not taken care of in AbsurdLambda
         _lambda_where_clauses: $ => repeat1(seq($._lambda_clause, $._newline)),
+
 
         forall_bindings: $ => seq(
             $._typed_untyped_binding1,
@@ -364,13 +372,13 @@ module.exports = grammar({
             $._declarations0
         ),
 
-        open: $ => choice(
+        open: $ => prec.right(choice(
             seq(        'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
             seq('open', 'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
             seq('open',           $.qualified_name, optional($._open_args1), repeat($.import_directive)),
-        ),
+        )),
 
-        _open_args1: $ => repeat1($.atom),
+        _open_args1: $ => prec.left(repeat1($.atom)),
 
         import_directive: $ => choice(
             'public',
@@ -566,7 +574,6 @@ module.exports = grammar({
             $.data_signature_only,
             $.record_signature_only,
             $.infix,
-            $.open,
             // $.module_macro,
             $.pragma,
             // $.syntax,
@@ -579,6 +586,8 @@ module.exports = grammar({
             $.field,
             $.data,
             $.record,
+            $.open,
+
             // $.mutual,
             // $.abstract,
             // $.private,
