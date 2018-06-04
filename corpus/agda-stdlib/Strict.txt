@@ -1,0 +1,116 @@
+==================
+module
+==================
+
+module Strict where
+
+open import Level
+open import Agda.Builtin.Equality
+
+open import Agda.Builtin.Strict
+     renaming ( primForce to force
+              ; primForceLemma to force-≡) public
+
+-- Derived combinators
+module _ {ℓ ℓ′ : Level} {A : Set ℓ} {B : Set ℓ′} where
+
+  force′ : A → (A → B) → B
+  force′ = force
+
+  force′-≡ : (a : A) (f : A → B) → force′ a f ≡ f a
+  force′-≡ = force-≡
+
+  seq : A → B → B
+  seq a b = force a (λ _ → b)
+
+  seq-≡ : (a : A) (b : B) → seq a b ≡ b
+  seq-≡ a b = force-≡ a (λ _ → b)
+
+---
+
+(source_file
+    (module (qualified_name))
+    (open (qualified_name))
+    (open (qualified_name))
+    (open (qualified_name)
+        (import_directive
+            (renaming (name) (name))
+            (renaming (name) (name)))
+        (import_directive))
+    (comment)
+    (module
+        (anonymous_name)
+        (typed_binding (atom (qualified_name)) (atom (qualified_name)) (expr (atom (qualified_name))))
+        (typed_binding (atom (qualified_name))                         (expr (atom) (atom (qualified_name))))
+        (typed_binding (atom (qualified_name))                         (expr (atom) (atom (qualified_name))))
+    (function_clause
+        (lhs (atom (qualified_name)))
+        (rhs (expr
+                (atom (qualified_name))
+                (expr
+                    (atom (expr
+                        (atom (qualified_name))
+                        (expr (atom (qualified_name)))))
+                    (expr (atom (qualified_name)))))))
+    (function_clause
+        (lhs (atom (qualified_name)))
+        (rhs (expr (atom (qualified_name)))))
+    (function_clause
+        (lhs (atom (qualified_name)))
+        (rhs (expr
+            (typed_binding
+                (atom (qualified_name))
+                (expr (atom (qualified_name))))
+            (typed_binding
+                (atom (qualified_name))
+                (expr
+                    (atom (qualified_name))
+                    (expr (atom (qualified_name)))))
+            (expr
+                (atom (qualified_name))
+                (atom (qualified_name))
+                (atom (qualified_name))
+                (atom (qualified_name))
+                (atom (qualified_name))
+                (atom (qualified_name))))))
+    (function_clause
+        (lhs (atom (qualified_name)))
+        (rhs (expr (atom (qualified_name)))))
+    (function_clause
+        (lhs (atom (qualified_name)))
+        (rhs (expr
+            (atom (qualified_name)) (expr
+                (atom (qualified_name))
+                (expr (atom (qualified_name)))))))
+    (function_clause
+        (lhs (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name)))
+        (rhs (expr
+            (atom (qualified_name))
+            (atom (qualified_name))
+            (atom (expr (lambda
+                (untyped_binding (anonymous_name))
+                (expr (atom (qualified_name)))))))))
+    (function_clause
+        (lhs (atom (qualified_name)))
+        (rhs (expr
+            (typed_binding
+                (atom (qualified_name))
+                (expr (atom (qualified_name))))
+            (typed_binding
+                (atom (qualified_name))
+                (expr
+                    (atom (qualified_name))))
+            (expr
+                (atom (qualified_name))
+                (atom (qualified_name))
+                (atom (qualified_name))
+                (atom (qualified_name))
+                (atom (qualified_name))))))
+    (function_clause
+        (lhs (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name)))
+        (rhs (expr
+        (atom (qualified_name))
+        (atom (qualified_name))
+        (atom (expr (lambda
+        (untyped_binding (anonymous_name))
+        (expr (atom (qualified_name)))))))))))
