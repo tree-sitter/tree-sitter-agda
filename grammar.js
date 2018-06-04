@@ -533,24 +533,24 @@ module.exports = grammar({
         // Field declarations.
         field: $ => seq(
             'field',
-            indent($, $._arg_type_signatures_block)
+            indent($, $._type_sig_block)
         ),
 
         // A variant of TypeSignatures which uses arg_type_signatures instead of
         // _type_signature
-        _arg_type_signatures_block: $ => block(
-            $.arg_type_signature,
-            $.arg_type_signature_instance,
+        _type_sig_block: $ => block(
+            $.type_sig,
+            $.type_sig_instance,
             $._newline
         ),
 
         // A variant of _type_signature where any sub-sequence of names can be
         // marked as hidden or irrelevant using braces and dots:
         // {n1 .n2} n3 .n4 {n5} .{n6 n7} ... : Type.
-        arg_type_signature: $ => seq(optional('overlap'), $._arg_names, ':', $.expr),
-        arg_type_signature_instance: $ => seq(
+        type_sig: $ => seq(optional('overlap'), $._arg_names, ':', $.expr),
+        type_sig_instance: $ => seq(
             'instance',
-            indent($, $._arg_type_signatures_block)
+            indent($, $._type_sig_block)
         ),
 
         ////////////////////////////////////////////////////////////////////////
@@ -597,7 +597,7 @@ module.exports = grammar({
             $.instance,
             // $.macro,
             // $.postulate,
-            // $.primitive,
+            $.primitive,
             $.module,
         ),
 
@@ -643,13 +643,13 @@ module.exports = grammar({
         //     'postulate',
         //     $._declarations0
         // ),
-        //
-        // // Primitives. Can only contain type signatures.
-        // primitive: $ => seq(
-        //     'primitive',
-        //     $._type_signatures
-        // ),
-        //
+
+        // Primitives. Can only contain type signatures.
+        primitive: $ => seq(
+            'primitive',
+            $._simple_type_sig_block
+        ),
+
         // hole_name: $ => choice(
         //     $.name,
         //     seq('(', $._const_lambda, $.name, $._const_right_arrow, $.name, ')'),
@@ -692,26 +692,21 @@ module.exports = grammar({
         // ),
         //
         //
-        // ////////////////////////////////////////////////////////////////////////
-        // // Sequence of declarations
-        // ////////////////////////////////////////////////////////////////////////
-        //
-        // // Non-empty list of type signatures, with several identifiers allowed
-        // // for every signature.
-        // _type_signatures: $ => seq(
-        //     $._vopen,
-        //     $._type_signatures1,
-        //     $._close
-        // ),
-        //
-        // // Inside the layout block.
-        // _type_signatures1: $ => repeat1(seq($.type_signature, $._semi)),
-        // type_signature: $ => seq(
-        //     repeat1($.name),
-        //     ':',
-        //     $.expr
-        // ),
-        //
+        ////////////////////////////////////////////////////////////////////////
+        // Sequence of declarations
+        ////////////////////////////////////////////////////////////////////////
+
+        // For $.primitive only
+        // Non-empty list of type signatures, with several identifiers allowed
+        // for every signature.
+        _simple_type_sig_block: $ => indent($, $._simple_type_sigs1),
+        _simple_type_sigs1: $ => repeat1(seq($.simple_type_sig, $._newline)),
+        simple_type_sig: $ => seq(
+            repeat1($.name),
+            ':',
+            $.expr
+        ),
+
 
         // Arbitrary declarations (possibly empty)
         _declarations0: $ => choice(

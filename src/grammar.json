@@ -2822,7 +2822,7 @@
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "_arg_type_signatures_block"
+                  "name": "_type_sig_block"
                 }
               ]
             },
@@ -2834,7 +2834,7 @@
         }
       ]
     },
-    "_arg_type_signatures_block": {
+    "_type_sig_block": {
       "type": "SEQ",
       "members": [
         {
@@ -2847,7 +2847,7 @@
                 "members": [
                   {
                     "type": "SYMBOL",
-                    "name": "arg_type_signature"
+                    "name": "type_sig"
                   },
                   {
                     "type": "SYMBOL",
@@ -2857,7 +2857,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "arg_type_signature_instance"
+                "name": "type_sig_instance"
               }
             ]
           }
@@ -2870,7 +2870,7 @@
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "arg_type_signature"
+                  "name": "type_sig"
                 },
                 {
                   "type": "SYMBOL",
@@ -2880,13 +2880,13 @@
             },
             {
               "type": "SYMBOL",
-              "name": "arg_type_signature_instance"
+              "name": "type_sig_instance"
             }
           ]
         }
       ]
     },
-    "arg_type_signature": {
+    "type_sig": {
       "type": "SEQ",
       "members": [
         {
@@ -2915,7 +2915,7 @@
         }
       ]
     },
-    "arg_type_signature_instance": {
+    "type_sig_instance": {
       "type": "SEQ",
       "members": [
         {
@@ -2934,7 +2934,7 @@
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "_arg_type_signatures_block"
+                  "name": "_type_sig_block"
                 }
               ]
             },
@@ -3032,6 +3032,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "primitive"
+        },
+        {
+          "type": "SYMBOL",
           "name": "module"
         }
       ]
@@ -3079,6 +3083,77 @@
         {
           "type": "SYMBOL",
           "name": "_declarations0"
+        }
+      ]
+    },
+    "primitive": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "primitive"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_simple_type_sig_block"
+        }
+      ]
+    },
+    "_simple_type_sig_block": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_indent"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_simple_type_sigs1"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_dedent"
+        }
+      ]
+    },
+    "_simple_type_sigs1": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "simple_type_sig"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_newline"
+          }
+        ]
+      }
+    },
+    "simple_type_sig": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "REPEAT1",
+          "content": {
+            "type": "SYMBOL",
+            "name": "name"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": ":"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expr"
         }
       ]
     },

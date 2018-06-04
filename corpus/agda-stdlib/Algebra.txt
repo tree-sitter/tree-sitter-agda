@@ -53,10 +53,10 @@ record Semigroup c ℓ : Set (suc (c ⊔ ℓ)) where
             (infix (integer) (name))
             (infix (integer) (name))
             (field
-                (arg_type_signature (arg_name (name)) (expr (atom) (atom (qualified_name))))
-                (arg_type_signature (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name))))
-                (arg_type_signature (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name))))
-                (arg_type_signature (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name)))))
+                (type_sig (arg_name (name)) (expr (atom) (atom (qualified_name))))
+                (type_sig (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name))))
+                (type_sig (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name))))
+                (type_sig (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name)))))
             (open (qualified_name) (atom (qualified_name)) (import_directive)))))
 
 ==================
@@ -91,10 +91,10 @@ record RawMonoid c ℓ : Set (suc (c ⊔ ℓ)) where
             (infix (integer) (name))
             (infix (integer) (name))
             (field
-                (arg_type_signature (arg_name (name)) (expr (atom) (atom (qualified_name))))
-                (arg_type_signature (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name))))
-                (arg_type_signature (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name))))
-                (arg_type_signature (arg_name (name)) (expr        (atom (qualified_name))))))))
+                (type_sig (arg_name (name)) (expr (atom) (atom (qualified_name))))
+                (type_sig (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name))))
+                (type_sig (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name))))
+                (type_sig (arg_name (name)) (expr        (atom (qualified_name))))))))
 
 ==================
 monoid
@@ -139,11 +139,11 @@ record Monoid c ℓ : Set (suc (c ⊔ ℓ)) where
             (infix (integer) (name))
             (infix (integer) (name))
             (field
-                (arg_type_signature (arg_name (name)) (expr (atom) (atom (qualified_name))))
-                (arg_type_signature (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name))))
-                (arg_type_signature (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name))))
-                (arg_type_signature (arg_name (name)) (expr        (atom (qualified_name))))
-                (arg_type_signature (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name)))))
+                (type_sig (arg_name (name)) (expr (atom) (atom (qualified_name))))
+                (type_sig (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name))))
+                (type_sig (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name))))
+                (type_sig (arg_name (name)) (expr        (atom (qualified_name))))
+                (type_sig (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name)))))
             (open (qualified_name) (atom (qualified_name)) (import_directive))
             (function_clause
                 (lhs (atom (qualified_name)))

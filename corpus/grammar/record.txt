@@ -58,8 +58,8 @@ record Pair (A B : Set) : Set where
                     (lhs (atom (qualified_name)))
                     (rhs (expr (atom (qualified_name))))))
             (field
-                (arg_type_signature (arg_name (name)) (expr (atom (qualified_name))))
-                (arg_type_signature (arg_name (name)) (expr (atom (qualified_name))))))))
+                (type_sig (arg_name (name)) (expr (atom (qualified_name))))
+                (type_sig (arg_name (name)) (expr (atom (qualified_name))))))))
 
 ==================
 Signature only (found in mutual blocks)
