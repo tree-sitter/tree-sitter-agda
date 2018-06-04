@@ -593,7 +593,7 @@ module.exports = grammar({
             // $.private,
             $.instance,
             // $.macro,
-            // $.postulate,
+            $.postulate,
             $.primitive,
             $.module,
         ),
@@ -634,12 +634,12 @@ module.exports = grammar({
         //     'macro',
         //     $._declarations0
         // ),
-        //
-        // // Postulates.
-        // postulate: $ => seq(
-        //     'postulate',
-        //     $._declarations0
-        // ),
+
+        // Postulates.
+        postulate: $ => seq(
+            'postulate',
+            $._declarations0
+        ),
 
         // Primitives. Can only contain type signatures.
         primitive: $ => seq(

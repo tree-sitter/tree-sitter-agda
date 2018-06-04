@@ -3210,6 +3210,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "postulate"
+        },
+        {
+          "type": "SYMBOL",
           "name": "primitive"
         },
         {
@@ -3257,6 +3261,19 @@
         {
           "type": "STRING",
           "value": "instance"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_declarations0"
+        }
+      ]
+    },
+    "postulate": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "postulate"
         },
         {
           "type": "SYMBOL",
