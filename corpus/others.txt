@@ -1,19 +1,4 @@
 ==================
-Infix
-==================
-
-infix 30 _and_
-infixr 20 _⇒_
-infixl 20 _⇒’_ _⇒_
-
----
-
-(source_file
-    (infix (int) (binding_name (name)))
-    (infix (int) (binding_name (name)))
-    (infix (int) (binding_name (name)) (binding_name (name))))
-
-==================
 Mutual (old syntax)
 ==================
 
@@ -123,7 +108,7 @@ macro
             (rhs (expr
                 (atom (qualified_name))
                 (atom (expr (atom (qualified_name)) (atom (qualified_name))))
-                (lambda (untyped_binding (binding_name (name)))
+                (lambda (untyped_binding (name))
                     (expr (atom (qualified_name))
                         (atom (qualified_name))
                             (atom (expr (atom (qualified_name)) (atom (qualified_name)))))))))))
@@ -155,8 +140,8 @@ primitive
 
 (source_file
     (primitive
-        (type_signature (name) (expr (atom (qualified_name))))
-        (type_signature (name) (expr (atom (qualified_name))))))
+        (simple_type_sig (name) (expr (atom (qualified_name))))
+        (simple_type_sig (name) (expr (atom (qualified_name))))))
 
 ==================
 Syntax

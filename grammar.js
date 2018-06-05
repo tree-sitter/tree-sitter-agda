@@ -114,8 +114,15 @@ module.exports = grammar({
         ),
 
         _declaration: $ => choice(
+            $.data,
+            $.data_signature_only,
+            $.function_clause,
             $.record,
             $.record_signature_only,
+            $.module_macro,
+            $.module,
+            $.open,
+
             $.field,
             $.pragma,
             $.infix,
@@ -125,7 +132,9 @@ module.exports = grammar({
             $.instance,
             $.macro,
             $.postulate,
-            // $.primitive,
+            $.primitive,
+            $.pattern,
+            $.syntax
         ),
 
         pragma: $ => seq(
@@ -184,12 +193,126 @@ module.exports = grammar({
             $._declaration_block0
         ),
 
-        // // Primitives. Can only contain type signatures.
-        // primitive: $ => seq(
-        //     'primitive',
-        //     $._simple_type_sig_block
-        // ),
 
+        // Pattern synonyms.
+        pattern: $ => seq(
+            'pattern',
+            $.name,
+            optional($._lambda_binding),
+            '=',
+            $.expr
+        ),
+
+
+        ////////////////////////////////////////////////////////////////////////
+        // Syntax
+        ////////////////////////////////////////////////////////////////////////
+
+        hole_name: $ => choice(
+            $.name,
+            seq('(', $._const_lambda, $.name, $._const_right_arrow, $.name, ')'),
+            seq('(', $._const_lambda, '_',    $._const_right_arrow, $.name, ')'),
+            seq('{', $.simple_hole, '}'),
+            seq('{{', $.simple_hole, '}}'),
+            seq('{', $.simple_hole, '=', $.simple_hole, '}'),
+            seq('{{', $.simple_hole, '=', $.simple_hole, '}}')
+        ),
+
+        simple_hole: $ => choice(
+            $.name,
+            seq($._const_lambda, $.name, $._const_right_arrow, $.name),
+            seq($._const_lambda, '_',    $._const_right_arrow, $.name)
+        ),
+
+        // Syntax declaration (To declare eg. mixfix binders)
+        syntax: $ => seq(
+                'syntax',
+                $.name,
+                repeat1($.hole_name),
+                '=',
+                repeat1($.name),
+                $._newline
+        ),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Primitives
+        ////////////////////////////////////////////////////////////////////////
+
+        // Primitives. Can only contain type signatures.
+        primitive: $ => seq(
+            'primitive',
+            $._simple_type_sig_block
+        ),
+
+        // For $.primitive only
+        // Non-empty list of type signatures, with several identifiers allowed
+        // for every signature.
+        _simple_type_sig_block: $ => block($, $.simple_type_sig),
+        simple_type_sig: $ => seq(
+            repeat1($.name),
+            ':',
+            $.expr,
+            $._newline,
+        ),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Data
+        ////////////////////////////////////////////////////////////////////////
+
+        // Data declaration. Can be local.
+        data: $ => seq(
+            choice('data', 'codata'),
+            $.name,
+            optional($._typed_untyped_binding1),
+            optional(seq(':', $.expr)),
+            'where',
+            $._declaration_block0,
+        ),
+
+        // Data type signature. Found in mutual blocks.
+        data_signature_only: $ => seq(
+            'data',
+            $.name,
+            optional($._typed_untyped_binding1),
+            ':',
+            $.expr,
+            $._newline,
+        ),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Function clauses
+        ////////////////////////////////////////////////////////////////////////
+
+        // Function declarations. The left hand side is parsed as an expression
+        // to allow declarations like 'x::xs ++ ys = e', when '::' has higher
+        // precedence than '++'.
+        // function_clause also handle possibly dotted type signatures.
+        function_clause: $ => prec.right(seq(
+            $.lhs,
+            optional($.rhs),
+            optional($.where_clause),
+            $._newline,
+        )),
+
+        lhs: $ => prec.right(seq(
+            $._expr1,
+            optional($.rewrite_equations),
+            optional($.with_expressions)
+        )),
+
+        rewrite_equations: $ => seq('rewrite', $._expr1),
+        with_expressions: $ => seq('with', $._expr1),
+
+        rhs: $ => choice(
+            seq('=', $.expr),
+            seq(':', $.expr)
+        ),
+
+        where_clause: $ => choice(
+            seq(                            'where', $._declaration_block0),
+            seq('module', $.name,           'where', $._declaration_block0),
+            seq('module', $.anonymous_name, 'where', $._declaration_block0)
+        ),
         ////////////////////////////////////////////////////////////////////////
         // Module and Imports
         // http://agda.readthedocs.io/en/v2.5.3/language/module-system.html
@@ -428,9 +551,13 @@ module.exports = grammar({
             seq($.lambda_clause),
         ),
 
-        // // Parses all extended lambda clauses including a single absurd clause.
-        // // For λ where this is not taken care of in AbsurdLambda
-        _lambda_where_block: $ => block($, $._lambda_clause),
+        // Appears after "where"
+        // Parses all extended lambda clauses including a single absurd clause.
+        // For λ where this is not taken care of in AbsurdLambda
+        _lambda_where_block: $ => block($,
+            seq($.lambda_clause, $._newline),
+            seq($.lambda_clause_absurd, $._newline),
+        ),
 
         forall_bindings: $ => seq(
             $._typed_untyped_binding1,
@@ -502,10 +629,10 @@ module.exports = grammar({
         let: $ => prec.right(seq('let', $._declaration_block, seq('in', $.expr))),
 
         lambda: $ => choice(
-            // seq($._const_lambda,          $._lambda_binding, $._const_right_arrow, $.expr),
-            // seq($._const_lambda,     '{', $._lambda_clauses_no_single_absurd, '}'),
-            // seq($._const_lambda, 'where', $._lambda_where_block),
-            // seq($._const_lambda,          $._lambda_binding),
+            seq($._const_lambda,          $._lambda_binding, $._const_right_arrow, $.expr),
+            seq($._const_lambda,     '{', $._lambda_clauses_no_single_absurd, '}'),
+            seq($._const_lambda, 'where', $._lambda_where_block),
+            seq($._const_lambda,          $._lambda_binding),
         ),
 
         // Level 3 Expressions: Atoms
