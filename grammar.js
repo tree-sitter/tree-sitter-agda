@@ -176,7 +176,7 @@ module.exports = grammar({
         ),
 
         // Level 3 Expressions: Atoms
-        _atoms1: $ => repeat1($.atom), // right
+        _atoms1: $ => prec.right(repeat1($.atom)), // right
         atom: $ => choice(
             $._atom_curly,
             $._atom_no_curly
@@ -529,7 +529,12 @@ module.exports = grammar({
         // Field declarations.
         field: $ => seq(
             'field',
-            indent($, $._type_sig_block)
+            choice(
+                // a single line
+                $.type_sig,
+                // a whole block
+                indent($, $._type_sig_block)
+            )
         ),
 
         // A variant of TypeSignatures which uses arg_type_signatures instead of

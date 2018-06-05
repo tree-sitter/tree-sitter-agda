@@ -743,10 +743,14 @@
       ]
     },
     "_atoms1": {
-      "type": "REPEAT1",
+      "type": "PREC_RIGHT",
+      "value": 0,
       "content": {
-        "type": "SYMBOL",
-        "name": "atom"
+        "type": "REPEAT1",
+        "content": {
+          "type": "SYMBOL",
+          "name": "atom"
+        }
       }
     },
     "atom": {
@@ -2989,24 +2993,33 @@
           "value": "field"
         },
         {
-          "type": "SEQ",
+          "type": "CHOICE",
           "members": [
             {
               "type": "SYMBOL",
-              "name": "_indent"
+              "name": "type_sig"
             },
             {
               "type": "SEQ",
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "_type_sig_block"
+                  "name": "_indent"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_type_sig_block"
+                    }
+                  ]
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_dedent"
                 }
               ]
-            },
-            {
-              "type": "SYMBOL",
-              "name": "_dedent"
             }
           ]
         }
