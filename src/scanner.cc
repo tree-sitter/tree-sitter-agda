@@ -66,11 +66,23 @@ namespace {
             }
         }
 
+        // returns True if skipped newline
+        bool skipJunk(TSLexer *lexer) {
+            bool skippedNewline = false;
+            while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r' || lexer->lookahead == '\n') {
+                if (lexer->lookahead == '\n')
+                    skippedNewline = true;
+                lexer->advance(lexer, true);
+            }
+            return skippedNewline;
+        }
+
         void advanceSpaces(TSLexer *lexer) {
             while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r') {
                 lexer->advance(lexer, false);
             }
         }
+
         void skipNewline(TSLexer *lexer) {
             while (lexer->lookahead == '\n') {
                 lexer->advance(lexer, true);
@@ -78,6 +90,7 @@ namespace {
         }
 
         bool scan(TSLexer *lexer, const bool *valid_symbols) {
+            bool skippedNewline = false;
 
             if (valid_symbols[DEDENT] && queued_dedent_count > 0) {
                 queued_dedent_count--;
@@ -85,9 +98,8 @@ namespace {
                 return true;
             }
 
-            while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r') {
-                lexer->advance(lexer, true);
-            }
+
+            skippedNewline = skippedNewline || skipJunk(lexer);
 
             if (lexer->lookahead == 0) {
                 if (valid_symbols[DEDENT] && indent_length_stack.size() > 1) {
@@ -104,33 +116,25 @@ namespace {
                 return false;
             }
 
-            if (lexer->lookahead != '\n') return false;
-            advance(lexer);
+            skippedNewline = skippedNewline || skipJunk(lexer);
             lexer->mark_end(lexer);
 
             bool next_token_is_comment = false;
-            uint32_t indent_length = 0;
-            for (;;) {
-                if (lexer->lookahead == '\n') {
-                    indent_length = 0;
-                    advance(lexer);
-                } else if (lexer->lookahead == ' ') {
-                    indent_length++;
-                    advance(lexer);
-                } else if (lexer->lookahead == '\r') {
-                    indent_length = 0;
-                    advance(lexer);
-                } else if (lexer->lookahead == '\t') {
-                    indent_length += 8;
-                    advance(lexer);
-                } else {
-                    next_token_is_comment = lexer->lookahead == '#';
-                    break;
-                }
-            }
+            uint32_t indent_length = lexer->get_column(lexer);
 
             if (!next_token_is_comment) {
-                if (indent_length > indent_length_stack.back()) {
+                printf("\n\n[%c]    \t%d/%d\n", lexer->lookahead, indent_length, indent_length_stack.back());
+                printValidSymbols(valid_symbols);
+
+                if (skippedNewline)
+                    printf("skipNewline\n");
+
+                if (valid_symbols[NEWLINE] && skippedNewline && indent_length == indent_length_stack.back()) {
+                    lexer->result_symbol = NEWLINE;
+                    return true;
+                }
+
+                if (valid_symbols[INDENT] && indent_length > indent_length_stack.back()) {
                     indent_length_stack.push_back(indent_length);
                     lexer->result_symbol = INDENT;
                     return true;
@@ -151,11 +155,12 @@ namespace {
                     }
                 }
             }
-
-            if (valid_symbols[NEWLINE]) {
-                lexer->result_symbol = NEWLINE;
-                return true;
-            }
+            //
+            // if (valid_symbols[NEWLINE]) {
+            //     printf("??????\n");
+            //     lexer->result_symbol = NEWLINE;
+            //     return true;
+            // }
 
             return false;
         }

@@ -18,6 +18,10 @@
               "value": "[0-9]+"
             }
           }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_newline"
         }
       ]
     },

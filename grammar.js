@@ -22,7 +22,7 @@ module.exports = grammar({
         // line: $ => /[0-9]+/,
         line: $ => seq(
             prec.right(repeat1(/[0-9]+/)),
-            // $._newline
+            $._newline
         ),
 
         block: $ => seq(
