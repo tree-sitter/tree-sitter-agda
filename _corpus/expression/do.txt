@@ -1,0 +1,65 @@
+==================
+Simple
+==================
+
+f a = do
+    f a
+    f a
+    f a
+
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name))
+            (atom (qualified_name)))
+        (rhs
+            (expr (do
+                (expr
+                    (atom (qualified_name))
+                    (atom (qualified_name)))
+                (expr
+                    (atom (qualified_name))
+                    (atom (qualified_name)))
+                (expr
+                    (atom (qualified_name))
+                    (atom (qualified_name))))))))
+
+==================
+Nested
+==================
+
+f a = do
+    f a
+    do
+        g a
+        g a
+    f a
+    f a
+
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name))
+            (atom (qualified_name)))
+        (rhs
+            (expr (do
+                (expr
+                    (atom (qualified_name))
+                    (atom (qualified_name)))
+                (expr (do
+                    (expr
+                        (atom (qualified_name))
+                        (atom (qualified_name)))
+                    (expr
+                        (atom (qualified_name))
+                        (atom (qualified_name)))))
+                (expr
+                    (atom (qualified_name))
+                    (atom (qualified_name)))
+                (expr
+                    (atom (qualified_name))
+                    (atom (qualified_name))))))))

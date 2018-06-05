@@ -1,0 +1,65 @@
+==================
+Simple
+==================
+
+module Test.Simple where
+    module _ where
+
+---
+
+(source_file
+    (module (qualified_name)
+        (module (anonymous_name))))
+
+==================
+Parameterized
+==================
+
+module Test.Simple (A : Set) {B : _} where
+
+---
+
+(source_file
+    (module (qualified_name)
+        (typed_binding (atom (qualified_name)) (expr (atom)))
+        (typed_binding (atom (qualified_name)) (expr (atom)))))
+
+==================
+Open with directives
+==================
+
+open import A b c public using (a; module C) hiding (xs) renaming (module ys to zs; vs to ws)
+    using () hiding () renaming ()
+
+---
+
+(source_file
+    (open
+        (qualified_name) (atom (qualified_name)) (atom (qualified_name))
+        (import_directive)
+        (import_directive (name) (name))
+        (import_directive (name))
+        (import_directive
+            (renaming (name) (name))
+            (renaming (name) (name)))
+        (import_directive)
+        (import_directive)
+        (import_directive)))
+
+==================
+Module macros
+==================
+
+module Sort.Nat (A : Set) = Sort Nat
+
+open module Nat (A : Set) = Sort {{ ... }}
+
+---
+
+(source_file
+    (module_macro
+        (qualified_name) (typed_binding (atom (qualified_name)) (expr (atom)))
+        (module_application (qualified_name) (atom (qualified_name))))
+    (module_macro
+        (name) (typed_binding (atom (qualified_name)) (expr (atom)))
+        (module_application (qualified_name))))
