@@ -22,5 +22,4 @@ open import Agda.Builtin.Size public
         (import_directive (name) (comment) (name) (comment) (name))
         (comment)
         (import_directive (renaming (name) (name)))
-    )
-    (comment))
+        (comment)))
