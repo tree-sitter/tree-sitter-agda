@@ -50,14 +50,15 @@ namespace {
 
         void printValidSymbols(const bool *valid_symbols) {
             if (valid_symbols[DEDENT]) {
-                printf("<dedent>\n");
-            } else if (valid_symbols[INDENT]) {
-                printf("<indent>\n");
-            } else if (valid_symbols[NEWLINE]) {
-                printf("<newline>\n");
-            } else {
-                printf("<------->\n");
+                printf("<dedent> ");
             }
+            if (valid_symbols[INDENT]) {
+                printf("<indent> ");
+            }
+            if (valid_symbols[NEWLINE]) {
+                printf("<newline> ");
+            }
+            printf("\n");
         }
 
         void skipSpaces(TSLexer *lexer) {
@@ -99,8 +100,13 @@ namespace {
             }
 
 
+            // skip spaces and newline
             skippedNewline = skippedNewline || skipJunk(lexer);
 
+            // mark the end of the last lexeme
+            lexer->mark_end(lexer);
+
+            // in case of EOF
             if (lexer->lookahead == 0) {
                 if (valid_symbols[DEDENT] && indent_length_stack.size() > 1) {
                     indent_length_stack.pop_back();
@@ -116,18 +122,20 @@ namespace {
                 return false;
             }
 
-            skippedNewline = skippedNewline || skipJunk(lexer);
-            lexer->mark_end(lexer);
 
+            // TODO: handle comments
             bool next_token_is_comment = false;
             uint32_t indent_length = lexer->get_column(lexer);
 
             if (!next_token_is_comment) {
-                printf("\n\n[%c]    \t%d/%d\n", lexer->lookahead, indent_length, indent_length_stack.back());
-                printValidSymbols(valid_symbols);
 
+                // DEBUG
+                printf("\n\n[%c]    \t%d/%d", lexer->lookahead, indent_length, indent_length_stack.back());
                 if (skippedNewline)
-                    printf("skipNewline\n");
+                    printf("\t\\n\n");
+                else
+                    printf("\t\n");
+                printValidSymbols(valid_symbols);
 
                 if (valid_symbols[NEWLINE] && skippedNewline && indent_length == indent_length_stack.back()) {
                     lexer->result_symbol = NEWLINE;
@@ -140,7 +148,13 @@ namespace {
                     return true;
                 }
 
-                if (indent_length < indent_length_stack.back()) {
+
+                if (skippedNewline && indent_length < indent_length_stack.back()) {
+                    lexer->result_symbol = NEWLINE;
+                    return true;
+                }
+
+                if (!skippedNewline && indent_length < indent_length_stack.back()) {
                     indent_length_stack.pop_back();
                     while (indent_length < indent_length_stack.back()) {
                         indent_length_stack.pop_back();
