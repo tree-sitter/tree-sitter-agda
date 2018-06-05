@@ -61,13 +61,7 @@ namespace {
             printf("\n");
         }
 
-        void skipSpaces(TSLexer *lexer) {
-            while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r') {
-                lexer->advance(lexer, true);
-            }
-        }
-
-        // returns True if skipped newline
+        // returns True if newline \n were skipped
         bool skipJunk(TSLexer *lexer) {
             bool skippedNewline = false;
             while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r' || lexer->lookahead == '\n') {
@@ -78,18 +72,6 @@ namespace {
             return skippedNewline;
         }
 
-        void advanceSpaces(TSLexer *lexer) {
-            while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r') {
-                lexer->advance(lexer, false);
-            }
-        }
-
-        void skipNewline(TSLexer *lexer) {
-            while (lexer->lookahead == '\n') {
-                lexer->advance(lexer, true);
-            }
-        }
-
         bool scan(TSLexer *lexer, const bool *valid_symbols) {
             bool skippedNewline = false;
 
@@ -98,7 +80,6 @@ namespace {
                 lexer->result_symbol = DEDENT;
                 return true;
             }
-
 
             // skip spaces and newline
             skippedNewline = skippedNewline || skipJunk(lexer);
@@ -128,39 +109,52 @@ namespace {
             uint32_t indent_length = lexer->get_column(lexer);
 
             if (!next_token_is_comment) {
+                //
+                // // DEBUG
+                // printf("\n\n[%c]    \t%d/%d", lexer->lookahead, indent_length, indent_length_stack.back());
+                // if (skippedNewline)
+                //     printf("\t\\n\n");
+                // else
+                //     printf("\t\n");
+                // printValidSymbols(valid_symbols);
 
-                // DEBUG
-                printf("\n\n[%c]    \t%d/%d", lexer->lookahead, indent_length, indent_length_stack.back());
-                if (skippedNewline)
-                    printf("\t\\n\n");
-                else
-                    printf("\t\n");
-                printValidSymbols(valid_symbols);
-
+                // do
+                //      line0  <newline>
+                //      line1
                 if (valid_symbols[NEWLINE] && skippedNewline && indent_length == indent_length_stack.back()) {
                     lexer->result_symbol = NEWLINE;
                     return true;
                 }
 
+
+                // do
+                //      line0
+                //          still0
                 if (valid_symbols[INDENT] && indent_length > indent_length_stack.back()) {
                     indent_length_stack.push_back(indent_length);
                     lexer->result_symbol = INDENT;
                     return true;
                 }
 
-
+                // do
+                //      line0 <newline>
+                //    line1
                 if (skippedNewline && indent_length < indent_length_stack.back()) {
                     lexer->result_symbol = NEWLINE;
                     return true;
                 }
 
+                // do
+                //      do
+                //          line0
+                //      line1
+                //      ^ here
                 if (!skippedNewline && indent_length < indent_length_stack.back()) {
                     indent_length_stack.pop_back();
                     while (indent_length < indent_length_stack.back()) {
                         indent_length_stack.pop_back();
                         queued_dedent_count++;
                     }
-
                     if (valid_symbols[DEDENT]) {
                         lexer->result_symbol = DEDENT;
                         return true;
@@ -169,13 +163,6 @@ namespace {
                     }
                 }
             }
-            //
-            // if (valid_symbols[NEWLINE]) {
-            //     printf("??????\n");
-            //     lexer->result_symbol = NEWLINE;
-            //     return true;
-            // }
-
             return false;
         }
 

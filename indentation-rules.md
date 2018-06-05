@@ -22,8 +22,12 @@
         ```
 
 * no newline
-
-    ```haskell
-    do >>
-        1 2 3 4 \n
-    ```
+    * next line
+        ```haskell
+        do >>
+            1 2 3 4 \n
+        ```
+    * same line
+        ```haskell
+        do >> 1 2 3 4 \n
+        ```
