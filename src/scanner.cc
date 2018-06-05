@@ -48,8 +48,37 @@ namespace {
             lexer->advance(lexer, false);
         }
 
+        void printValidSymbols(const bool *valid_symbols) {
+            if (valid_symbols[DEDENT]) {
+                printf("<dedent>\n");
+            } else if (valid_symbols[INDENT]) {
+                printf("<indent>\n");
+            } else if (valid_symbols[NEWLINE]) {
+                printf("<newline>\n");
+            } else {
+                printf("<------->\n");
+            }
+        }
+
+        void skipSpaces(TSLexer *lexer) {
+            while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r') {
+                lexer->advance(lexer, true);
+            }
+        }
+
+        void advanceSpaces(TSLexer *lexer) {
+            while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r') {
+                lexer->advance(lexer, false);
+            }
+        }
+        void skipNewline(TSLexer *lexer) {
+            while (lexer->lookahead == '\n') {
+                lexer->advance(lexer, true);
+            }
+        }
 
         bool scan(TSLexer *lexer, const bool *valid_symbols) {
+
             if (valid_symbols[DEDENT] && queued_dedent_count > 0) {
                 queued_dedent_count--;
                 lexer->result_symbol = DEDENT;

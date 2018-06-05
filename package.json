@@ -7,6 +7,7 @@
     "test": "npx tree-sitter test",
     "generate": "npx tree-sitter generate && npm install",
     "iterate": "npm run generate && npm test",
+    "scan": "npm run generate && npx tree-sitter parse stash/test",
     "rebuild": "npm rebuild && npm run iterate",
     "build-scanner": "node-gyp build --debug",
     "build-grammar": "tree-sitter generate && node-gyp build --debug && tree-sitter test"
