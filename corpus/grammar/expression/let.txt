@@ -1,5 +1,5 @@
 ==================
-Simple
+Simple (same line)
 ==================
 
 f x = let y = x in y
@@ -12,13 +12,40 @@ f x = let y = x in y
             (atom (qualified_name))
             (atom (qualified_name)))
         (rhs
-            (expr (let
-                (function_clause
-                    (lhs
-                        (atom (qualified_name)))
-                    (rhs
-                        (expr (atom (qualified_name)))))
-            (expr (atom (qualified_name))))))))
+            (expr
+                (let
+                    (function_clause
+                        (lhs
+                            (atom (qualified_name)))
+                        (rhs
+                            (expr
+                                (atom (qualified_name)))))
+                    (expr (atom (qualified_name))))))))
+                    
+==================
+Simple (newline)
+==================
+
+f x = let y = x
+      in y
+
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name))
+            (atom (qualified_name)))
+        (rhs
+            (expr
+                (let
+                    (function_clause
+                        (lhs
+                            (atom (qualified_name)))
+                        (rhs
+                            (expr
+                                (atom (qualified_name)))))
+                    (expr (atom (qualified_name))))))))
 
 ==================
 Simple - multiline

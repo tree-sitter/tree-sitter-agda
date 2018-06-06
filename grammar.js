@@ -301,7 +301,7 @@ module.exports = grammar({
         )),
 
         rewrite_equations: $ => seq('rewrite', $._expr1),
-        with_expressions: $ => seq('with', $._expr1),
+        with_expressions: $ => seq('with', $.expr),
 
         rhs: $ => choice(
             seq('=', $.expr),
@@ -506,8 +506,6 @@ module.exports = grammar({
         // Bindings
         ////////////////////////////////////////////////////////////////////////
 
-        _typed_bindings1: $ => repeat1($.typed_binding),
-
         // "LamBinds"
         _lambda_binding: $ => prec.right(choice(
             seq($.untyped_binding, $._lambda_binding),
@@ -564,12 +562,16 @@ module.exports = grammar({
             $._const_right_arrow
         ),
 
+
+
         // "DomainFreeBinding"
         untyped_binding: $ => maybeDotted(choice(
             seq($._binding_name),
             seq('{', $._application, '}'),
             seq('{{', $._application, '}}')
         )),
+
+        _typed_bindings1: $ => prec.right(repeat1($.typed_binding)),
 
         // "TypedBindings"
         typed_binding: $ => choice(
@@ -584,6 +586,23 @@ module.exports = grammar({
             $.untyped_binding,
             $.typed_binding
         )),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Do-notation
+        ////////////////////////////////////////////////////////////////////////
+
+        _do_stmt: $ => seq(
+            $.expr,
+            choice(
+                $._newline,
+                $.do_where,
+            ),
+        ),
+
+        do_where: $ => seq(
+            'where',
+            $._lambda_where_block,
+        ),
 
         ////////////////////////////////////////////////////////////////////////
         // Expressions
@@ -616,7 +635,7 @@ module.exports = grammar({
             // let ... in
             $.let,
             // do
-            // $.do,
+            $.do,
 
             seq('quoteGoal', $.name, 'in', $.expr),
             seq('tactic', $._atoms1),
@@ -624,9 +643,21 @@ module.exports = grammar({
             prec(-1, $.atom),
         ),
 
-        // do: $ => seq('do', $._vopen, repeat1(seq($._do_stmt, $._semi)), $._close),
+        do: $ => seq(
+            'do',
+            block($,
+                $._do_stmt,
+            ),
+        ),
 
-        let: $ => prec.right(seq('let', $._declaration_block, seq('in', $.expr))),
+        let: $ => prec.right(seq(
+            'let',
+            $._declaration_block,
+            optional(seq(
+                'in',
+                $.expr,
+            )),
+        )),
 
         lambda: $ => choice(
             seq($._const_lambda,          $._lambda_binding, $._const_right_arrow, $.expr),
