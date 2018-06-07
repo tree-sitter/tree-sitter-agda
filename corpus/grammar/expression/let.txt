@@ -1,5 +1,5 @@
 ==================
-Simple (same line)
+Inline (body in the same line)
 ==================
 
 f x = let y = x in y
@@ -14,16 +14,16 @@ f x = let y = x in y
         (rhs
             (expr
                 (let
-                    (function_clause
+                    (function_clause_test
                         (lhs
                             (atom (qualified_name)))
                         (rhs
                             (expr
                                 (atom (qualified_name)))))
                     (expr (atom (qualified_name))))))))
-                    
+
 ==================
-Simple (newline)
+Inline (body after newline)
 ==================
 
 f x = let y = x
@@ -39,7 +39,7 @@ f x = let y = x
         (rhs
             (expr
                 (let
-                    (function_clause
+                    (function_clause_test
                         (lhs
                             (atom (qualified_name)))
                         (rhs
@@ -48,7 +48,35 @@ f x = let y = x
                     (expr (atom (qualified_name))))))))
 
 ==================
-Simple - multiline
+Block (body in the same line)
+==================
+
+f x = let y = x
+          y = x in y
+
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name))
+            (atom (qualified_name)))
+        (rhs
+            (expr (let
+                (function_clause_test
+                    (lhs
+                        (atom (qualified_name)))
+                    (rhs
+                        (expr (atom (qualified_name)))))
+                (function_clause_test
+                    (lhs
+                        (atom (qualified_name)))
+                    (rhs
+                        (expr (atom (qualified_name)))))
+                (expr (atom (qualified_name))))))))
+
+==================
+Block (body after newline)
 ==================
 
 f x = let y = x
@@ -64,26 +92,24 @@ f x = let y = x
             (atom (qualified_name)))
         (rhs
             (expr (let
-                (function_clause
+                (function_clause_test
                     (lhs
                         (atom (qualified_name)))
                     (rhs
                         (expr (atom (qualified_name)))))
-                (function_clause
+                (function_clause_test
                     (lhs
                         (atom (qualified_name)))
                     (rhs
                         (expr (atom (qualified_name)))))
-            (expr (atom (qualified_name))))))))
+                (expr (atom (qualified_name))))))))
 
 ==================
-Simple - nested
+Cascading (telescope-ish)
 ==================
 
 f x = let y = x in
-      let y = x
-      in
-      y
+      let y = x in y
 
 ---
 
@@ -93,16 +119,18 @@ f x = let y = x in
             (atom (qualified_name))
             (atom (qualified_name)))
         (rhs
-            (expr (let
-                (function_clause
-                    (lhs
-                        (atom (qualified_name)))
-                    (rhs
-                        (expr (atom (qualified_name)))))
-            (expr (let
-                (function_clause
-                    (lhs
-                        (atom (qualified_name)))
-                    (rhs
-                        (expr (atom (qualified_name)))))
-            (expr (atom (qualified_name))))))))))
+            (expr
+                (let
+                    (function_clause_test
+                        (lhs
+                            (atom (qualified_name)))
+                        (rhs
+                            (expr (atom (qualified_name)))))
+                    (expr
+                        (let
+                            (function_clause
+                                (lhs
+                                    (atom (qualified_name)))
+                                (rhs
+                                    (expr (atom (qualified_name)))))
+                            (expr (atom (qualified_name))))))))))

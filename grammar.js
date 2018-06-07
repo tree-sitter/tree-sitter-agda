@@ -579,7 +579,7 @@ module.exports = grammar({
                 $._application, ':', $.expr
             ))),
             seq('(', $.open, ')'),
-            seq('(', 'let', $._declaration_block, ')')
+            seq('(', 'let', $._let_declaration_block, ')')
         ),
 
         _typed_untyped_binding1: $ => repeat1(choice(
@@ -650,13 +650,30 @@ module.exports = grammar({
             ),
         ),
 
+        function_clause_test: $ => seq(
+            $.lhs,
+            optional($.rhs),
+            optional($.where_clause)
+        ),
+
+
+        // >>
+
+        // >> _   I, II
+
+        _let_declaration_block: $ => choice(
+            indent($, seq(
+                repeat(seq($.function_clause_test, $._newline)),
+                seq($.function_clause_test, optional($._newline), 'in', $.expr),
+            )),
+        ),
+
         let: $ => prec.right(seq(
             'let',
-            $._declaration_block,
-            optional(seq(
-                'in',
-                $.expr,
-            )),
+            $._let_declaration_block,
+            // sepR($._newline, $.function_clause_test),
+            // optional(seq(
+            // )),
         )),
 
         lambda: $ => choice(

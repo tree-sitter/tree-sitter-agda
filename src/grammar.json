@@ -3106,7 +3106,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_declaration_block"
+              "name": "_let_declaration_block"
             },
             {
               "type": "STRING",
@@ -3403,8 +3403,109 @@
         }
       ]
     },
+    "function_clause_test": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "lhs"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "rhs"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "where_clause"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "_let_declaration_block": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_indent"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "function_clause_test"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "_newline"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "function_clause_test"
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "_newline"
+                        },
+                        {
+                          "type": "BLANK"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "in"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "expr"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_dedent"
+            }
+          ]
+        }
+      ]
+    },
     "let": {
-      "type": "PREC_LEFT",
+      "type": "PREC_RIGHT",
       "value": 0,
       "content": {
         "type": "SEQ",
@@ -3415,28 +3516,7 @@
           },
           {
             "type": "SYMBOL",
-            "name": "_declaration_block"
-          },
-          {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "STRING",
-                    "value": "in"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "expr"
-                  }
-                ]
-              },
-              {
-                "type": "BLANK"
-              }
-            ]
+            "name": "_let_declaration_block"
           }
         ]
       }
