@@ -104,7 +104,13 @@ module.exports = grammar({
         ),
 
         ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        //
         // Declarations
+        //
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
 
         _declaration_block: $ => block($, $._declaration),
@@ -114,18 +120,22 @@ module.exports = grammar({
         ),
 
         _declaration: $ => choice(
-            $.data,
+            // inline
             $.data_signature_only,
-            $.function_clause,
-            $.record,
             $.record_signature_only,
             $.module_macro,
-            $.module,
             $.open,
-
-            $.field,
             $.pragma,
             $.infix,
+            $.pattern,
+            $.syntax,
+
+            // block
+            $.data,
+            $.function_clause,
+            $.record,
+            $.module,
+            $.field,
             $.mutual,
             $.abstract,
             $.private,
@@ -133,10 +143,100 @@ module.exports = grammar({
             $.macro,
             $.postulate,
             $.primitive,
-            $.pattern,
-            $.syntax
         ),
 
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        //
+        // Inline Declarations
+        //
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+
+        ////////////////////////////////////////////////////////////////////////
+        // Data type signature. Found in mutual blocks.
+        data_signature_only: $ => seq(
+            'data',
+            $.name,
+            optional($._typed_untyped_binding1),
+            ':',
+            $.expr,
+            $._newline,
+        ),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Record type signature. In mutual blocks.
+        record_signature_only: $ => seq(
+            'record',
+            $._atom_no_curly,
+            optional($._typed_untyped_binding1),
+            ':',
+            $.expr,
+            $._newline,
+        ),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Module instantiation
+        module_macro: $ => choice(
+            seq(
+                'module',
+                $.qualified_name,
+                optional($._typed_untyped_binding1),
+                '=',
+                $.module_application,
+                repeat($.import_directive),
+                $._newline,
+            ),
+            seq(
+                'open',
+                'module',
+                $.name,
+                optional($._typed_untyped_binding1),
+                '=',
+                $.module_application,
+                repeat($.import_directive),
+                $._newline,
+            )
+        ),
+
+
+        ////////////////////////////////////////////////////////////////////////
+        // Open
+        ////////////////////////////////////////////////////////////////////////
+        open: $ => prec.right(choice(
+            seq(        'import', $.qualified_name, optional($._open_args1), repeat($.import_directive), $._newline),
+            seq('open', 'import', $.qualified_name, optional($._open_args1), repeat($.import_directive), $._newline),
+            seq('open',           $.qualified_name, optional($._open_args1), repeat($.import_directive), $._newline),
+        )),
+
+        _open_args1: $ => prec.left(repeat1($.atom)),
+
+        import_directive: $ => choice(
+            'public',
+            seq('using', '(', $._comma_import_names1 ,')'),
+            seq('hiding', '(', $._comma_import_names1 ,')'),
+            seq('renaming', '(', sepR(';', $.renaming) ,')'),
+            seq('using', '(' ,')'),
+            seq('hiding', '(' ,')'),
+            seq('renaming', '(' ,')')
+        ),
+
+        renaming: $ => seq(
+            optional('module'),
+            $.name,
+            'to',
+            $.name
+        ),
+
+        _import_name: $ => seq(
+            optional('module'), $.name
+        ),
+
+        _comma_import_names1: $ => sepR(';', $._import_name),
+
+        ////////////////////////////////////////////////////////////////////////
         pragma: $ => seq(
             '{-#',
             repeat(choice(
@@ -148,7 +248,7 @@ module.exports = grammar({
             $._newline,
         ),
 
-
+        ////////////////////////////////////////////////////////////////////////
         // Fixity declarations.
         infix: $ => seq(
             choice('infix', 'infixl', 'infixr'),
@@ -157,43 +257,7 @@ module.exports = grammar({
             $._newline,
         ),
 
-        // Mutually recursive declarations.
-        mutual: $ => seq(
-            'mutual',
-            $._declaration_block0
-        ),
-
-        // Abstract declarations.
-        abstract: $ => seq(
-            'abstract',
-            $._declaration_block0
-        ),
-
-        // Private can only appear on the top-level (or rather the module level)
-        private: $ => seq(
-            'private',
-            $._declaration_block0
-        ),
-
-        // Instance declarations.
-        instance: $ => seq(
-            'instance',
-            $._declaration_block0
-        ),
-
-        // Macro declarations.
-        macro: $ => seq(
-            'macro',
-            $._declaration_block0
-        ),
-
-        // Postulates.
-        postulate: $ => seq(
-            'postulate',
-            $._declaration_block0
-        ),
-
-
+        ////////////////////////////////////////////////////////////////////////
         // Pattern synonyms.
         pattern: $ => seq(
             'pattern',
@@ -207,6 +271,15 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
         // Syntax
         ////////////////////////////////////////////////////////////////////////
+
+        syntax: $ => seq(
+                'syntax',
+                $.name,
+                repeat1($.hole_name),
+                '=',
+                repeat1($.name),
+                $._newline
+        ),
 
         hole_name: $ => choice(
             $.name,
@@ -224,42 +297,18 @@ module.exports = grammar({
             seq($._const_lambda, '_',    $._const_right_arrow, $.name)
         ),
 
-        // Syntax declaration (To declare eg. mixfix binders)
-        syntax: $ => seq(
-                'syntax',
-                $.name,
-                repeat1($.hole_name),
-                '=',
-                repeat1($.name),
-                $._newline
-        ),
 
         ////////////////////////////////////////////////////////////////////////
-        // Primitives
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        //
+        // Block Declarations
+        //
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
 
-        // Primitives. Can only contain type signatures.
-        primitive: $ => seq(
-            'primitive',
-            $._simple_type_sig_block
-        ),
-
-        // For $.primitive only
-        // Non-empty list of type signatures, with several identifiers allowed
-        // for every signature.
-        _simple_type_sig_block: $ => block($, $.simple_type_sig),
-        simple_type_sig: $ => seq(
-            repeat1($.name),
-            ':',
-            $.expr,
-            $._newline,
-        ),
-
         ////////////////////////////////////////////////////////////////////////
-        // Data
-        ////////////////////////////////////////////////////////////////////////
-
-        // Data declaration. Can be local.
         data: $ => seq(
             choice('data', 'codata'),
             $.name,
@@ -267,16 +316,6 @@ module.exports = grammar({
             optional(seq(':', $.expr)),
             'where',
             $._declaration_block0,
-        ),
-
-        // Data type signature. Found in mutual blocks.
-        data_signature_only: $ => seq(
-            'data',
-            $.name,
-            optional($._typed_untyped_binding1),
-            ':',
-            $.expr,
-            $._newline,
         ),
 
         ////////////////////////////////////////////////////////////////////////
@@ -313,110 +352,6 @@ module.exports = grammar({
             seq('module', $.name,           'where', $._declaration_block0),
             seq('module', $.anonymous_name, 'where', $._declaration_block0)
         ),
-        ////////////////////////////////////////////////////////////////////////
-        // Module and Imports
-        // http://agda.readthedocs.io/en/v2.5.3/language/module-system.html
-        ////////////////////////////////////////////////////////////////////////
-
-        module_application: $ => choice(
-            prec(1, seq($.qualified_name, '{{', '...', '}}')),
-            seq($.qualified_name, optional($._open_args1)),
-        ),
-
-        // Module instantiation
-        module_macro: $ => choice(
-            seq(
-                'module',
-                $.qualified_name,
-                optional($._typed_untyped_binding1),
-                '=',
-                $.module_application,
-                repeat($.import_directive),
-                $._newline,
-            ),
-            seq(
-                'open',
-                'module',
-                $.name,
-                optional($._typed_untyped_binding1),
-                '=',
-                $.module_application,
-                repeat($.import_directive),
-                $._newline,
-            )
-        ),
-
-        // Module
-        module: $ => seq(
-            'module',
-            choice($.qualified_name, $.anonymous_name),
-            optional($._typed_untyped_binding1),
-            'where',
-            $._declaration_block0
-        ),
-
-        open: $ => prec.right(choice(
-            seq(        'import', $.qualified_name, optional($._open_args1), repeat($.import_directive), $._newline),
-            seq('open', 'import', $.qualified_name, optional($._open_args1), repeat($.import_directive), $._newline),
-            seq('open',           $.qualified_name, optional($._open_args1), repeat($.import_directive), $._newline),
-        )),
-
-        _open_args1: $ => prec.left(repeat1($.atom)),
-
-        import_directive: $ => choice(
-            'public',
-            seq('using', '(', $._comma_import_names1 ,')'),
-            seq('hiding', '(', $._comma_import_names1 ,')'),
-            seq('renaming', '(', sepR(';', $.renaming) ,')'),
-            seq('using', '(' ,')'),
-            seq('hiding', '(' ,')'),
-            seq('renaming', '(' ,')')
-        ),
-
-        renaming: $ => seq(
-            optional('module'),
-            $.name,
-            'to',
-            $.name
-        ),
-
-        _import_name: $ => seq(
-            optional('module'), $.name
-        ),
-
-        _comma_import_names1: $ => sepR(';', $._import_name),
-
-
-        ////////////////////////////////////////////////////////////////////////
-        // Field
-        ////////////////////////////////////////////////////////////////////////
-
-        field: $ => seq(
-            'field',
-            $._type_sig_block,
-        ),
-
-        // A variant of TypeSignatures which uses arg_type_signatures instead of
-        // _type_signature
-        _type_sig_block: $ => block($,
-            $.type_sig,
-            $.type_sig_instance,
-        ),
-
-        // A variant of _type_signature where any sub-sequence of names can be
-        // marked as hidden or irrelevant using braces and dots:
-        // {n1 .n2} n3 .n4 {n5} .{n6 n7} ... : Type.
-        type_sig: $ => seq(
-            optional('overlap'),
-            $._arg_names,
-            ':',
-            $.expr,
-            $._newline,
-        ),
-        type_sig_instance: $ => seq(
-            'instance',
-            $._type_sig_block
-        ),
 
         //////////////////////////////////////////////////////////////////////
         // Record
@@ -430,17 +365,6 @@ module.exports = grammar({
             'where',
             choice($._newline, $.record_declarations_block),
         ),
-
-        // Record type signature. In mutual blocks.
-        record_signature_only: $ => seq(
-            'record',
-            $._atom_no_curly,
-            optional($._typed_untyped_binding1),
-            ':',
-            $.expr,
-            $._newline,
-        ),
-
 
         // Record declarations, including an optional record constructor name.
         record_declarations_block: $ => indent($,
@@ -501,6 +425,130 @@ module.exports = grammar({
         // made it more permissive to resolve conflicts
         // between $.field_assignment and $.module_assignment
         field_assignment: $ => seq($.qualified_name, '=', $.expr),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Module and Imports
+        // http://agda.readthedocs.io/en/v2.5.3/language/module-system.html
+        ////////////////////////////////////////////////////////////////////////
+
+        module: $ => seq(
+            'module',
+            choice($.qualified_name, $.anonymous_name),
+            optional($._typed_untyped_binding1),
+            'where',
+            $._declaration_block0
+        ),
+
+        module_application: $ => choice(
+            prec(1, seq($.qualified_name, '{{', '...', '}}')),
+            seq($.qualified_name, optional($._open_args1)),
+        ),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Field
+        ////////////////////////////////////////////////////////////////////////
+
+        field: $ => seq(
+            'field',
+            $._type_sig_block,
+        ),
+
+        // A variant of TypeSignatures which uses arg_type_signatures instead of
+        // _type_signature
+        _type_sig_block: $ => block($,
+            $.type_sig,
+            $.type_sig_instance,
+        ),
+
+        // A variant of _type_signature where any sub-sequence of names can be
+        // marked as hidden or irrelevant using braces and dots:
+        // {n1 .n2} n3 .n4 {n5} .{n6 n7} ... : Type.
+        type_sig: $ => seq(
+            optional('overlap'),
+            $._arg_names,
+            ':',
+            $.expr,
+            $._newline,
+        ),
+        type_sig_instance: $ => seq(
+            'instance',
+            $._type_sig_block
+        ),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Mutually recursive declarations.
+        mutual: $ => seq(
+            'mutual',
+            $._declaration_block0
+        ),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Abstract declarations.
+        abstract: $ => seq(
+            'abstract',
+            $._declaration_block0
+        ),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Private can only appear on the top-level (or rather the module level)
+        private: $ => seq(
+            'private',
+            $._declaration_block0
+        ),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Instance declarations.
+        instance: $ => seq(
+            'instance',
+            $._declaration_block0
+        ),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Macro declarations.
+        macro: $ => seq(
+            'macro',
+            $._declaration_block0
+        ),
+
+        ////////////////////////////////////////////////////////////////////////
+        // Postulates.
+        postulate: $ => seq(
+            'postulate',
+            $._declaration_block0
+        ),
+
+
+        ////////////////////////////////////////////////////////////////////////
+        // Primitives
+        ////////////////////////////////////////////////////////////////////////
+
+        // Can only contain type signatures.
+        primitive: $ => seq(
+            'primitive',
+            $._simple_type_sig_block
+        ),
+
+        // For $.primitive only
+        // Non-empty list of type signatures, with several identifiers allowed
+        // for every signature.
+        _simple_type_sig_block: $ => block($, $.simple_type_sig),
+        simple_type_sig: $ => seq(
+            repeat1($.name),
+            ':',
+            $.expr,
+            $._newline,
+        ),
+
+
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        //
+        // Expression-related
+        //
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////////////////////////
         // Bindings
@@ -656,24 +704,18 @@ module.exports = grammar({
             optional($.where_clause)
         ),
 
-
-        // >>
-
-        // >> _   I, II
-
         _let_declaration_block: $ => choice(
             indent($, seq(
-                repeat(seq($.function_clause_test, $._newline)),
-                seq($.function_clause_test, optional($._newline), 'in', $.expr),
+                sepL($._newline, $.function_clause_test),
+                optional($._newline),
+                'in',
+                $.expr,
             )),
         ),
 
         let: $ => prec.right(seq(
             'let',
             $._let_declaration_block,
-            // sepR($._newline, $.function_clause_test),
-            // optional(seq(
-            // )),
         )),
 
         lambda: $ => choice(
@@ -736,11 +778,24 @@ function indent($, rule) {
     );
 }
 
+// A mix of the rules (inline or block) enclosed in a indentation
 function block($, ...rules) {
     return indent($,
         repeat1(choice(...rules))
     );
 }
+//
+// // Like "block", except that the $._newline of the last element can be elided
+// function blockDangling($, inlines, blocks) {
+//     return indent($, seq(
+//         repeat(choice(
+//             seq(inlines, $._newline),
+//         ))
+//         // repeat1(choice(...rules))
+//
+//     ));
+// }
+
 
 ////////////////////////////////////////////////////////////////////////
 // Language-specific combinators

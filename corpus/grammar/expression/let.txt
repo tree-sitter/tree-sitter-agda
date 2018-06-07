@@ -1,5 +1,5 @@
 ==================
-Inline (body in the same line)
+Single line I
 ==================
 
 f x = let y = x in y
@@ -23,7 +23,32 @@ f x = let y = x in y
                     (expr (atom (qualified_name))))))))
 
 ==================
-Inline (body after newline)
+Single line II
+==================
+
+f x = let y = x in
+    y
+
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name))
+            (atom (qualified_name)))
+        (rhs
+            (expr
+                (let
+                    (function_clause_test
+                        (lhs
+                            (atom (qualified_name)))
+                        (rhs
+                            (expr
+                                (atom (qualified_name)))))
+                    (expr (atom (qualified_name))))))))
+
+==================
+Single line III
 ==================
 
 f x = let y = x
@@ -48,7 +73,7 @@ f x = let y = x
                     (expr (atom (qualified_name))))))))
 
 ==================
-Block (body in the same line)
+Multiline I
 ==================
 
 f x = let y = x
@@ -76,7 +101,36 @@ f x = let y = x
                 (expr (atom (qualified_name))))))))
 
 ==================
-Block (body after newline)
+Multiline II
+==================
+
+f x = let y = x
+          y = x in
+    y
+
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name))
+            (atom (qualified_name)))
+        (rhs
+            (expr (let
+                (function_clause_test
+                    (lhs
+                        (atom (qualified_name)))
+                    (rhs
+                        (expr (atom (qualified_name)))))
+                (function_clause_test
+                    (lhs
+                        (atom (qualified_name)))
+                    (rhs
+                        (expr (atom (qualified_name)))))
+                (expr (atom (qualified_name))))))))
+
+==================
+Multiline III
 ==================
 
 f x = let y = x
@@ -105,7 +159,7 @@ f x = let y = x
                 (expr (atom (qualified_name))))))))
 
 ==================
-Cascading (telescope-ish)
+Telescope I
 ==================
 
 f x = let y = x in
