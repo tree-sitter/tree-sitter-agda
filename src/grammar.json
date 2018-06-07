@@ -7,8 +7,17 @@
         {
           "type": "REPEAT1",
           "content": {
-            "type": "SYMBOL",
-            "name": "_declaration"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_inline_declaration"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_block_declaration"
+              }
+            ]
           }
         },
         {
@@ -436,7 +445,11 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "_declaration"
+                "name": "_inline_declaration"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_block_declaration"
               }
             ]
           }
@@ -460,7 +473,7 @@
         }
       ]
     },
-    "_declaration": {
+    "_inline_declaration": {
       "type": "CHOICE",
       "members": [
         {
@@ -494,7 +507,12 @@
         {
           "type": "SYMBOL",
           "name": "syntax"
-        },
+        }
+      ]
+    },
+    "_block_declaration": {
+      "type": "CHOICE",
+      "members": [
         {
           "type": "SYMBOL",
           "name": "data"
@@ -1740,32 +1758,36 @@
           "name": "_indent"
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "REPEAT",
-              "content": {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "_record_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "record_constructor_instance"
-                  }
-                ]
-              }
-            },
-            {
-              "type": "REPEAT",
-              "content": {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
                 "type": "SYMBOL",
-                "name": "_declaration"
+                "name": "_record_directive"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "record_constructor_instance"
               }
-            }
-          ]
+            ]
+          }
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_inline_declaration"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_block_declaration"
+              }
+            ]
+          }
         },
         {
           "type": "SYMBOL",

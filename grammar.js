@@ -34,7 +34,10 @@ module.exports = grammar({
     ],
 
     rules: {
-        source_file: $ => optional(repeat1($._declaration)),
+        source_file: $ => optional(repeat1(choice(
+            $._inline_declaration,
+            $._block_declaration
+        ))),
 
         ////////////////////////////////////////////////////////////////////////
         // Comment
@@ -113,14 +116,17 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
 
-        _declaration_block: $ => block($, $._declaration),
+        _declaration_block: $ => block($,
+            $._inline_declaration,
+            $._block_declaration,
+        ),
+
         _declaration_block0: $ => choice(
             $._newline,
             $._declaration_block
         ),
 
-        _declaration: $ => choice(
-            // inline
+        _inline_declaration: $ => choice(
             $.data_signature_only,
             $.record_signature_only,
             $.module_macro,
@@ -129,8 +135,9 @@ module.exports = grammar({
             $.infix,
             $.pattern,
             $.syntax,
+        ),
 
-            // block
+        _block_declaration: $ => choice(
             $.data,
             $.function_clause,
             $.record,
@@ -368,13 +375,14 @@ module.exports = grammar({
 
         // Record declarations, including an optional record constructor name.
         record_declarations_block: $ => indent($,
-            seq(
-                repeat(choice(
-                    $._record_directive,
-                    $.record_constructor_instance,
-                )),
-                repeat($._declaration)
-            )
+            repeat(choice(
+                $._record_directive,
+                $.record_constructor_instance,
+            )),
+            repeat(choice(
+                $._inline_declaration,
+                $._block_declaration)
+            ),
         ),
 
         // Declaration of record constructor name.
@@ -770,10 +778,10 @@ function sepL(sep, rule) {
     return seq(repeat(seq(rule, sep)), rule)
 }
 
-function indent($, rule) {
+function indent($, ...rule) {
     return seq(
         $._indent,
-        rule,
+        ...rule,
         $._dedent
     );
 }
@@ -784,17 +792,21 @@ function block($, ...rules) {
         repeat1(choice(...rules))
     );
 }
-//
-// // Like "block", except that the $._newline of the last element can be elided
-// function blockDangling($, inlines, blocks) {
-//     return indent($, seq(
-//         repeat(choice(
-//             seq(inlines, $._newline),
-//         ))
-//         // repeat1(choice(...rules))
-//
-//     ));
-// }
+
+// Like "block", except that the $._newline of the last element can be elided
+function blockDangling($, inlines, blocks, dangling) {
+    return indent($, seq(
+        repeat(choice(
+            seq(inlines, $._newline),
+            blocks
+        )),
+        choice(
+            seq(inlines, optional($._newline)),
+            blocks
+        ),
+        dangling
+    ));
+}
 
 
 ////////////////////////////////////////////////////////////////////////
