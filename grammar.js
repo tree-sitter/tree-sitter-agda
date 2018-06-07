@@ -318,7 +318,7 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
         data: $ => seq(
             choice('data', 'codata'),
-            $.name,
+            alias($.name, $.data_name),
             optional($._typed_untyped_binding1),
             optional(seq(':', $.expr)),
             'where',
@@ -366,7 +366,7 @@ module.exports = grammar({
 
         record: $ => seq(
             'record',
-            $._atom_no_curly,
+            alias($._atom_no_curly, $.record_name),
             optional($._typed_untyped_binding1),
             optional(seq(':', $.expr)),
             'where',
@@ -441,7 +441,7 @@ module.exports = grammar({
 
         module: $ => seq(
             'module',
-            choice($.qualified_name, $.anonymous_name),
+            alias(choice($.qualified_name, $.anonymous_name), $.module_name),
             optional($._typed_untyped_binding1),
             'where',
             $._declaration_block0

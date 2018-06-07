@@ -96,9 +96,9 @@ f a with g a
         (lhs
             (atom (qualified_name))
             (atom (qualified_name))
-            (with_expressions
+            (with_expressions (expr
                 (atom (qualified_name))
-                (atom (qualified_name)))))
+                (atom (qualified_name))))))
     (function_clause
         (lhs
             (atom)

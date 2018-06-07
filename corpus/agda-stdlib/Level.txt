@@ -22,7 +22,7 @@ open Lift public
 ---
 
 (source_file
-    (module (qualified_name))
+    (module (module_name))
     (comment)
     (open (qualified_name)
         (import_directive)
@@ -31,7 +31,7 @@ open Lift public
             (renaming (name) (name))
             (renaming (name) (name))))
     (comment)
-    (record (qualified_name)
+    (record (record_name (qualified_name))
         (untyped_binding
             (atom (qualified_name))
             (atom (qualified_name)))

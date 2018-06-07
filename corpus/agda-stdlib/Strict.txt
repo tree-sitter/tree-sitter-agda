@@ -29,7 +29,7 @@ module _ {ℓ ℓ′ : Level} {A : Set ℓ} {B : Set ℓ′} where
 ---
 
 (source_file
-    (module (qualified_name))
+    (module (module_name))
     (open (qualified_name))
     (open (qualified_name))
     (open (qualified_name)
@@ -39,7 +39,7 @@ module _ {ℓ ℓ′ : Level} {A : Set ℓ} {B : Set ℓ′} where
         (import_directive))
     (comment)
     (module
-        (anonymous_name)
+        (module_name)
         (typed_binding (atom (qualified_name)) (atom (qualified_name)) (expr (atom (qualified_name))))
         (typed_binding (atom (qualified_name))                         (expr (atom) (atom (qualified_name))))
         (typed_binding (atom (qualified_name))                         (expr (atom) (atom (qualified_name))))

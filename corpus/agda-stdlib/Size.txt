@@ -14,7 +14,7 @@ open import Agda.Builtin.Size public
 ---
 
 (source_file
-    (module (qualified_name))
+    (module (module_name))
     (open (qualified_name)
         (import_directive)
         (import_directive (renaming (name) (name)))

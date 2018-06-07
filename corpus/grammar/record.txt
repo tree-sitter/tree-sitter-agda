@@ -13,7 +13,7 @@ record Pair (A B : Set) : Set where
 
 (source_file
     (record
-        (qualified_name)
+        (record_name (qualified_name))
         (typed_binding
             (atom (qualified_name))
             (atom (qualified_name))
@@ -43,7 +43,7 @@ record Pair (A B : Set) : Set where
 
 (source_file
     (record
-        (qualified_name)
+        (record_name (qualified_name))
         (typed_binding
             (atom (qualified_name))
             (atom (qualified_name))

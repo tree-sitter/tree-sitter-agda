@@ -1446,8 +1446,13 @@
           ]
         },
         {
-          "type": "SYMBOL",
-          "name": "name"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "name"
+          },
+          "named": true,
+          "value": "data_name"
         },
         {
           "type": "CHOICE",
@@ -1695,8 +1700,13 @@
           "value": "record"
         },
         {
-          "type": "SYMBOL",
-          "name": "_atom_no_curly"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_atom_no_curly"
+          },
+          "named": true,
+          "value": "record_name"
         },
         {
           "type": "CHOICE",
@@ -2023,17 +2033,22 @@
           "value": "module"
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "qualified_name"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "anonymous_name"
-            }
-          ]
+          "type": "ALIAS",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "qualified_name"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "anonymous_name"
+              }
+            ]
+          },
+          "named": true,
+          "value": "module_name"
         },
         {
           "type": "CHOICE",

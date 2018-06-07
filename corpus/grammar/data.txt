@@ -10,7 +10,7 @@ data Nat : Set where
 
 (source_file
     (data
-        (name) (expr (atom))
+        (data_name) (expr (atom))
         (function_clause
             (lhs (atom (qualified_name)))
             (rhs
@@ -43,5 +43,5 @@ data Nat : Set where
 ---
 
 (source_file
-    (data (name) (expr (atom)))
-    (data (name) (expr (atom))))
+    (data (data_name) (expr (atom)))
+    (data (data_name) (expr (atom))))
