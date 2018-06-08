@@ -24,7 +24,7 @@ open Lift public
 (source_file
     (module (module_name))
     (comment)
-    (open (qualified_name)
+    (open (module_name)
         (import_directive)
         (import_directive (name) (name))
         (import_directive
@@ -50,5 +50,5 @@ open Lift public
             (record_constructor (name))
             (field
                 (type_sig (arg_name (name)) (expr (atom (qualified_name)))))))
-    (open (qualified_name)
+    (open (module_name)
         (import_directive)))

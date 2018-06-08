@@ -30,9 +30,9 @@ module _ {ℓ ℓ′ : Level} {A : Set ℓ} {B : Set ℓ′} where
 
 (source_file
     (module (module_name))
-    (open (qualified_name))
-    (open (qualified_name))
-    (open (qualified_name)
+    (open (module_name))
+    (open (module_name))
+    (open (module_name)
         (import_directive
             (renaming (name) (name))
             (renaming (name) (name)))

@@ -25,6 +25,17 @@ module Test.Simple (A : Set) {B : _} where
         (typed_binding (atom (qualified_name)) (expr (atom)))))
 
 ==================
+Open as
+==================
+
+open A as B
+
+---
+
+(source_file
+    (open (module_name) (module_name)))
+
+==================
 Open with directives
 ==================
 
@@ -35,7 +46,7 @@ open import A b c public using (a; module C) hiding (xs) renaming (module ys to 
 
 (source_file
     (open
-        (qualified_name) (atom (qualified_name)) (atom (qualified_name))
+        (module_name) (atom (qualified_name)) (atom (qualified_name))
         (import_directive)
         (import_directive (name) (name))
         (import_directive (name))

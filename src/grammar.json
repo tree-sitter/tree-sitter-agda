@@ -1022,114 +1022,107 @@
         }
       ]
     },
+    "_module_name": {
+      "type": "ALIAS",
+      "content": {
+        "type": "SYMBOL",
+        "name": "qualified_name"
+      },
+      "named": true,
+      "value": "module_name"
+    },
     "open": {
       "type": "PREC_RIGHT",
       "value": 0,
       "content": {
-        "type": "CHOICE",
+        "type": "SEQ",
         "members": [
           {
-            "type": "SEQ",
+            "type": "CHOICE",
             "members": [
               {
-                "type": "STRING",
-                "value": "import"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "qualified_name"
-              },
-              {
-                "type": "CHOICE",
+                "type": "SEQ",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "_open_args1"
-                  },
-                  {
-                    "type": "BLANK"
+                    "type": "STRING",
+                    "value": "import"
                   }
                 ]
               },
               {
-                "type": "REPEAT",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "import_directive"
-                }
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "open"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "import"
+                  }
+                ]
+              },
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "open"
+                  }
+                ]
               }
             ]
           },
           {
-            "type": "SEQ",
+            "type": "SYMBOL",
+            "name": "_module_name"
+          },
+          {
+            "type": "CHOICE",
             "members": [
               {
-                "type": "STRING",
-                "value": "open"
-              },
-              {
-                "type": "STRING",
-                "value": "import"
-              },
-              {
                 "type": "SYMBOL",
-                "name": "qualified_name"
+                "name": "_open_as"
               },
               {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "_open_args1"
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              },
-              {
-                "type": "REPEAT",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "import_directive"
-                }
+                "type": "BLANK"
               }
             ]
           },
           {
-            "type": "SEQ",
+            "type": "CHOICE",
             "members": [
               {
-                "type": "STRING",
-                "value": "open"
-              },
-              {
                 "type": "SYMBOL",
-                "name": "qualified_name"
+                "name": "_open_args1"
               },
               {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "_open_args1"
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              },
-              {
-                "type": "REPEAT",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "import_directive"
-                }
+                "type": "BLANK"
               }
             ]
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "import_directive"
+            }
           }
         ]
       }
+    },
+    "_open_as": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "as"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_module_name"
+        }
+      ]
     },
     "_open_args1": {
       "type": "PREC_LEFT",

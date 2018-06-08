@@ -14,11 +14,11 @@ open import Level
 
 (source_file
     (module (module_name))
-    (open (qualified_name))
-    (open (qualified_name))
-    (open (qualified_name))
-    (open (qualified_name))
-    (open (qualified_name)))
+    (open (module_name))
+    (open (module_name))
+    (open (module_name))
+    (open (module_name))
+    (open (module_name)))
 
 ==================
 semigroups
@@ -57,7 +57,7 @@ record Semigroup c ℓ : Set (suc (c ⊔ ℓ)) where
                 (type_sig (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name))))
                 (type_sig (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name))))
                 (type_sig (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name)))))
-            (open (qualified_name) (atom (qualified_name)) (import_directive)))))
+            (open (module_name) (atom (qualified_name)) (import_directive)))))
 
 ==================
 raw monoid
@@ -144,7 +144,7 @@ record Monoid c ℓ : Set (suc (c ⊔ ℓ)) where
                 (type_sig (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name))))
                 (type_sig (arg_name (name)) (expr        (atom (qualified_name))))
                 (type_sig (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name)))))
-            (open (qualified_name) (atom (qualified_name)) (import_directive))
+            (open (module_name) (atom (qualified_name)) (import_directive))
             (function_clause
                 (lhs (function_name (qualified_name)))
                 (rhs (expr (atom (qualified_name)) (atom) (atom))))

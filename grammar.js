@@ -264,11 +264,21 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
         // Open
         ////////////////////////////////////////////////////////////////////////
-        open: $ => prec.right(choice(
-            seq(        'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
-            seq('open', 'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
-            seq('open',           $.qualified_name, optional($._open_args1), repeat($.import_directive)),
+        _module_name: $ => alias($.qualified_name, $.module_name),
+
+        open: $ => prec.right(seq(
+            choice(
+                seq(        'import'),
+                seq('open', 'import'),
+                seq('open'          ),
+            ),
+            $._module_name,
+            optional($._open_as),
+            optional($._open_args1),
+            repeat($.import_directive),
         )),
+
+        _open_as: $ => seq('as', $._module_name),
 
         _open_args1: $ => prec.left(repeat1($.atom)),
 
