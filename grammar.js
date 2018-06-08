@@ -35,7 +35,7 @@ module.exports = grammar({
 
     rules: {
         source_file: $ => optional(repeat1(choice(
-            $._inline_declaration,
+            seq($._inline_declaration, $._newline),
             $._block_declaration
         ))),
 
@@ -116,10 +116,10 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
 
-        _declaration_block: $ => blockOld($,
-            $._inline_declaration,
-            $._block_declaration,
-        ),
+        _declaration_block: $ => block($, {
+            inline: $._inline_declaration,
+            block: $._block_declaration,
+        }),
 
         _declaration_block0: $ => choice(
             $._newline,
@@ -174,7 +174,6 @@ module.exports = grammar({
             $.lhs,
             optional($.rhs),
             optional($.where_clause),
-            $._newline,
         )),
 
         lhs: $ => prec.right(seq(
@@ -205,7 +204,6 @@ module.exports = grammar({
             optional($._typed_untyped_binding1),
             ':',
             $.expr,
-            $._newline,
         ),
 
         ////////////////////////////////////////////////////////////////////////
@@ -216,7 +214,6 @@ module.exports = grammar({
             optional($._typed_untyped_binding1),
             ':',
             $.expr,
-            $._newline,
         ),
 
         ////////////////////////////////////////////////////////////////////////
@@ -229,7 +226,6 @@ module.exports = grammar({
                 '=',
                 $.module_application,
                 repeat($.import_directive),
-                $._newline,
             ),
             seq(
                 'open',
@@ -239,7 +235,6 @@ module.exports = grammar({
                 '=',
                 $.module_application,
                 repeat($.import_directive),
-                $._newline,
             )
         ),
 
@@ -248,9 +243,9 @@ module.exports = grammar({
         // Open
         ////////////////////////////////////////////////////////////////////////
         open: $ => prec.right(choice(
-            seq(        'import', $.qualified_name, optional($._open_args1), repeat($.import_directive), $._newline),
-            seq('open', 'import', $.qualified_name, optional($._open_args1), repeat($.import_directive), $._newline),
-            seq('open',           $.qualified_name, optional($._open_args1), repeat($.import_directive), $._newline),
+            seq(        'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
+            seq('open', 'import', $.qualified_name, optional($._open_args1), repeat($.import_directive)),
+            seq('open',           $.qualified_name, optional($._open_args1), repeat($.import_directive)),
         )),
 
         _open_args1: $ => prec.left(repeat1($.atom)),
@@ -287,7 +282,6 @@ module.exports = grammar({
                 /#\-[^}]/,
             )),
             '#-}',
-            $._newline,
         ),
 
         ////////////////////////////////////////////////////////////////////////
@@ -296,7 +290,6 @@ module.exports = grammar({
             choice('infix', 'infixl', 'infixr'),
             $.integer,
             repeat1($._binding_name),
-            $._newline,
         ),
 
         ////////////////////////////////////////////////////////////////////////
@@ -319,8 +312,7 @@ module.exports = grammar({
                 $.name,
                 repeat1($.hole_name),
                 '=',
-                repeat1($.name),
-                $._newline
+                repeat1($.name)
         ),
 
         hole_name: $ => choice(
@@ -380,7 +372,7 @@ module.exports = grammar({
                 $.record_constructor_instance,
             )),
             repeat(choice(
-                $._inline_declaration,
+                seq($._inline_declaration, $._newline),
                 $._block_declaration)
             ),
         ),
@@ -388,9 +380,9 @@ module.exports = grammar({
         // Declaration of record constructor name.
         record_constructor_instance: $ => seq(
             'instance',
-            block($,
-                seq('constructor', $.name)
-            ),
+            block($, {
+                inline: seq('constructor', $.name)
+            }),
         ),
         _record_directive: $ => seq(
             choice(
@@ -463,10 +455,10 @@ module.exports = grammar({
 
         // A variant of TypeSignatures which uses arg_type_signatures instead of
         // _type_signature
-        _type_sig_block: $ => blockOld($,
-            $.type_sig,
-            $.type_sig_instance,
-        ),
+        _type_sig_block: $ => block($, {
+            inline: $.type_sig,
+            block: $.type_sig_instance,
+        }),
 
         // A variant of _type_signature where any sub-sequence of names can be
         // marked as hidden or irrelevant using braces and dots:
@@ -476,7 +468,6 @@ module.exports = grammar({
             $._arg_names,
             ':',
             $.expr,
-            $._newline,
         ),
         type_sig_instance: $ => seq(
             'instance',
@@ -539,7 +530,7 @@ module.exports = grammar({
         // For $.primitive only
         // Non-empty list of type signatures, with several identifiers allowed
         // for every signature.
-        _simple_type_sig_block: $ => block($, $.simple_type_sig),
+        _simple_type_sig_block: $ => block($, { inline: $.simple_type_sig }),
         simple_type_sig: $ => seq(
             repeat1($.name),
             ':',
@@ -607,7 +598,7 @@ module.exports = grammar({
         // Appears after "where"
         // Parses all extended lambda clauses including a single absurd clause.
         // For λ where this is not taken care of in AbsurdLambda
-        _lambda_where_block: $ => block($, $._lambda_clause),
+        _lambda_where_block: $ => block($, { inline: $._lambda_clause }),
 
         forall_bindings: $ => seq(
             $._typed_untyped_binding1,
@@ -639,22 +630,22 @@ module.exports = grammar({
             $.typed_binding
         )),
 
-        ////////////////////////////////////////////////////////////////////////
-        // Do-notation
-        ////////////////////////////////////////////////////////////////////////
-
-        _do_stmt: $ => seq(
-            $.expr,
-            choice(
-                $._newline,
-                $.do_where,
-            ),
-        ),
-
-        do_where: $ => seq(
-            'where',
-            $._lambda_where_block,
-        ),
+        // ////////////////////////////////////////////////////////////////////////
+        // // Do-notation
+        // ////////////////////////////////////////////////////////////////////////
+        //
+        // _do_stmt: $ => seq(
+        //     $.expr,
+        //     choice(
+        //         $._newline,
+        //         $.do_where,
+        //     ),
+        // ),
+        //
+        // do_where: $ => seq(
+        //     'where',
+        //     $._lambda_where_block,
+        // ),
 
         ////////////////////////////////////////////////////////////////////////
         // Expressions
@@ -687,7 +678,7 @@ module.exports = grammar({
             // let ... in
             $.let,
             // do
-            $.do,
+            // $.do,
 
             seq('quoteGoal', $.name, 'in', $.expr),
             seq('tactic', $._atoms1),
@@ -695,28 +686,20 @@ module.exports = grammar({
             prec(-1, $.atom),
         ),
 
-        do: $ => seq(
-            'do',
-            blockOld($,
-                $._do_stmt,
-            ),
-        ),
+        // do: $ => seq(
+        //     'do',
+        //     blockOld($,
+        //         $._do_stmt,
+        //     ),
+        // ),
 
-        function_clause_test: $ => seq(
-            $.lhs,
-            optional($.rhs),
-            optional($.where_clause)
+        _let_declaration_block: $ => blockDangling($,
+            $._inline_declaration,
+            $._block_declaration,
+            'in',
+            $.expr,
         ),
-
-        _let_declaration_block: $ => choice(
-            indent($, seq(
-                sepL($._newline, $.function_clause_test),
-                optional($._newline),
-                'in',
-                $.expr,
-            )),
-        ),
-
+        
         let: $ => prec.right(seq(
             'let',
             $._let_declaration_block,
@@ -783,29 +766,29 @@ function indent($, ...rule) {
 }
 
 // A mix of the rules (inline or block) enclosed in a indentation
-function blockOld($, ...rules) {
-    return indent($,
-        repeat1(choice(...rules))
-    );
-}
-
-function block($, inlines, blocks) {
-    if (blocks === undefined) {
-        return indent($,
-            repeat1(seq(inlines, $._newline))
-        );
-    } else {
-        return indent($,
-            repeat1(choice(
-                seq(inlines, $._newline),
-                blocks
-            ))
-        );
-    }
+function block($, rules) {
+   if (rules.inline !== undefined && rules.block === undefined) {
+       return indent($,
+           repeat1(seq(rules.inline, $._newline))
+       );
+   } else if (rules.inline === undefined && rules.block !== undefined) {
+       return indent($,
+           repeat1(choice(
+               rules.block
+           ))
+       );
+   } else {
+       return indent($,
+           repeat1(choice(
+               seq(rules.inline, $._newline),
+               rules.block
+           ))
+       );
+   }
 }
 
 // Like "block", except that the $._newline of the last element can be elided
-function blockDangling($, inlines, blocks, dangling) {
+function blockDangling($, inlines, blocks, ...dangling) {
     return indent($, seq(
         repeat(choice(
             seq(inlines, $._newline),
@@ -815,7 +798,7 @@ function blockDangling($, inlines, blocks, dangling) {
             seq(inlines, optional($._newline)),
             blocks
         ),
-        dangling
+        ...dangling
     ));
 }
 

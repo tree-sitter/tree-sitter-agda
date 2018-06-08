@@ -14,7 +14,7 @@ f x = let y = x in y
         (rhs
             (expr
                 (let
-                    (function_clause_test
+                    (function_clause
                         (lhs
                             (atom (qualified_name)))
                         (rhs
@@ -39,7 +39,7 @@ f x = let y = x in
         (rhs
             (expr
                 (let
-                    (function_clause_test
+                    (function_clause
                         (lhs
                             (atom (qualified_name)))
                         (rhs
@@ -64,7 +64,7 @@ f x = let y = x
         (rhs
             (expr
                 (let
-                    (function_clause_test
+                    (function_clause
                         (lhs
                             (atom (qualified_name)))
                         (rhs
@@ -88,12 +88,12 @@ f x = let y = x
             (atom (qualified_name)))
         (rhs
             (expr (let
-                (function_clause_test
+                (function_clause
                     (lhs
                         (atom (qualified_name)))
                     (rhs
                         (expr (atom (qualified_name)))))
-                (function_clause_test
+                (function_clause
                     (lhs
                         (atom (qualified_name)))
                     (rhs
@@ -117,12 +117,12 @@ f x = let y = x
             (atom (qualified_name)))
         (rhs
             (expr (let
-                (function_clause_test
+                (function_clause
                     (lhs
                         (atom (qualified_name)))
                     (rhs
                         (expr (atom (qualified_name)))))
-                (function_clause_test
+                (function_clause
                     (lhs
                         (atom (qualified_name)))
                     (rhs
@@ -146,12 +146,12 @@ f x = let y = x
             (atom (qualified_name)))
         (rhs
             (expr (let
-                (function_clause_test
+                (function_clause
                     (lhs
                         (atom (qualified_name)))
                     (rhs
                         (expr (atom (qualified_name)))))
-                (function_clause_test
+                (function_clause
                     (lhs
                         (atom (qualified_name)))
                     (rhs
@@ -175,7 +175,7 @@ f x = let y = x in
         (rhs
             (expr
                 (let
-                    (function_clause_test
+                    (function_clause
                         (lhs
                             (atom (qualified_name)))
                         (rhs
