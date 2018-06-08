@@ -909,7 +909,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_atom_no_curly"
+          "name": "_record_name"
         },
         {
           "type": "CHOICE",
@@ -1754,6 +1754,15 @@
         }
       ]
     },
+    "_record_name": {
+      "type": "ALIAS",
+      "content": {
+        "type": "SYMBOL",
+        "name": "_atom_no_curly"
+      },
+      "named": true,
+      "value": "record_name"
+    },
     "record": {
       "type": "SEQ",
       "members": [
@@ -1762,13 +1771,8 @@
           "value": "record"
         },
         {
-          "type": "ALIAS",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_atom_no_curly"
-          },
-          "named": true,
-          "value": "record_name"
+          "type": "SYMBOL",
+          "name": "_record_name"
         },
         {
           "type": "CHOICE",
@@ -3816,7 +3820,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_atom_no_curly"
+              "name": "_record_name"
             },
             {
               "type": "STRING",

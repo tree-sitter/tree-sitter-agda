@@ -232,7 +232,7 @@ module.exports = grammar({
         // Record type signature. In mutual blocks.
         record_signature_only: $ => seq(
             'record',
-            $._atom_no_curly,
+            $._record_name,
             optional($._typed_untyped_binding1),
             ':',
             $.expr,
@@ -388,9 +388,10 @@ module.exports = grammar({
         // Record
         //////////////////////////////////////////////////////////////////////
 
+        _record_name: $ => alias($._atom_no_curly, $.record_name),
         record: $ => seq(
             'record',
-            alias($._atom_no_curly, $.record_name),
+            $._record_name,
             optional($._typed_untyped_binding1),
             optional(seq(':', $.expr)),
             'where',
@@ -770,7 +771,7 @@ module.exports = grammar({
             // seq($.name_at, $.atom),
             seq('.', $.atom),
             seq('record', '{', optional($._record_assignments1), '}'),
-            seq('record', $._atom_no_curly, '{', optional($._field_assignments1), '}'),
+            seq('record', $._record_name, '{', optional($._field_assignments1), '}'),
             '...'
         ),
 

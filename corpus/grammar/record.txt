@@ -71,7 +71,7 @@ record Pair (A B : Set) : Set
 
 (source_file
     (record_signature_only
-        (qualified_name)
+        (record_name (qualified_name))
         (typed_binding
             (atom (qualified_name))
             (atom (qualified_name))
