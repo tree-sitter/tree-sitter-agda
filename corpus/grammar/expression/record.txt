@@ -25,8 +25,8 @@ r = record { M hiding (y); M2 a renaming (w to y) }
     (function_clause
         (lhs (atom (qualified_name)))
         (rhs (expr (atom
-            (module_assignment (qualified_name) (import_directive (name)))
-            (module_assignment (qualified_name) (atom (qualified_name))
+            (module_assignment (module_name) (import_directive (name)))
+            (module_assignment (module_name) (atom (qualified_name))
                 (import_directive (renaming (name) (name)))))))))
 
 ==================
@@ -56,6 +56,6 @@ a = record { MyRecord old; a = 0; c = 5}
     (function_clause
         (lhs (atom (qualified_name)))
         (rhs (expr (atom
-            (module_assignment (qualified_name) (atom (qualified_name)))
+            (module_assignment (module_name) (atom (qualified_name)))
             (field_assignment (qualified_name) (expr (atom (literal))))
             (field_assignment (qualified_name) (expr (atom (literal)))))))))

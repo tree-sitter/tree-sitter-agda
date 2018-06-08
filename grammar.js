@@ -447,7 +447,7 @@ module.exports = grammar({
         ),
 
         module_assignment: $ => seq(
-            $.qualified_name,
+            $._module_name,
             optional($._open_args1),
             repeat($.import_directive)
         ),

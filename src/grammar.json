@@ -2054,7 +2054,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "qualified_name"
+          "name": "_module_name"
         },
         {
           "type": "CHOICE",
