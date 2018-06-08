@@ -1822,7 +1822,7 @@
             {
               "type": "REPEAT1",
               "content": {
-                "type": "CHOICE",
+                "type": "SEQ",
                 "members": [
                   {
                     "type": "SEQ",
@@ -1834,12 +1834,12 @@
                       {
                         "type": "SYMBOL",
                         "name": "name"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "_newline"
                       }
                     ]
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_newline"
                   }
                 ]
               }
@@ -2312,11 +2312,15 @@
         {
           "type": "REPEAT1",
           "content": {
-            "type": "CHOICE",
+            "type": "SEQ",
             "members": [
               {
                 "type": "SYMBOL",
                 "name": "simple_type_sig"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_newline"
               }
             ]
           }
@@ -2344,10 +2348,6 @@
         {
           "type": "SYMBOL",
           "name": "expr"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_newline"
         }
       ]
     },
@@ -2574,33 +2574,15 @@
         {
           "type": "REPEAT1",
           "content": {
-            "type": "CHOICE",
+            "type": "SEQ",
             "members": [
               {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "lambda_clause"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "_newline"
-                  }
-                ]
+                "type": "SYMBOL",
+                "name": "_lambda_clause"
               },
               {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "lambda_clause_absurd"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "_newline"
-                  }
-                ]
+                "type": "SYMBOL",
+                "name": "_newline"
               }
             ]
           }

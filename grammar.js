@@ -116,7 +116,7 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
 
-        _declaration_block: $ => block($,
+        _declaration_block: $ => blockOld($,
             $._inline_declaration,
             $._block_declaration,
         ),
@@ -389,7 +389,7 @@ module.exports = grammar({
         record_constructor_instance: $ => seq(
             'instance',
             block($,
-                seq('constructor', $.name, $._newline)
+                seq('constructor', $.name)
             ),
         ),
         _record_directive: $ => seq(
@@ -463,7 +463,7 @@ module.exports = grammar({
 
         // A variant of TypeSignatures which uses arg_type_signatures instead of
         // _type_signature
-        _type_sig_block: $ => block($,
+        _type_sig_block: $ => blockOld($,
             $.type_sig,
             $.type_sig_instance,
         ),
@@ -544,7 +544,6 @@ module.exports = grammar({
             repeat1($.name),
             ':',
             $.expr,
-            $._newline,
         ),
 
 
@@ -608,10 +607,7 @@ module.exports = grammar({
         // Appears after "where"
         // Parses all extended lambda clauses including a single absurd clause.
         // For λ where this is not taken care of in AbsurdLambda
-        _lambda_where_block: $ => block($,
-            seq($.lambda_clause, $._newline),
-            seq($.lambda_clause_absurd, $._newline),
-        ),
+        _lambda_where_block: $ => block($, $._lambda_clause),
 
         forall_bindings: $ => seq(
             $._typed_untyped_binding1,
@@ -701,7 +697,7 @@ module.exports = grammar({
 
         do: $ => seq(
             'do',
-            block($,
+            blockOld($,
                 $._do_stmt,
             ),
         ),
@@ -787,10 +783,25 @@ function indent($, ...rule) {
 }
 
 // A mix of the rules (inline or block) enclosed in a indentation
-function block($, ...rules) {
+function blockOld($, ...rules) {
     return indent($,
         repeat1(choice(...rules))
     );
+}
+
+function block($, inlines, blocks) {
+    if (blocks === undefined) {
+        return indent($,
+            repeat1(seq(inlines, $._newline))
+        );
+    } else {
+        return indent($,
+            repeat1(choice(
+                seq(inlines, $._newline),
+                blocks
+            ))
+        );
+    }
 }
 
 // Like "block", except that the $._newline of the last element can be elided
