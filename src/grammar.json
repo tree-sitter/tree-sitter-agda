@@ -585,18 +585,118 @@
       "type": "PREC_RIGHT",
       "value": 0,
       "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "lhs_decl"
+                },
+                "named": true,
+                "value": "lhs"
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "rhs_decl"
+                    },
+                    "named": true,
+                    "value": "rhs"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "where_clause"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "lhs_defn"
+                },
+                "named": true,
+                "value": "lhs"
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "rhs_defn"
+                    },
+                    "named": true,
+                    "value": "rhs"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "where_clause"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "lhs_decl": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
         "type": "SEQ",
         "members": [
           {
-            "type": "SYMBOL",
-            "name": "lhs"
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "atom"
+            },
+            "named": true,
+            "value": "function_name"
           },
           {
             "type": "CHOICE",
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "rhs"
+                "name": "rewrite_equations"
               },
               {
                 "type": "BLANK"
@@ -608,7 +708,7 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "where_clause"
+                "name": "with_expressions"
               },
               {
                 "type": "BLANK"
@@ -618,7 +718,7 @@
         ]
       }
     },
-    "lhs": {
+    "lhs_defn": {
       "type": "PREC_RIGHT",
       "value": 0,
       "content": {
@@ -626,7 +726,7 @@
         "members": [
           {
             "type": "SYMBOL",
-            "name": "_expr1"
+            "name": "_with_expr"
           },
           {
             "type": "CHOICE",
@@ -664,7 +764,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_expr1"
+          "name": "_with_expr"
         }
       ]
     },
@@ -681,34 +781,29 @@
         }
       ]
     },
-    "rhs": {
-      "type": "CHOICE",
+    "rhs_decl": {
+      "type": "SEQ",
       "members": [
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "="
-            },
-            {
-              "type": "SYMBOL",
-              "name": "expr"
-            }
-          ]
+          "type": "STRING",
+          "value": ":"
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": ":"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "expr"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "expr"
+        }
+      ]
+    },
+    "rhs_defn": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expr"
         }
       ]
     },
@@ -3181,7 +3276,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "_expr1"
+              "name": "_with_expr"
             },
             {
               "type": "STRING",
@@ -3198,12 +3293,12 @@
           "value": -1,
           "content": {
             "type": "SYMBOL",
-            "name": "_expr1"
+            "name": "_with_expr"
           }
         }
       ]
     },
-    "_expr1": {
+    "_with_expr": {
       "type": "SEQ",
       "members": [
         {
@@ -3323,7 +3418,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_expr1"
+              "name": "_with_expr"
             }
           ]
         },
@@ -3769,7 +3864,12 @@
       "value": "\\s|\\\\n"
     }
   ],
-  "conflicts": [],
+  "conflicts": [
+    [
+      "lhs_decl",
+      "lhs_defn"
+    ]
+  ],
   "externals": [
     {
       "type": "SYMBOL",

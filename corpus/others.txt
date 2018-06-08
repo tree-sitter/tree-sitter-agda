@@ -14,13 +14,13 @@ mutual
 (source_file
     (mutual
         (function_clause
-            (lhs (atom (qualified_name)))
+            (lhs (function_name (qualified_name)))
             (rhs (expr (atom (qualified_name)))))
         (function_clause
             (lhs (atom (qualified_name)))
             (rhs (expr (atom (qualified_name)))))
         (function_clause
-            (lhs (atom (qualified_name)))
+            (lhs (function_name (qualified_name)))
             (rhs (expr (atom (qualified_name)))))
         (function_clause
             (lhs (atom (qualified_name)))
@@ -39,7 +39,7 @@ abstract
 (source_file
     (abstract
         (function_clause
-            (lhs (atom (qualified_name)))
+            (lhs (function_name (qualified_name)))
             (rhs (expr (atom (qualified_name)))))
         (function_clause
             (lhs (atom (qualified_name)))
@@ -58,7 +58,7 @@ private
 (source_file
     (private
         (function_clause
-            (lhs (atom (qualified_name)))
+            (lhs (function_name (qualified_name)))
             (rhs (expr (atom (qualified_name)))))
         (function_clause
             (lhs (atom (qualified_name)))
@@ -77,7 +77,7 @@ instance
 (source_file
     (instance
         (function_clause
-            (lhs (atom (qualified_name)))
+            (lhs (function_name (qualified_name)))
             (rhs (expr (atom (qualified_name)))))
         (function_clause
             (lhs (atom (qualified_name)))
@@ -98,7 +98,7 @@ macro
 (source_file
     (macro
         (function_clause
-            (lhs (atom (qualified_name)))
+            (lhs (function_name (qualified_name)))
             (rhs
                 (expr (atom (qualified_name))
                     (expr (atom (qualified_name))
@@ -125,7 +125,7 @@ postulate
 (source_file
     (postulate
         (function_clause
-            (lhs (atom (qualified_name)))
+            (lhs (function_name (qualified_name)))
             (rhs (expr (atom (qualified_name)))))))
 
 ==================

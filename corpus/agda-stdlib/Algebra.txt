@@ -146,14 +146,14 @@ record Monoid c ℓ : Set (suc (c ⊔ ℓ)) where
                 (type_sig (arg_name (name)) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name)))))
             (open (qualified_name) (atom (qualified_name)) (import_directive))
             (function_clause
-                (lhs (atom (qualified_name)))
+                (lhs (function_name (qualified_name)))
                 (rhs (expr (atom (qualified_name)) (atom) (atom))))
             (function_clause
                 (lhs (atom (qualified_name)))
                 (rhs (expr (atom
                     (field_assignment (qualified_name) (expr (atom (qualified_name))))))))
             (function_clause
-                (lhs (atom (qualified_name)))
+                (lhs (function_name (qualified_name)))
                 (rhs (expr (atom (qualified_name)) (atom) (atom))))
             (function_clause
                 (lhs (atom (qualified_name)))

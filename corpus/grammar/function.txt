@@ -9,8 +9,7 @@ id A a = a
 
 (source_file
     (function_clause
-        (lhs
-            (atom (qualified_name)))
+        (lhs (function_name (qualified_name)))
         (rhs
             (expr (atom (qualified_name))
             (expr (atom (qualified_name))
@@ -34,8 +33,7 @@ g : (A B _ ? : Set) -> A
 
 (source_file
     (function_clause
-        (lhs
-            (atom (qualified_name)))
+        (lhs (function_name (qualified_name)))
         (rhs
             (expr
             (typed_binding (atom (qualified_name)) (expr (atom)))
@@ -43,8 +41,7 @@ g : (A B _ ? : Set) -> A
             (typed_binding (atom (qualified_name)) (expr (atom)))
             (expr (atom (qualified_name))))))
     (function_clause
-        (lhs
-            (atom (qualified_name)))
+        (lhs (function_name (qualified_name)))
         (rhs
             (expr
             (typed_binding
@@ -66,8 +63,7 @@ g : {A : Set} -> A
 
 (source_file
     (function_clause
-        (lhs
-            (atom (qualified_name)))
+        (lhs (function_name (qualified_name)))
         (rhs
             (expr (forall_bindings (untyped_binding
                 (atom (qualified_name))
@@ -76,8 +72,7 @@ g : {A : Set} -> A
             (expr (atom (qualified_name))
             (expr (atom (qualified_name)))))))
     (function_clause
-        (lhs
-            (atom (qualified_name)))
+        (lhs (function_name (qualified_name)))
         (rhs
             (expr (typed_binding (atom (qualified_name)) (expr (atom)))
             (expr (atom (qualified_name)))))))

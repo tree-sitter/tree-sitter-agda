@@ -25,7 +25,7 @@ postulate
     (infix (integer) (name))
     (postulate
         (function_clause
-            (lhs (atom (qualified_name)))
+            (lhs (function_name (qualified_name)))
             (rhs (expr
                 (forall_bindings
                     (untyped_binding (atom (qualified_name)))
@@ -38,7 +38,7 @@ postulate
                         (atom (qualified_name))
                         (atom (qualified_name)))))))
         (function_clause
-            (lhs (atom (qualified_name)))
+            (lhs (function_name (qualified_name)))
             (rhs (expr
                 (forall_bindings
                     (untyped_binding

@@ -30,7 +30,7 @@ module.exports = grammar({
     ],
 
     conflicts: $ => [
-        // [$._record_directives1],
+        [$.lhs_decl, $.lhs_defn],
     ],
 
     rules: {
@@ -170,25 +170,47 @@ module.exports = grammar({
         // to allow declarations like 'x::xs ++ ys = e', when '::' has higher
         // precedence than '++'.
         // function_clause also handle possibly dotted type signatures.
-        function_clause: $ => prec.right(seq(
-            $.lhs,
-            optional($.rhs),
-            optional($.where_clause),
+        function_clause: $ => prec.right(choice(
+            seq(
+                alias($.lhs_decl, $.lhs),
+                optional(alias($.rhs_decl, $.rhs)),
+                optional($.where_clause),
+            ),
+            seq(
+                alias($.lhs_defn, $.lhs),
+                optional(alias($.rhs_defn, $.rhs)),
+                optional($.where_clause),
+            ),
         )),
 
-        lhs: $ => prec.right(seq(
-            $._expr1,
+        lhs_decl: $ => prec.right(seq(
+            alias($.atom, $.function_name),
             optional($.rewrite_equations),
             optional($.with_expressions)
         )),
 
-        rewrite_equations: $ => seq('rewrite', $._expr1),
+        lhs_defn: $ => prec.right(seq(
+            $._with_expr,
+            optional($.rewrite_equations),
+            optional($.with_expressions)
+        )),
+
+
+        // lhs: $ => prec.right(seq(
+        //     $._with_expr,
+        //     optional($.rewrite_equations),
+        //     optional($.with_expressions)
+        // )),
+
+        rewrite_equations: $ => seq('rewrite', $._with_expr),
         with_expressions: $ => seq('with', $.expr),
 
-        rhs: $ => choice(
-            seq('=', $.expr),
-            seq(':', $.expr)
-        ),
+        rhs_decl: $ => seq(':', $.expr),
+        rhs_defn: $ => seq('=', $.expr),
+        // rhs: $ => choice(
+        //     seq('=', $.expr),
+        //     seq(':', $.expr)
+        // ),
 
         where_clause: $ => choice(
             seq(                            'where', $._declaration_block0),
@@ -654,12 +676,12 @@ module.exports = grammar({
         expr: $ => choice(
             seq($._typed_bindings1, $._const_right_arrow, $.expr),
             seq($._atoms1         , $._const_right_arrow, $.expr),
-            seq($._expr1          , '='                 , $.expr),
-            prec(-1, $._expr1) // lowest precedence
+            seq($._with_expr      , '='                 , $.expr),
+            prec(-1, $._with_expr) // lowest precedence
         ),
 
         // Level 1 Expressions: Application
-        _expr1: $ => seq(
+        _with_expr: $ => seq(
             repeat(seq($._atoms1, '|')),
             $._application
         ),
@@ -682,7 +704,7 @@ module.exports = grammar({
 
             seq('quoteGoal', $.name, 'in', $.expr),
             seq('tactic', $._atoms1),
-            seq('tactic', $._atoms1, '|', $._expr1),
+            seq('tactic', $._atoms1, '|', $._with_expr),
             prec(-1, $.atom),
         ),
 
@@ -699,7 +721,7 @@ module.exports = grammar({
             'in',
             $.expr,
         ),
-        
+
         let: $ => prec.right(seq(
             'let',
             $._let_declaration_block,

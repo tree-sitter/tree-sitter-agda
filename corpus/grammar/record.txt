@@ -55,7 +55,7 @@ record Pair (A B : Set) : Set where
             (record_eta)
             (instance
                 (function_clause
-                    (lhs (atom (qualified_name)))
+                    (lhs (function_name (qualified_name)))
                     (rhs (expr (atom (qualified_name))))))
             (field
                 (type_sig (arg_name (name)) (expr (atom (qualified_name))))
