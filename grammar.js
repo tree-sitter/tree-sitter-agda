@@ -89,10 +89,10 @@ module.exports = grammar({
         qualified_name: $ => qualified_name,
 
         anonymous_name: $ => '_',
-        _binding_name: $ => choice(
+        _binding_name: $ => alias(choice(
             $.name,
             $.anonymous_name,
-        ),
+        ), $.binding_name),
 
         // identifiers which may be surrounded by braces or dotted.
         _field_name: $ => alias($.name, $.field_name),

@@ -22,7 +22,7 @@ postulate
     (open (module_name)
         (import_directive)
         (import_directive (name)))
-    (infix (integer) (name))
+    (infix (integer) (binding_name))
     (postulate
         (function_clause
             (lhs (function_name (qualified_name)))

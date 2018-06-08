@@ -88,7 +88,7 @@ module _ {ℓ ℓ′ : Level} {A : Set ℓ} {B : Set ℓ′} where
             (atom (qualified_name))
             (atom (qualified_name))
             (atom (expr (lambda
-                (untyped_binding (anonymous_name))
+                (untyped_binding (binding_name))
                 (expr (atom (qualified_name)))))))))
     (function_clause
         (lhs (function_name (qualified_name)))
@@ -112,5 +112,5 @@ module _ {ℓ ℓ′ : Level} {A : Set ℓ} {B : Set ℓ′} where
         (atom (qualified_name))
         (atom (qualified_name))
         (atom (expr (lambda
-        (untyped_binding (anonymous_name))
+        (untyped_binding (binding_name))
         (expr (atom (qualified_name)))))))))))

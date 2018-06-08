@@ -13,7 +13,7 @@ f = λ (a : Set) b () -> a
         (rhs
             (expr (lambda
                 (typed_binding (atom (qualified_name)) (expr (atom)))
-                (untyped_binding (name))
+                (untyped_binding (binding_name))
                 (expr (atom (qualified_name))))))))
 
 ==================
@@ -71,4 +71,4 @@ f = \ (A : Set) b ()
         (rhs
             (expr (lambda
                 (typed_binding (atom (qualified_name)) (expr (atom)))
-                (untyped_binding (name)))))))
+                (untyped_binding (binding_name)))))))

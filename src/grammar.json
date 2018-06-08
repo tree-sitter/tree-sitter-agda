@@ -183,17 +183,22 @@
       "value": "_"
     },
     "_binding_name": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "name"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "anonymous_name"
-        }
-      ]
+      "type": "ALIAS",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "name"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "anonymous_name"
+          }
+        ]
+      },
+      "named": true,
+      "value": "binding_name"
     },
     "_field_name": {
       "type": "ALIAS",

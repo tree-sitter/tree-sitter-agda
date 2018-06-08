@@ -108,7 +108,7 @@ macro
             (rhs (expr
                 (atom (qualified_name))
                 (atom (expr (atom (qualified_name)) (atom (qualified_name))))
-                (lambda (untyped_binding (name))
+                (lambda (untyped_binding (binding_name))
                     (expr (atom (qualified_name))
                         (atom (qualified_name))
                             (atom (expr (atom (qualified_name)) (atom (qualified_name)))))))))))

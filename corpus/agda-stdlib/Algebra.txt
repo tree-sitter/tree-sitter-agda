@@ -42,16 +42,16 @@ record Semigroup c ℓ : Set (suc (c ⊔ ℓ)) where
     (comment)
     (record
         (record_name (qualified_name))
-            (untyped_binding (name))
-            (untyped_binding (name))
+            (untyped_binding (binding_name))
+            (untyped_binding (binding_name))
             (expr (atom) (atom (expr
                 (atom (qualified_name))
                 (atom (expr (atom (qualified_name))
                 (atom (qualified_name))
                 (atom (qualified_name)))))))
         (record_declarations_block
-            (infix (integer) (name))
-            (infix (integer) (name))
+            (infix (integer) (binding_name))
+            (infix (integer) (binding_name))
             (field
                 (type_sig (field_name) (expr (atom) (atom (qualified_name))))
                 (type_sig (field_name) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name))))
@@ -80,16 +80,16 @@ record RawMonoid c ℓ : Set (suc (c ⊔ ℓ)) where
     (comment)
     (record
         (record_name (qualified_name))
-            (untyped_binding (name))
-            (untyped_binding (name))
+            (untyped_binding (binding_name))
+            (untyped_binding (binding_name))
             (expr (atom) (atom (expr
                 (atom (qualified_name))
                 (atom (expr (atom (qualified_name))
                 (atom (qualified_name))
                 (atom (qualified_name)))))))
         (record_declarations_block
-            (infix (integer) (name))
-            (infix (integer) (name))
+            (infix (integer) (binding_name))
+            (infix (integer) (binding_name))
             (field
                 (type_sig (field_name) (expr (atom) (atom (qualified_name))))
                 (type_sig (field_name) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name))))
@@ -128,16 +128,16 @@ record Monoid c ℓ : Set (suc (c ⊔ ℓ)) where
 (source_file
     (record
         (record_name (qualified_name))
-            (untyped_binding (name))
-            (untyped_binding (name))
+            (untyped_binding (binding_name))
+            (untyped_binding (binding_name))
             (expr (atom) (atom (expr
                 (atom (qualified_name))
                 (atom (expr (atom (qualified_name))
                 (atom (qualified_name))
                 (atom (qualified_name)))))))
         (record_declarations_block
-            (infix (integer) (name))
-            (infix (integer) (name))
+            (infix (integer) (binding_name))
+            (infix (integer) (binding_name))
             (field
                 (type_sig (field_name) (expr (atom) (atom (qualified_name))))
                 (type_sig (field_name) (expr        (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name))))
