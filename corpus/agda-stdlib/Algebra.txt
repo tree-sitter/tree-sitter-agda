@@ -13,7 +13,7 @@ open import Level
 ---
 
 (source_file
-    (module (qualified_name))
+    (module (module_name))
     (open (qualified_name))
     (open (qualified_name))
     (open (qualified_name))
@@ -41,7 +41,7 @@ record Semigroup c ℓ : Set (suc (c ⊔ ℓ)) where
 (source_file
     (comment)
     (record
-        (record_name (qualified_name)
+        (record_name (qualified_name))
             (untyped_binding (name))
             (untyped_binding (name))
             (expr (atom) (atom (expr
@@ -79,7 +79,7 @@ record RawMonoid c ℓ : Set (suc (c ⊔ ℓ)) where
 (source_file
     (comment)
     (record
-        (record_name (qualified_name)
+        (record_name (qualified_name))
             (untyped_binding (name))
             (untyped_binding (name))
             (expr (atom) (atom (expr
@@ -127,7 +127,7 @@ record Monoid c ℓ : Set (suc (c ⊔ ℓ)) where
 
 (source_file
     (record
-        (record_name (qualified_name)
+        (record_name (qualified_name))
             (untyped_binding (name))
             (untyped_binding (name))
             (expr (atom) (atom (expr

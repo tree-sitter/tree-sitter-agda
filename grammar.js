@@ -127,6 +127,7 @@ module.exports = grammar({
         ),
 
         _inline_declaration: $ => choice(
+            $.function_clause,
             $.data_signature_only,
             $.record_signature_only,
             $.module_macro,
@@ -139,7 +140,6 @@ module.exports = grammar({
 
         _block_declaration: $ => choice(
             $.data,
-            $.function_clause,
             $.record,
             $.module,
             $.field,
@@ -161,6 +161,41 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
+
+        ////////////////////////////////////////////////////////////////////////
+        // Function clauses
+        ////////////////////////////////////////////////////////////////////////
+
+        // Function declarations. The left hand side is parsed as an expression
+        // to allow declarations like 'x::xs ++ ys = e', when '::' has higher
+        // precedence than '++'.
+        // function_clause also handle possibly dotted type signatures.
+        function_clause: $ => prec.right(seq(
+            $.lhs,
+            optional($.rhs),
+            optional($.where_clause),
+            $._newline,
+        )),
+
+        lhs: $ => prec.right(seq(
+            $._expr1,
+            optional($.rewrite_equations),
+            optional($.with_expressions)
+        )),
+
+        rewrite_equations: $ => seq('rewrite', $._expr1),
+        with_expressions: $ => seq('with', $.expr),
+
+        rhs: $ => choice(
+            seq('=', $.expr),
+            seq(':', $.expr)
+        ),
+
+        where_clause: $ => choice(
+            seq(                            'where', $._declaration_block0),
+            seq('module', $.name,           'where', $._declaration_block0),
+            seq('module', $.anonymous_name, 'where', $._declaration_block0)
+        ),
 
         ////////////////////////////////////////////////////////////////////////
         // Data type signature. Found in mutual blocks.
@@ -323,41 +358,6 @@ module.exports = grammar({
             optional(seq(':', $.expr)),
             'where',
             $._declaration_block0,
-        ),
-
-        ////////////////////////////////////////////////////////////////////////
-        // Function clauses
-        ////////////////////////////////////////////////////////////////////////
-
-        // Function declarations. The left hand side is parsed as an expression
-        // to allow declarations like 'x::xs ++ ys = e', when '::' has higher
-        // precedence than '++'.
-        // function_clause also handle possibly dotted type signatures.
-        function_clause: $ => prec.right(seq(
-            $.lhs,
-            optional($.rhs),
-            optional($.where_clause),
-            $._newline,
-        )),
-
-        lhs: $ => prec.right(seq(
-            $._expr1,
-            optional($.rewrite_equations),
-            optional($.with_expressions)
-        )),
-
-        rewrite_equations: $ => seq('rewrite', $._expr1),
-        with_expressions: $ => seq('with', $.expr),
-
-        rhs: $ => choice(
-            seq('=', $.expr),
-            seq(':', $.expr)
-        ),
-
-        where_clause: $ => choice(
-            seq(                            'where', $._declaration_block0),
-            seq('module', $.name,           'where', $._declaration_block0),
-            seq('module', $.anonymous_name, 'where', $._declaration_block0)
         ),
 
         //////////////////////////////////////////////////////////////////////
