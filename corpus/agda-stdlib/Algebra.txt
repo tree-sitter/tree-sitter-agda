@@ -151,13 +151,13 @@ record Monoid c ℓ : Set (suc (c ⊔ ℓ)) where
             (function_clause
                 (lhs (atom (qualified_name)))
                 (rhs (expr (atom
-                    (field_assignment (qualified_name) (expr (atom (qualified_name))))))))
+                    (field_assignment (field_name) (expr (atom (qualified_name))))))))
             (function_clause
                 (lhs (function_name (qualified_name)))
                 (rhs (expr (atom (qualified_name)) (atom) (atom))))
             (function_clause
                 (lhs (atom (qualified_name)))
                 (rhs (expr (atom
-                    (field_assignment (qualified_name) (expr (atom (qualified_name))))
-                    (field_assignment (qualified_name) (expr (atom (qualified_name))))
-                    (field_assignment (qualified_name) (expr (atom (qualified_name)))))))))))
+                    (field_assignment (field_name) (expr (atom (qualified_name))))
+                    (field_assignment (field_name) (expr (atom (qualified_name))))
+                    (field_assignment (field_name) (expr (atom (qualified_name)))))))))))

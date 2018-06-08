@@ -10,8 +10,8 @@ f = record { fst = 2; snd = 3 }
     (function_clause
         (lhs (atom (qualified_name)))
         (rhs (expr (atom
-            (field_assignment (qualified_name) (expr (atom (literal))))
-            (field_assignment (qualified_name) (expr (atom (literal)))))))))
+            (field_assignment (field_name) (expr (atom (literal))))
+            (field_assignment (field_name) (expr (atom (literal)))))))))
 
 ==================
 Building records from modules
@@ -41,8 +41,8 @@ a = record old { a = 0; c = 5 }
     (function_clause
         (lhs (atom (qualified_name)))
         (rhs (expr (atom (record_name (qualified_name))
-            (field_assignment (qualified_name) (expr (atom (literal))))
-            (field_assignment (qualified_name) (expr (atom (literal)))))))))
+            (field_assignment (field_name) (expr (atom (literal))))
+            (field_assignment (field_name) (expr (atom (literal)))))))))
 
 ==================
 Record update in fields
@@ -57,5 +57,5 @@ a = record { MyRecord old; a = 0; c = 5}
         (lhs (atom (qualified_name)))
         (rhs (expr (atom
             (module_assignment (module_name) (atom (qualified_name)))
-            (field_assignment (qualified_name) (expr (atom (literal))))
-            (field_assignment (qualified_name) (expr (atom (literal)))))))))
+            (field_assignment (field_name) (expr (atom (literal))))
+            (field_assignment (field_name) (expr (atom (literal)))))))))

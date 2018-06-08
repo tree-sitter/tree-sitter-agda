@@ -455,10 +455,10 @@ module.exports = grammar({
 
         _field_assignments1: $ => sepR(';', $.field_assignment),
 
-        // the name should just be $.name rather than $.qualified_name,
-        // made it more permissive to resolve conflicts
+        // the name should just be $.name,
+        // but we make it $.qualified_name to resolve conflicts
         // between $.field_assignment and $.module_assignment
-        field_assignment: $ => seq($.qualified_name, '=', $.expr),
+        field_assignment: $ => seq(alias($.qualified_name, $.field_name), '=', $.expr),
 
         ////////////////////////////////////////////////////////////////////////
         // Module and Imports

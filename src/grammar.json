@@ -2106,8 +2106,13 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "qualified_name"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "qualified_name"
+          },
+          "named": true,
+          "value": "field_name"
         },
         {
           "type": "STRING",
