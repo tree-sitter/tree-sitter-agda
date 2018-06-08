@@ -31,7 +31,7 @@ data Nat : Set
 
 (source_file
     (data_signature_only
-        (name) (expr (atom))))
+        (data_name) (expr (atom))))
 
 ==================
 Empty

@@ -10,9 +10,9 @@ field
 
 (source_file
     (field
-        (type_sig (arg_name (name))
+        (type_sig (field_name)
             (expr (atom (qualified_name))))
-        (type_sig (arg_name (name))
+        (type_sig (field_name)
             (expr (atom (qualified_name))))))
 
 ==================
@@ -25,7 +25,7 @@ field a : A
 
 (source_file
     (field
-        (type_sig (arg_name (name))
+        (type_sig (field_name)
             (expr (atom (qualified_name))))))
 
 ==================
@@ -39,7 +39,7 @@ field a : A
 
 (source_file
     (field
-        (type_sig (arg_name (name))
+        (type_sig (field_name)
             (expr (atom (qualified_name))))
-        (type_sig (arg_name (name))
+        (type_sig (field_name)
             (expr (atom (qualified_name))))))

@@ -95,15 +95,16 @@ module.exports = grammar({
         ),
 
         // identifiers which may be surrounded by braces or dotted.
-        _arg_names: $ => repeat1($.arg_name),
-        arg_name: $ => choice(
-            maybeDotted($.name),
-            seq('{' , repeat1(maybeDotted($.name)), '}' ),
-            seq('{{', repeat1(maybeDotted($.name)), '}}'),
-            seq('.' , '{',  repeat1($.name), '}'),
-            seq('..', '{',  repeat1($.name), '}'),
-            seq('.' , '{{', repeat1($.name), '}}'),
-            seq('..', '{{', repeat1($.name), '}}'),
+        _field_name: $ => alias($.name, $.field_name),
+        _arg_names: $ => repeat1($._arg_name),
+        _arg_name: $ => choice(
+            maybeDotted($._field_name),
+            seq('{' , repeat1(maybeDotted($._field_name)), '}' ),
+            seq('{{', repeat1(maybeDotted($._field_name)), '}}'),
+            seq('.' , '{',  repeat1($._field_name), '}'),
+            seq('..', '{',  repeat1($._field_name), '}'),
+            seq('.' , '{{', repeat1($._field_name), '}}'),
+            seq('..', '{{', repeat1($._field_name), '}}'),
         ),
 
         ////////////////////////////////////////////////////////////////////////
@@ -222,7 +223,7 @@ module.exports = grammar({
         // Data type signature. Found in mutual blocks.
         data_signature_only: $ => seq(
             'data',
-            $.name,
+            alias($.name, $.data_name),
             optional($._typed_untyped_binding1),
             ':',
             $.expr,
