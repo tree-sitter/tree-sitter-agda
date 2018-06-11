@@ -65,9 +65,14 @@ namespace {
         bool skipJunk(TSLexer *lexer) {
             bool skippedNewline = false;
             while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r' || lexer->lookahead == '\n') {
-                if (lexer->lookahead == '\n')
+                if (lexer->lookahead == '\n') {
                     skippedNewline = true;
+                }
                 lexer->advance(lexer, true);
+                if (skippedNewline) {
+                    // mark the end of the last lexeme
+                    lexer->mark_end(lexer);
+                }
             }
             return skippedNewline;
         }
@@ -84,8 +89,6 @@ namespace {
             // skip spaces and newline
             skippedNewline = skippedNewline || skipJunk(lexer);
 
-            // mark the end of the last lexeme
-            lexer->mark_end(lexer);
 
             // in case of EOF
             if (lexer->lookahead == 0) {
@@ -163,7 +166,7 @@ namespace {
                     }
                 }
             }
-            
+
             return false;
         }
 
