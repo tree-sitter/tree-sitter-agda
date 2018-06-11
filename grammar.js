@@ -664,22 +664,19 @@ module.exports = grammar({
             $.typed_binding
         )),
 
-        // ////////////////////////////////////////////////////////////////////////
-        // // Do-notation
-        // ////////////////////////////////////////////////////////////////////////
-        //
-        // _do_stmt: $ => seq(
-        //     $.expr,
-        //     choice(
-        //         $._newline,
-        //         $.do_where,
-        //     ),
-        // ),
-        //
-        // do_where: $ => seq(
-        //     'where',
-        //     $._lambda_where_block,
-        // ),
+        ////////////////////////////////////////////////////////////////////////
+        // Do-notation
+        ////////////////////////////////////////////////////////////////////////
+
+        _do_stmt: $ => seq(
+            $.expr,
+            optional($.do_where),
+        ),
+
+        do_where: $ => seq(
+            'where',
+            $._lambda_where_block,
+        ),
 
         ////////////////////////////////////////////////////////////////////////
         // Expressions
@@ -712,7 +709,7 @@ module.exports = grammar({
             // let ... in
             $.let,
             // do
-            // $.do,
+            $.do,
 
             seq('quoteGoal', $.name, 'in', $.expr),
             seq('tactic', $._atoms1),
@@ -720,12 +717,12 @@ module.exports = grammar({
             prec(-1, $.atom),
         ),
 
-        // do: $ => seq(
-        //     'do',
-        //     blockOld($,
-        //         $._do_stmt,
-        //     ),
-        // ),
+        do: $ => seq(
+            'do',
+            block($, {
+                inline: $._do_stmt
+            }),
+        ),
 
         _let_declaration_block: $ => blockDangling($,
             $._inline_declaration,

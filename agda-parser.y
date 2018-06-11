@@ -103,6 +103,7 @@ import Agda.Utils.Impossible
     'eta-equality'            { TokKeyword KwEta $$ }
     'field'                   { TokKeyword KwField $$ }
     'forall'                  { TokKeyword KwForall $$ }
+    'generalize'              { TokKeyword KwGeneralize $$ }
     'hiding'                  { TokKeyword KwHiding $$ }
     'import'                  { TokKeyword KwImport $$ }
     'in'                      { TokKeyword KwIn $$ }
@@ -162,17 +163,20 @@ import Agda.Utils.Impossible
     'IMPOSSIBLE'              { TokKeyword KwIMPOSSIBLE $$ }
     'INJECTIVE'               { TokKeyword KwINJECTIVE $$ }
     'INLINE'                  { TokKeyword KwINLINE $$ }
+    'NOINLINE'                { TokKeyword KwNOINLINE $$ }
     'MEASURE'                 { TokKeyword KwMEASURE $$ }
     'NO_TERMINATION_CHECK'    { TokKeyword KwNO_TERMINATION_CHECK $$ }
     'NO_POSITIVITY_CHECK'     { TokKeyword KwNO_POSITIVITY_CHECK $$ }
     'NON_TERMINATING'         { TokKeyword KwNON_TERMINATING $$ }
     'OPTIONS'                 { TokKeyword KwOPTIONS $$ }
     'POLARITY'                { TokKeyword KwPOLARITY $$ }
+    'WARNING_ON_USAGE'        { TokKeyword KwWARNING_ON_USAGE $$ }
     'REWRITE'                 { TokKeyword KwREWRITE $$ }
     'STATIC'                  { TokKeyword KwSTATIC $$ }
     'TERMINATING'             { TokKeyword KwTERMINATING $$ }
 
     setN                      { TokSetN $$ }
+    propN                     { TokPropN $$ }
     tex                       { TokTeX $$ }
     comment                   { TokComment $$ }
 
@@ -236,6 +240,7 @@ Token
     | 'eta-equality'            { TokKeyword KwEta $1 }
     | 'field'                   { TokKeyword KwField $1 }
     | 'forall'                  { TokKeyword KwForall $1 }
+    | 'generalize'              { TokKeyword KwGeneralize $1 }
     | 'hiding'                  { TokKeyword KwHiding $1 }
     | 'import'                  { TokKeyword KwImport $1 }
     | 'in'                      { TokKeyword KwIn $1 }
@@ -295,6 +300,7 @@ Token
     | 'IMPOSSIBLE'              { TokKeyword KwIMPOSSIBLE $1 }
     | 'INJECTIVE'               { TokKeyword KwINJECTIVE $1 }
     | 'INLINE'                  { TokKeyword KwINLINE $1 }
+    | 'NOINLINE'                { TokKeyword KwNOINLINE $1 }
     | 'MEASURE'                 { TokKeyword KwMEASURE $1 }
     | 'NO_TERMINATION_CHECK'    { TokKeyword KwNO_TERMINATION_CHECK $1 }
     | 'NO_POSITIVITY_CHECK'     { TokKeyword KwNO_POSITIVITY_CHECK $1 }
@@ -304,8 +310,10 @@ Token
     | 'REWRITE'                 { TokKeyword KwREWRITE $1 }
     | 'STATIC'                  { TokKeyword KwSTATIC $1 }
     | 'TERMINATING'             { TokKeyword KwTERMINATING $1 }
+    | 'WARNING_ON_USAGE'        { TokKeyword KwWARNING_ON_USAGE $1 }
 
     | setN                      { TokSetN $1 }
+    | propN                     { TokPropN $1 }
     | tex                       { TokTeX $1 }
     | comment                   { TokComment $1 }
 
@@ -494,6 +502,18 @@ SpaceBIds :: { [Name] }
 SpaceBIds
     : BId SpaceBIds { $1 : $2 }
     | BId           { [$1] }
+
+{- DOES PRODUCE REDUCE/REDUCE CONFLICTS!
+-- Space-separated list of binding identifiers. Used in dependent
+-- function spaces: (x y z : Nat) -> ...
+-- (Used to be comma-separated; hence the name)
+-- QUESTION: Should this be replaced by SpaceBIds above?
+--CommaBIds :: { [(Relevance,Name)] }
+CommaBIds :: { [Name] }
+CommaBIds
+    : CommaBIds BId { $1 ++ [$2] }  -- SWITCHING DOES NOT HELP
+    | BId           { [$1] }
+-}
 
 -- Space-separated list of binding identifiers. Used in dependent
 -- function spaces: (x y z : Nat) -> ...
@@ -706,6 +726,7 @@ Expr3NoCurly
     | 'quoteContext'                    { QuoteContext (getRange $1) }
     | 'unquote'                         { Unquote (getRange $1) }
     | setN                              { SetN (getRange (fst $1)) (snd $1) }
+    | propN                             { PropN (getRange (fst $1)) (snd $1) }
     | '{{' Expr DoubleCloseBrace                        { InstanceArg (getRange ($1,$2,$3))
                                                           (maybeNamed $2) }
     | '(' Expr ')'                      { Paren (getRange ($1,$2,$3)) $2 }
@@ -814,6 +835,13 @@ TBind : CommaBIds ':' Expr  {
     let r = getRange ($1,$2,$3) -- the range is approximate only for TypedBindings
     in TypedBindings r $ defaultArg $ TBind r (map (pure . mkBoundName_) $1) $3
   }
+-- | Colors are not yet allowed in the syntax.
+--      | CommaBIds ':{' Colors '}' Expr  { ( $3, TBind (getRange ($1,$2,$3,$4,$5)) (map mkBoundName_ $1) $5 ) }
+{-
+Colors :: { [Color] }
+Colors : QId Colors { Ident $1 : $2 }
+       | QId        { [Ident $1] }
+-}
 
 -- x {y z} _ {v} : A
 TBindWithHiding :: { TypedBindings }
@@ -974,6 +1002,7 @@ DomainFreeBindingAbsurd
 
 DoStmts :: { [DoStmt] }
 DoStmts : DoStmt              { [$1] }
+        | DoStmt vsemi        { [$1] }    -- #3046
         | DoStmt semi DoStmts { $1 : $3 }
 
 DoStmt :: { DoStmt }
@@ -1103,6 +1132,7 @@ Declaration
     | Record        { [$1] }
     | RecordSig     { [$1] }  -- lone record signature in mutual block
     | Infix         { [$1] }
+    | Generalize    {  $1  }
     | Mutual        { [$1] }
     | Abstract      { [$1] }
     | Private       { [$1] }
@@ -1127,14 +1157,14 @@ Declaration
 -- Type signatures of the form "n1 n2 n3 ... : Type", with at least
 -- one bound name.
 TypeSigs :: { [Declaration] }
-TypeSigs : SpaceIds ':' Expr { map (\ x -> TypeSig defaultArgInfo x $3) $1 }
+TypeSigs : SpaceIds ':' Expr { map (\ x -> typeSig defaultArgInfo x $3) $1 }
 
 -- A variant of TypeSigs where any sub-sequence of names can be marked
 -- as hidden or irrelevant using braces and dots:
 -- {n1 .n2} n3 .n4 {n5} .{n6 n7} ... : Type.
 ArgTypeSigs :: { [Arg Declaration] }
 ArgTypeSigs
-  : ArgIds ':' Expr { map (fmap (\ x -> TypeSig defaultArgInfo x $3)) $1 }
+  : ArgIds ':' Expr { map (fmap (\ x -> typeSig defaultArgInfo x $3)) $1 }
   | 'overlap' ArgIds ':' Expr {%
       let setOverlap x =
             case getHiding x of
@@ -1142,7 +1172,7 @@ ArgTypeSigs
               _          ->
                 parseErrorAt (fromJust $ rStart' $ getRange $1)
                              "The 'overlap' keyword only applies to instance fields (fields marked with {{ }})"
-      in T.traverse (setOverlap . fmap (\ x -> TypeSig defaultArgInfo x $4)) $2 }
+      in T.traverse (setOverlap . fmap (\ x -> typeSig defaultArgInfo x $4)) $2 }
   | 'instance' ArgTypeSignatures {
     let
       setInstance (TypeSig info x t) = TypeSig (makeInstance info) x t
@@ -1216,6 +1246,13 @@ Fields : 'field' ArgTypeSignatures
                            _          -> NotInstanceDef
                 toField (Arg info (TypeSig info' x t)) = Field (inst info') x (Arg info t)
               in map toField $2 }
+
+-- Variable declarations for automatic generalization
+Generalize :: { [Declaration] }
+Generalize : 'generalize' ArgTypeSignatures
+            { let
+                toGeneralize (Arg info (TypeSig _ x t)) = Generalize info x t
+              in map toGeneralize $2 }
 
 -- Mutually recursive declarations.
 Mutual :: { Declaration }
@@ -1447,12 +1484,14 @@ DeclarationPragma
   | StaticPragma             { $1 }
   | InjectivePragma          { $1 }
   | InlinePragma             { $1 }
+  | NoInlinePragma           { $1 }
   | ImportPragma             { $1 }
   | ImportUHCPragma          { $1 }
   | ImpossiblePragma         { $1 }
   | TerminatingPragma        { $1 }
   | NonTerminatingPragma     { $1 }
   | NoTerminationCheckPragma { $1 }
+  | WarningOnUsagePragma     { $1 }
   | MeasurePragma            { $1 }
   | CatchallPragma           { $1 }
   | DisplayPragma            { $1 }
@@ -1536,7 +1575,12 @@ StaticPragma
 InlinePragma :: { Pragma }
 InlinePragma
   : '{-#' 'INLINE' PragmaQName '#-}'
-    { InlinePragma (getRange ($1,$2,$3,$4)) $3 }
+    { InlinePragma (getRange ($1,$2,$3,$4)) True $3 }
+
+NoInlinePragma :: { Pragma }
+NoInlinePragma
+  : '{-#' 'NOINLINE' PragmaQName '#-}'
+    { InlinePragma (getRange ($1,$2,$3,$4)) False $3 }
 
 InjectivePragma :: { Pragma }
 InjectivePragma
@@ -1614,6 +1658,15 @@ PolarityPragma
     { let (rs, occs) = unzip (reverse $4) in
       PolarityPragma (getRange ($1,$2,$3,rs,$5)) $3 occs }
 
+WarningOnUsagePragma :: { Pragma }
+WarningOnUsagePragma
+  : '{-#' 'WARNING_ON_USAGE' PragmaQName literal '#-}'
+  {%  case $4 of
+        { LitString r str -> return $ WarningOnUsage (getRange ($1,$2,$3,r,$5)) $3 str
+        ; _ -> parseError "Expected string literal"
+        }
+  }
+
 -- Possibly empty list of polarities. Reversed.
 Polarities :: { [(Range, Occurrence)] }
 Polarities : {- empty -}          { [] }
@@ -1651,7 +1704,7 @@ ArgTypeSignatures1
     | ArgTypeSigs                         { reverse $1 }
 
 -- Record declarations, including an optional record constructor name.
-RecordDeclarations :: { ((Maybe (Ranged Induction), Maybe Bool, Maybe (Name, IsInstance)), [Declaration]) }
+RecordDeclarations :: { ((Maybe (Ranged Induction), Maybe HasEta, Maybe (Name, IsInstance)), [Declaration]) }
 RecordDeclarations
                                   : vopen RecordDirectives close {% ((,) `fmap` verifyRecordDirectives $2 <*> pure []) }
                                   | vopen RecordDirectives semi Declarations1 close {% ((,) `fmap` verifyRecordDirectives $2 <*> pure $4) }
@@ -1670,10 +1723,10 @@ RecordDirective
                                   | RecordInduction       { Induction $1 }
                                   | RecordEta             { Eta $1 }
 
-RecordEta :: { Ranged Bool }
+RecordEta :: { Ranged HasEta }
 RecordEta
-                                  : 'eta-equality' { Ranged (getRange $1) True }
-                                  | 'no-eta-equality' { Ranged (getRange $1) False }
+                                  : 'eta-equality' { Ranged (getRange $1) YesEta }
+                                  | 'no-eta-equality' { Ranged (getRange $1) NoEta }
 
 -- Declaration of record as 'inductive' or 'coinductive'.
 RecordInduction :: { Ranged Induction }
@@ -1695,6 +1748,7 @@ Declarations0
 Declarations1 :: { [Declaration] }
 Declarations1
     : Declaration semi Declarations1 { $1 ++ $3 }
+    | Declaration vsemi              { $1 } -- #3046
     | Declaration                    { $1 }
 
 TopDeclarations :: { [Declaration] }
@@ -1791,8 +1845,9 @@ mkName (i, s) = do
           let x = rawNameToString y
               err = "in the name " ++ s ++ ", the part " ++ x ++ " is not valid"
           case parse defaultParseFlags [0] (lexer return) x of
-            ParseOk _ (TokId _) -> return ()
-            ParseFailed{} -> fail err
+            ParseOk _ TokId{}  -> return ()
+            ParseFailed{}      -> fail err
+            ParseOk _ TokEOF{} -> fail err
             ParseOk _ t   -> fail . ((err ++ " because it is ") ++) $ case t of
               TokId{}       -> __IMPOSSIBLE__
               TokQId{}      -> __IMPOSSIBLE__ -- "qualified"
@@ -1800,33 +1855,34 @@ mkName (i, s) = do
               TokLiteral{}  -> "a literal"
               TokSymbol s _ -> case s of
                 SymDot               -> __IMPOSSIBLE__ -- "reserved"
-                SymSemi              -> __IMPOSSIBLE__ -- "used to separate declarations"
+                SymSemi              -> "used to separate declarations"
                 SymVirtualSemi       -> __IMPOSSIBLE__
                 SymBar               -> "used for with-arguments"
                 SymColon             -> "part of declaration syntax"
                 SymArrow             -> "the function arrow"
                 SymEqual             -> "part of declaration syntax"
                 SymLambda            -> "used for lambda-abstraction"
-                SymUnderscore        -> __IMPOSSIBLE__
+                SymUnderscore        -> "used for anonymous identifiers"
                 SymQuestionMark      -> "a meta variable"
-                SymAs                -> __IMPOSSIBLE__ -- "used for as-patterns"
-                SymOpenParen         -> __IMPOSSIBLE__ -- "used to parenthesize expressions"
-                SymCloseParen        -> __IMPOSSIBLE__ -- "used to parenthesize expressions"
+                SymAs                -> "used for as-patterns"
+                SymOpenParen         -> "used to parenthesize expressions"
+                SymCloseParen        -> "used to parenthesize expressions"
                 SymOpenIdiomBracket  -> "an idiom bracket"
                 SymCloseIdiomBracket -> "an idiom bracket"
                 SymDoubleOpenBrace   -> "used for instance arguments"
                 SymDoubleCloseBrace  -> "used for instance arguments"
-                SymOpenBrace         -> __IMPOSSIBLE__ -- "used for hidden arguments"
-                SymCloseBrace        -> __IMPOSSIBLE__ -- "used for hidden arguments"
+                SymOpenBrace         -> "used for hidden arguments"
+                SymCloseBrace        -> "used for hidden arguments"
                 SymOpenVirtualBrace  -> __IMPOSSIBLE__
                 SymCloseVirtualBrace -> __IMPOSSIBLE__
                 SymOpenPragma        -> __IMPOSSIBLE__ -- "used for pragmas"
                 SymClosePragma       -> __IMPOSSIBLE__ -- "used for pragmas"
                 SymEllipsis          -> __IMPOSSIBLE__ -- "used for function clauses"
                 SymDotDot            -> __IMPOSSIBLE__ -- "a modality"
-                SymEndComment        -> __IMPOSSIBLE__ -- "the end-of-comment brace"
+                SymEndComment        -> "the end-of-comment brace"
               TokString{}   -> __IMPOSSIBLE__
               TokSetN{}     -> "a type universe"
+              TokPropN{}    -> "a prop universe"
               TokTeX{}      -> __IMPOSSIBLE__  -- used by the LaTeX backend only
               TokComment{}  -> __IMPOSSIBLE__
               TokDummy{}    -> __IMPOSSIBLE__
@@ -1960,10 +2016,10 @@ verifyImportDirective i =
 data RecordDirective
    = Induction (Ranged Induction)
    | Constructor (Name, IsInstance)
-   | Eta         (Ranged Bool)
+   | Eta         (Ranged HasEta)
    deriving (Eq,Show)
 
-verifyRecordDirectives :: [RecordDirective] -> Parser (Maybe (Ranged Induction), Maybe Bool, Maybe (Name, IsInstance))
+verifyRecordDirectives :: [RecordDirective] -> Parser (Maybe (Ranged Induction), Maybe HasEta, Maybe (Name, IsInstance))
 verifyRecordDirectives xs | null rs = return (ltm is, ltm es, ltm cs)
                           | otherwise = let Just pos = rStart' $ (head rs) in
                                           parseErrorAt pos $ "Repeated record directives at: \n" ++ intercalate "\n" (map show rs)
@@ -2122,7 +2178,7 @@ funClauseOrTypeSigs lhs mrhs wh = do
         LHS _ _ (_:_) -> parseError "Illegal: with in type signature"
         LHS _ (_:_) _ -> parseError "Illegal: rewrite in type signature"
         LHS p _ _ | hasWithPatterns p -> parseError "Illegal: with patterns in type signature"
-        LHS p [] []  -> map (\ (x, y) -> TypeSig x y e) <$> patternToNames p
+        LHS p [] []  -> map (\ (x, y) -> typeSig x y e) <$> patternToNames p
       _ -> parseError "A type signature cannot have a where clause"
 
 parseDisplayPragma :: Range -> Position -> String -> Parser Pragma
@@ -2131,5 +2187,8 @@ parseDisplayPragma r pos s =
     ParseOk s [FunClause (LHS lhs [] []) (RHS rhs) NoWhere ca] | null (parseInp s) ->
       return $ DisplayPragma r lhs rhs
     _ -> parseError "Invalid DISPLAY pragma. Should have form {-# DISPLAY LHS = RHS #-}."
+
+typeSig :: ArgInfo -> Name -> Expr -> Declaration
+typeSig i n e = TypeSig i n (Generalized e)
 
 }

@@ -67,11 +67,11 @@ namespace {
             while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r' || lexer->lookahead == '\n') {
                 if (lexer->lookahead == '\n') {
                     skippedNewline = true;
-                }
-                lexer->advance(lexer, true);
-                if (skippedNewline) {
+                    lexer->advance(lexer, true);
                     // mark the end of the last lexeme
                     lexer->mark_end(lexer);
+                } else {
+                    lexer->advance(lexer, true);
                 }
             }
             return skippedNewline;

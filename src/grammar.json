@@ -3255,6 +3255,40 @@
         ]
       }
     },
+    "_do_stmt": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "expr"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "do_where"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "do_where": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "where"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_lambda_where_block"
+        }
+      ]
+    },
     "expr": {
       "type": "CHOICE",
       "members": [
@@ -3389,6 +3423,10 @@
           "name": "let"
         },
         {
+          "type": "SYMBOL",
+          "name": "do"
+        },
+        {
           "type": "SEQ",
           "members": [
             {
@@ -3450,6 +3488,44 @@
             "type": "SYMBOL",
             "name": "atom"
           }
+        }
+      ]
+    },
+    "do": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "do"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_indent"
+            },
+            {
+              "type": "REPEAT1",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_do_stmt"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "_newline"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_dedent"
+            }
+          ]
         }
       ]
     },
