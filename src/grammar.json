@@ -567,6 +567,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "generalize"
+        },
+        {
+          "type": "SYMBOL",
           "name": "mutual"
         },
         {
@@ -2315,6 +2319,19 @@
         }
       ]
     },
+    "generalize": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "generalize"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_type_sig_block"
+        }
+      ]
+    },
     "mutual": {
       "type": "SEQ",
       "members": [
@@ -3256,36 +3273,38 @@
       }
     },
     "_do_stmt": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "expr"
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "do_where"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        }
-      ]
+      "type": "ALIAS",
+      "content": {
+        "type": "SYMBOL",
+        "name": "expr"
+      },
+      "named": true,
+      "value": "do_stmt"
     },
-    "do_where": {
+    "_do_stmt_where": {
       "type": "SEQ",
       "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "expr"
+          },
+          "named": true,
+          "value": "do_stmt"
+        },
         {
           "type": "STRING",
           "value": "where"
         },
         {
-          "type": "SYMBOL",
-          "name": "_lambda_where_block"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_lambda_where_block"
+          },
+          "named": true,
+          "value": "do_where"
         }
       ]
     },
@@ -3508,15 +3527,24 @@
             {
               "type": "REPEAT1",
               "content": {
-                "type": "SEQ",
+                "type": "CHOICE",
                 "members": [
                   {
-                    "type": "SYMBOL",
-                    "name": "_do_stmt"
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "_do_stmt"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "_newline"
+                      }
+                    ]
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "_newline"
+                    "name": "_do_stmt_where"
                   }
                 ]
               }

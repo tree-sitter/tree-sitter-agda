@@ -144,6 +144,7 @@ module.exports = grammar({
             $.record,
             $.module,
             $.field,
+            $.generalize,
             $.mutual,
             $.abstract,
             $.private,
@@ -509,6 +510,13 @@ module.exports = grammar({
         ),
 
         ////////////////////////////////////////////////////////////////////////
+        // Variable declarations for automatic generalization
+        generalize: $ => seq(
+            'generalize',
+            $._type_sig_block
+        ),
+
+        ////////////////////////////////////////////////////////////////////////
         // Mutually recursive declarations.
         mutual: $ => seq(
             'mutual',
@@ -668,14 +676,11 @@ module.exports = grammar({
         // Do-notation
         ////////////////////////////////////////////////////////////////////////
 
-        _do_stmt: $ => seq(
-            $.expr,
-            optional($.do_where),
-        ),
-
-        do_where: $ => seq(
+        _do_stmt: $ => alias($.expr, $.do_stmt),
+        _do_stmt_where: $ => seq(
+            alias($.expr, $.do_stmt),
             'where',
-            $._lambda_where_block,
+            alias($._lambda_where_block, $.do_where),
         ),
 
         ////////////////////////////////////////////////////////////////////////
@@ -720,7 +725,8 @@ module.exports = grammar({
         do: $ => seq(
             'do',
             block($, {
-                inline: $._do_stmt
+                inline: $._do_stmt,
+                block: $._do_stmt_where,
             }),
         ),
 

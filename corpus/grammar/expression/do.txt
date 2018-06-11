@@ -1,5 +1,5 @@
 ==================
-Simple I
+Simple bind
 ==================
 
 f = do
@@ -14,15 +14,40 @@ f = do
         (rhs
             (expr
                 (do
-                    (expr (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name)))
-                    (expr (atom (qualified_name))))))))
+                    (do_stmt (atom (qualified_name)) (atom (qualified_name)) (atom (qualified_name)))
+                    (do_stmt (atom (qualified_name))))))))
 
 ==================
-Simple II
+Pattern bind
 ==================
 
-f = do p ← m
-         where pᵢ → mᵢ
+f = do
+    p ← m
+        where pᵢ → mᵢ
+    m'
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name)))
+        (rhs
+            (expr
+                (do
+                    (do_stmt
+                        (atom (qualified_name))
+                        (atom (qualified_name))
+                        (atom (qualified_name)))
+                        (do_where
+                            (lambda_clause
+                                (atom (qualified_name))
+                                (expr (atom (qualified_name)))))
+                    (do_stmt (atom (qualified_name))))))))
+
+==================
+Non-binding statement
+==================
+f = do m
        m'
 ---
 
@@ -33,12 +58,23 @@ f = do p ← m
         (rhs
             (expr
                 (do
-                    (expr
-                        (atom (qualified_name))
-                        (atom (qualified_name))
-                        (atom (qualified_name)))
-                        (do_where
-                            (lambda_clause
-                                (atom (qualified_name))
-                                (expr (atom (qualified_name))))))
-                    (expr (atom (qualified_name))))))))
+                    (do_stmt (atom (qualified_name)))
+                    (do_stmt (atom (qualified_name))))))))
+
+==================
+Let
+==================
+f = do
+    let ds
+    m'
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name)))
+        (rhs
+            (expr
+                (do
+                    (do_stmt (let (atom (qualified_name)))
+                    (do_stmt (atom (qualified_name)))))))))
