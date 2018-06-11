@@ -1,15 +1,14 @@
 {
   "name": "tree-sitter-agda",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "tree sitter for Agda",
   "main": "index.js",
   "scripts": {
     "test": "npx tree-sitter test",
+    "build": "tree-sitter generate && node-gyp build",
     "generate": "npx tree-sitter generate && npm install",
     "iterate": "npm run generate && npm test",
-    "rebuild": "npm rebuild && npm run iterate",
-    "build-scanner": "node-gyp build --debug",
-    "build-grammar": "tree-sitter generate && node-gyp build --debug && tree-sitter test"
+    "rebuild": "npm rebuild && npm run iterate"
   },
   "repository": {
     "type": "git",
