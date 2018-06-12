@@ -48,19 +48,6 @@ namespace {
             lexer->advance(lexer, false);
         }
 
-        void printValidSymbols(const bool *valid_symbols) {
-            if (valid_symbols[DEDENT]) {
-                printf("<dedent> ");
-            }
-            if (valid_symbols[INDENT]) {
-                printf("<indent> ");
-            }
-            if (valid_symbols[NEWLINE]) {
-                printf("<newline> ");
-            }
-            printf("\n");
-        }
-
         // returns True if newline \n were skipped
         bool skipJunk(TSLexer *lexer) {
             bool skippedNewline = false;
@@ -112,15 +99,6 @@ namespace {
             uint32_t indent_length = lexer->get_column(lexer);
 
             if (!next_token_is_comment) {
-                //
-                // // DEBUG
-                // printf("\n\n[%c]    \t%d/%d", lexer->lookahead, indent_length, indent_length_stack.back());
-                // if (skippedNewline)
-                //     printf("\t\\n\n");
-                // else
-                //     printf("\t\n");
-                // printValidSymbols(valid_symbols);
-
                 // do
                 //      line0  <newline>
                 //      line1
