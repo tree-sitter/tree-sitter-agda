@@ -440,19 +440,21 @@ module.exports = grammar({
             'no-eta-equality'
         ),
 
-        _record_assignments1: $ => sepR(';', $._record_assignment),
+        record_assignments: $ => choice(
+            seq('record', '{', optional($._record_assignments1), '}'),
+            seq('record', $._record_name, '{', optional($._field_assignments1), '}'),
+        ),
 
-        _record_assignment: $ => choice(
+        _record_assignments1: $ => sepR(';', choice(
             $.field_assignment,
             $.module_assignment
-        ),
+        )),
 
         module_assignment: $ => seq(
             $._module_name,
             optional($._open_args1),
             repeat($.import_directive)
         ),
-
 
         _field_assignments1: $ => sepR(';', $.field_assignment),
 
@@ -774,8 +776,7 @@ module.exports = grammar({
             seq('{{', '}}'),
             // seq($.name_at, $.atom),
             seq('.', $.atom),
-            seq('record', '{', optional($._record_assignments1), '}'),
-            seq('record', $._record_name, '{', optional($._field_assignments1), '}'),
+            $.record_assignments,
             '...'
         ),
 
