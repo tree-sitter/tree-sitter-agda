@@ -2,6 +2,8 @@
 
 Syntax highlighting and code folding done right (with context-free grammar, finally!)
 
+![tree-sitter](https://i.imgur.com/7Pfmqjv.png)
+
 ## Issues to be resolved
 
 ### Telescoping let-bindings
@@ -48,7 +50,7 @@ npm run iterate
 
 ### Test it with `language-agda` on Atom
 
-First, you should have `language-agda` in development mode.
+First, you should have [`language-agda`](https://github.com/banacorn/language-agda) in development mode.
 
 ```bash
 apm dev language-agda
