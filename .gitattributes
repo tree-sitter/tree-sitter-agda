@@ -1,1 +1,3 @@
 /src/parser.c linguist-vendored
+/agda-lexer.x linguist-vendored
+/agda-parser.y linguist-vendored
