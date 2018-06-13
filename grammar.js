@@ -20,7 +20,8 @@ module.exports = grammar({
 
     extras: $ => [
         $.comment,
-        /\s|\\n/
+        $.pragma,
+        /\s|\\n/,
     ],
 
     externals: $ => [
@@ -133,7 +134,6 @@ module.exports = grammar({
             $.record_signature_only,
             $.module_macro,
             $.open,
-            $.pragma,
             $.infix,
             $.pattern,
             $.syntax,
@@ -308,7 +308,7 @@ module.exports = grammar({
         _comma_import_names1: $ => sepR(';', $._import_name),
 
         ////////////////////////////////////////////////////////////////////////
-        pragma: $ => seq(
+        pragma: $ => token(seq(
             '{-#',
             repeat(choice(
                 /[^#]/,
@@ -316,7 +316,7 @@ module.exports = grammar({
                 /#\-[^}]/,
             )),
             '#-}',
-        ),
+        )),
 
         ////////////////////////////////////////////////////////////////////////
         // Fixity declarations.
