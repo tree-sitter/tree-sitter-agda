@@ -20,9 +20,11 @@
   },
   "homepage": "https://github.com/banacorn/tree-sitter-agda#readme",
   "dependencies": {
-    "nan": "^2.4.0"
+    "nan": "^2.10.0",
+    "prebuild-install": "^5.0.0"
   },
   "devDependencies": {
-    "tree-sitter-cli": "^0.12.6"
+    "prebuild": "^7.6.0",
+    "tree-sitter-cli": "^0.13.2"
   }
 }
