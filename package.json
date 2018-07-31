@@ -4,21 +4,22 @@
   "description": "tree sitter for Agda",
   "main": "index.js",
   "scripts": {
-    "test": "npx tree-sitter test",
-    "generate": "npx tree-sitter generate && npm install",
-    "iterate": "npm run generate && npm test",
-    "rebuild": "npm rebuild && npm run iterate"
+    "build": "tree-sitter generate && node-gyp build --debug",
+    "install": "prebuild-install || node-gyp rebuild",
+    "prebuild": "prebuild -r electron -t 1.6.0 -t 1.7.0 -t 1.8.0 -t 2.0.0 --strip --verbose",
+    "prebuild:upload": "prebuild --upload-all",
+    "test": "tree-sitter test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/banacorn/tree-sitter-agda.git"
+    "url": "git+https://github.com/tree-sitter/tree-sitter-agda.git"
   },
   "author": "LUA Ting-Gan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/banacorn/tree-sitter-agda/issues"
+    "url": "https://github.com/tree-sitter/tree-sitter-agda/issues"
   },
-  "homepage": "https://github.com/banacorn/tree-sitter-agda#readme",
+  "homepage": "https://github.com/tree-sitter/tree-sitter-agda#readme",
   "dependencies": {
     "nan": "^2.10.0",
     "prebuild-install": "^5.0.0"
