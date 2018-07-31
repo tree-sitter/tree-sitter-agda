@@ -18,6 +18,8 @@ const qualified_name = /(([^\s\;\.\"\(\)\{\}\@\'\\\_]|\\[^\sa-zA-Z]|\_[^\s\;\.\"
 module.exports = grammar({
     name: 'agda',
 
+    word: $ => $.name,
+
     extras: $ => [
         $.comment,
         $.pragma,
