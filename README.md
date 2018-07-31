@@ -1,5 +1,7 @@
 # Agda Grammar for tree-sitter
 
+[![Build Status](https://travis-ci.org/tree-sitter/tree-sitter-agda.svg?branch=master)](https://travis-ci.org/tree-sitter/tree-sitter-agda)
+
 Syntax highlighting and code folding done right (with context-free grammar, finally!)
 
 ![tree-sitter](https://i.imgur.com/7Pfmqjv.png)
