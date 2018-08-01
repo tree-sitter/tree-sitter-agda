@@ -1,6 +1,5 @@
 {
   "name": "agda",
-  "word": "name",
   "rules": {
     "source_file": {
       "type": "CHOICE",
