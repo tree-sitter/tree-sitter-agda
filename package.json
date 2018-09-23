@@ -4,10 +4,7 @@
   "description": "tree sitter for Agda",
   "main": "index.js",
   "scripts": {
-    "buildit": "npx tree-sitter generate && npm install && node-gyp build --debug",
-    "install": "prebuild-install || node-gyp rebuild",
-    "prebuild": "prebuild -r electron -t 1.6.0 -t 1.7.0 -t 1.8.0 -t 2.0.0 --strip --verbose",
-    "prebuild:upload": "prebuild --upload-all",
+    "build": "npx tree-sitter generate && node-gyp build",
     "test": "npx tree-sitter test"
   },
   "repository": {
@@ -21,12 +18,10 @@
   },
   "homepage": "https://github.com/tree-sitter/tree-sitter-agda#readme",
   "dependencies": {
-    "nan": "^2.10.0",
-    "prebuild-install": "^5.0.0"
+    "nan": "^2.10.0"
   },
   "devDependencies": {
-    "prebuild": "^7.6.0",
-    "tree-sitter-cli": "^0.13.5"
+    "tree-sitter-cli": "^0.13.6"
   },
   "engines": {
     "node": "^8.4.0"
