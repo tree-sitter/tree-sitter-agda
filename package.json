@@ -24,6 +24,6 @@
     "tree-sitter-cli": "^0.13.6"
   },
   "engines": {
-    "node": "^8.4.0"
+    "node": "^8.12.0"
   }
 }
