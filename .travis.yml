@@ -1,23 +1,36 @@
 language: node_js
-
 sudo: false
-
 node_js:
-  - "node"
-
-compiler: clang-3.6
-
-env:
-  - CXX=clang-3.6
-
+- node
+os:
+- linux
+matrix:
+  include:
+  - os: osx
+    env: COMPILER=clang++
+    osx_image: xcode9.2
+    compiler: clang
+  - os: linux
+    env: CXX=clang-3.6
+    compiler: clang-3.6
 addons:
   apt:
     sources:
-      - llvm-toolchain-precise-3.6
-      - ubuntu-toolchain-r-test
+    - llvm-toolchain-precise-3.6
+    - ubuntu-toolchain-r-test
     packages:
-      - clang-3.6
-
+    - clang-3.6
 branches:
   only:
-    - master
+  - master
+  - "/^v.*$/"
+deploy:
+  provider: script
+  script: npm run pre-build && npm run pre-build:upload -u ${PREBUILD_UPLOAD}
+  skip_cleanup: true
+  on:
+    all_branches: true
+    tags: true
+env:
+  global:
+    secure: JgSFrjmMchqsSDFIqeiiv8Sn3qQme6vjxP/MJY7ef7tIp+1/UWASsd0PoG6f6LGMSepbq2zZN88edCp6B79g73TiHp+aE1lwPOv87k7WP//40dOuswKwFV5rZ6mq2VTfluhBtH3wie12gqUMAszEpG0p3REsb/K5572iRd3QmRwyCOKPBDwFfyADiomZx07AjTbSkP2lK+l1SADE0Rx5BrIuThWBhTpzK59zRNuSQu+WjZPWjZGE/J/u774UggP3mwb7VsZ3F9NG2yxhy0oOuvCw6YhqvY4jVxvVm87yoNvMv6zKkbi3//l5KmkL9XT4DepI8u4na+9RgOx3ouhKOXhlg4HBWgMc2tB9UUIfqIMGvKbpWRF09z3QM48Cq3M868C26+tgmGn7FJTztypyfPfOvds51RqJk4s3kOaLjIDX9y5cMGHxmoTbCJZMa124Uy6s4y38o3xxhKfTzD2phc2W/uDNZ4oBjbaa7G16K4snfVlPO6/Zz4b9ujWypwyg/JCI9uM10mzZ7kkgHJeV/H5aTaHqH0re3nXhnVOALuT6IPJh0Cerg3nwFrN8bR0+pDZ0fGQLs+miLmzBhNdMf2u1eIvjjp9VqmnT41UmvH0I5XoPuV2Q8SJj/In8X7TQHI5QpKD3H1Indd5iQyNYDTjLY1CMz3gUUaOxJAFrOfw=
