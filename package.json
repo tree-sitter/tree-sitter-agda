@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-agda",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "tree sitter for Agda",
   "main": "index.js",
   "scripts": {
