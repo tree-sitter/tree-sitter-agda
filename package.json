@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tree-sitter generate && node-gyp build",
-    "test": "npx tree-sitter test",
+    "install": "prebuild-install || node-gyp rebuild",
     "prebuild": "prebuild --all --strip --verbose",
-    "prebuild:upload": "prebuild --upload-all"
+    "prebuild:upload": "prebuild --upload-all",
+    "test": "npx tree-sitter test"
   },
   "repository": {
     "type": "git",
