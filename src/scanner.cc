@@ -2,6 +2,7 @@
 #include <vector>
 #include <cwctype>
 #include <cassert>
+#include <cstring>
 
 namespace {
 
@@ -19,29 +20,57 @@ namespace {
         }
 
         unsigned serialize(char *buffer) {
-            size_t i = 0;
-            buffer[i++] = queued_dedent_count;
+            size_t n_copied_so_far = 0;
+            size_t n_to_copy = sizeof(decltype(queued_dedent_count));
 
-            vector<uint16_t>::iterator
-            iter = indent_length_stack.begin() + 1,
-            end = indent_length_stack.end();
-            for (; iter != end && i < TREE_SITTER_SERIALIZATION_BUFFER_SIZE; ++iter) {
-                buffer[i++] = *iter;
+            std::memcpy((void *) &(buffer[n_copied_so_far]),
+                        (void *) &queued_dedent_count,
+                        n_to_copy);
+            n_copied_so_far += n_to_copy;
+
+            using element_type = decltype(indent_length_stack)::value_type;
+            n_to_copy = indent_length_stack.size() * sizeof(element_type);
+            if (n_copied_so_far + n_to_copy > TREE_SITTER_SERIALIZATION_BUFFER_SIZE) {
+                n_to_copy = TREE_SITTER_SERIALIZATION_BUFFER_SIZE - n_copied_so_far;
+                n_to_copy -= n_to_copy % sizeof(element_type);
             }
+            std::memcpy((void *) &(buffer[n_copied_so_far]),
+                        (void *) indent_length_stack.data(),
+                        n_to_copy);
+            n_copied_so_far += n_to_copy;
 
-            return i;
+            return n_copied_so_far;
         }
 
         void deserialize(const char *buffer, unsigned length) {
             queued_dedent_count = 0;
             indent_length_stack.clear();
-            indent_length_stack.push_back(0);
 
-            if (length > 0) {
-                size_t i = 0;
-                queued_dedent_count = buffer[i++];
-                while (i < length) indent_length_stack.push_back(buffer[i++]);
+            if (buffer == NULL) {
+                indent_length_stack.push_back(0);
+                return;
             }
+
+            size_t n_copied_so_far = 0;
+            size_t n_to_copy = sizeof(queued_dedent_count);
+
+            if (length < n_to_copy) return;
+            std::memcpy((void *) &queued_dedent_count,
+                        (void *) &(buffer[n_copied_so_far]),
+                        n_to_copy);
+            n_copied_so_far += n_to_copy;
+
+            using element_type = decltype(indent_length_stack)::value_type;
+            n_to_copy = length - n_copied_so_far;
+            n_to_copy -= n_to_copy % sizeof(element_type);
+            if (n_to_copy == 0) {
+                indent_length_stack.push_back(0);
+                return;
+            }
+            indent_length_stack.resize(n_to_copy / sizeof(element_type));
+            std::memcpy((void *) indent_length_stack.data(),
+                        (void *) &(buffer[n_copied_so_far]),
+                        n_to_copy);
         }
 
         void advance(TSLexer *lexer) {
