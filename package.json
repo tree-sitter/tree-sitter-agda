@@ -4,11 +4,12 @@
   "description": "tree sitter for Agda",
   "main": "index.js",
   "scripts": {
-    "build": "npx tree-sitter generate && node-gyp build",
+    "build": "npx tree-sitter generate && node-gyp rebuild",
     "install": "prebuild-install || node-gyp rebuild",
     "prebuild": "prebuild --all --strip --verbose",
     "prebuild:upload": "prebuild --upload-all",
-    "test": "npx tree-sitter test"
+    "test": "npx tree-sitter test",
+    "iterate": "npx tree-sitter generate && npx tree-sitter test"
   },
   "repository": {
     "type": "git",
