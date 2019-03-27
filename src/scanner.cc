@@ -75,21 +75,64 @@ namespace {
 
         void advance(TSLexer *lexer) {
             lexer->advance(lexer, false);
+
+            advanceCarriage();
         }
+
+        void skip(TSLexer *lexer) {
+            lexer->advance(lexer, true);
+
+            advanceCarriage();
+        }
+
+        // https://github.com/tree-sitter/tree-sitter/issues/312
+        // maintaining the column position by ourselves
+
+        void advanceCarriage() {
+            if (column_number != -1) {
+                column_number++;
+            }
+        }
+
+        // set `column_number` with `get_column`
+        void setCarriage(TSLexer *lexer) {
+            column_number = lexer->get_column(lexer);
+        }
+
+        // set `column_number` to 0, use after newline
+        void returnCarriage() {
+            column_number = 0;
+        }
+
+        // see if `column_number` is available
+        // else retrieve from `get_column`
+        uint32_t readCarriage(TSLexer *lexer) {
+            return column_number == -1
+                ? lexer->get_column(lexer)
+                : column_number;
+        }
+
 
         // returns True if newline \n were skipped
         bool skipJunk(TSLexer *lexer) {
             bool skippedNewline = false;
+
+            // assuming that `get_column` is correct before skipping
+            setCarriage(lexer);
+
             while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r' || lexer->lookahead == '\n') {
                 if (lexer->lookahead == '\n') {
                     skippedNewline = true;
-                    lexer->advance(lexer, true);
+                    skip(lexer);
                     // mark the end of the last lexeme
                     lexer->mark_end(lexer);
+                    // set column_number to 0
+                    returnCarriage();
                 } else {
-                    lexer->advance(lexer, true);
+                    skip(lexer);
                 }
             }
+
             return skippedNewline;
         }
 
@@ -104,7 +147,6 @@ namespace {
 
             // skip spaces and newline
             skippedNewline = skippedNewline || skipJunk(lexer);
-
 
             // in case of EOF
             if (lexer->lookahead == 0) {
@@ -125,7 +167,8 @@ namespace {
 
             // TODO: handle comments
             bool next_token_is_comment = false;
-            uint32_t indent_length = lexer->get_column(lexer);
+
+            uint32_t indent_length = readCarriage(lexer);
 
             if (!next_token_is_comment) {
                 // do
@@ -179,6 +222,10 @@ namespace {
 
         vector<uint16_t> indent_length_stack;
         uint32_t queued_dedent_count;
+
+        // column_number : Maybe Int
+        // -1 as Nothing,
+        uint32_t column_number;
     };
 
 }
