@@ -21,11 +21,11 @@
   },
   "homepage": "https://github.com/tree-sitter/tree-sitter-agda#readme",
   "dependencies": {
-    "nan": "^2.10.0",
+    "nan": "^2.13.2",
     "prebuild-install": "^5.0.0"
   },
   "devDependencies": {
-    "tree-sitter-cli": "^0.13.10",
-    "prebuild": "^7.6.1"
+    "prebuild": "^7.6.1",
+    "tree-sitter-cli": "^0.14.5"
   }
 }
