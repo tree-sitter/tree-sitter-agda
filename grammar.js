@@ -668,7 +668,7 @@ module.exports = grammar({
                 $._application, ':', $.expr
             ))),
             seq('(', $.open, ')'),
-            seq('(', 'let', $._let_declaration_block, ')')
+            seq('(', 'let', $._let_body, ')')
         ),
 
         _typed_untyped_binding1: $ => repeat1(choice(
@@ -734,17 +734,19 @@ module.exports = grammar({
             }),
         ),
 
-        _let_declaration_block: $ => blockDangling($,
-            $._inline_declaration,
-            $._block_declaration,
+        let: $ => prec.right(seq(
+            'let',
+            $._let_body,
+        )),
+
+        _let_body: $ => seq(
+            letBlock($,
+                $._inline_declaration,
+                $._block_declaration
+            ),
             'in',
             $.expr,
         ),
-
-        let: $ => prec.right(seq(
-            'let',
-            $._let_declaration_block,
-        )),
 
         lambda: $ => choice(
             seq($._const_lambda,          $._lambda_binding, $._const_right_arrow, $.expr),
@@ -828,20 +830,19 @@ function block($, rules) {
 }
 
 // Like "block", except that the $._newline of the last element can be elided
-function blockDangling($, inlines, blocks, ...dangling) {
-    return indent($, seq(
-        repeat(choice(
-            seq(inlines, $._newline),
-            blocks
-        )),
-        choice(
-            seq(inlines, optional($._newline)),
-            blocks
-        ),
-        ...dangling
-    ));
+function letBlock($, inlines, blocks) {
+    return seq(
+            optional($._indent),
+            repeat(choice(
+                seq(inlines, $._newline),
+                blocks
+            )),
+            choice(
+                seq(inlines, optional($._newline)),
+                blocks
+            ),
+        );
 }
-
 
 ////////////////////////////////////////////////////////////////////////
 // Language-specific combinators

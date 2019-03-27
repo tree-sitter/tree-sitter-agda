@@ -3318,7 +3318,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_let_declaration_block"
+              "name": "_let_body"
             },
             {
               "type": "STRING",
@@ -3629,16 +3629,41 @@
         }
       ]
     },
-    "_let_declaration_block": {
+    "let": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "let"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_let_body"
+          }
+        ]
+      }
+    },
+    "_let_body": {
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_indent"
-        },
-        {
           "type": "SEQ",
           "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_indent"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
             {
               "type": "REPEAT",
               "content": {
@@ -3693,39 +3718,18 @@
                   "name": "_block_declaration"
                 }
               ]
-            },
-            {
-              "type": "STRING",
-              "value": "in"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "expr"
             }
           ]
         },
         {
+          "type": "STRING",
+          "value": "in"
+        },
+        {
           "type": "SYMBOL",
-          "name": "_dedent"
+          "name": "expr"
         }
       ]
-    },
-    "let": {
-      "type": "PREC_RIGHT",
-      "value": 0,
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "STRING",
-            "value": "let"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "_let_declaration_block"
-          }
-        ]
-      }
     },
     "lambda": {
       "type": "CHOICE",
