@@ -96,7 +96,7 @@ namespace {
 
         // set `column_number` with `get_column`
         void setCarriage(TSLexer *lexer) {
-            column_number = lexer->get_column(lexer);
+            column_number = (int)lexer->get_column(lexer);
         }
 
         // set `column_number` to 0, use after newline
@@ -109,7 +109,7 @@ namespace {
         uint32_t readCarriage(TSLexer *lexer) {
             return column_number == -1
                 ? lexer->get_column(lexer)
-                : column_number;
+                : (uint32_t)column_number;
         }
 
 
@@ -168,7 +168,7 @@ namespace {
             // TODO: handle comments
             bool next_token_is_comment = false;
 
-            uint32_t indent_length = readCarriage(lexer);
+            int indent_length = readCarriage(lexer);
 
             bool in = indent_length > indent_length_stack.back();
             bool noop = indent_length == indent_length_stack.back();
@@ -230,7 +230,7 @@ namespace {
 
         // column_number : Maybe Int
         // -1 as Nothing,
-        uint32_t column_number;
+        int column_number;
     };
 
 }
