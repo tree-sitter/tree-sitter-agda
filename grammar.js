@@ -37,10 +37,10 @@ module.exports = grammar({
     ],
 
     rules: {
-        source_file: $ => optional(repeat1(choice(
+        source_file: $ => repeat(choice(
             seq($._inline_declaration, $._newline),
             $._block_declaration
-        ))),
+        )),
 
         ////////////////////////////////////////////////////////////////////////
         // Comment
@@ -120,14 +120,13 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
 
-        _declaration_block: $ => block($, {
-            inline: $._inline_declaration,
-            block: $._block_declaration,
-        }),
-
-        _declaration_block0: $ => choice(
+        // indented, 0 or more declarations
+        _declaration_block: $ => choice(
             $._newline,
-            $._declaration_block
+            block($, {
+                inline: $._inline_declaration,
+                block: $._block_declaration,
+            })
         ),
 
         _inline_declaration: $ => choice(
@@ -217,9 +216,9 @@ module.exports = grammar({
         // ),
 
         where_clause: $ => choice(
-            seq(                            'where', $._declaration_block0),
-            seq('module', $.name,           'where', $._declaration_block0),
-            seq('module', $.anonymous_name, 'where', $._declaration_block0)
+            seq(                            'where', $._declaration_block),
+            seq('module', $.name,           'where', $._declaration_block),
+            seq('module', $.anonymous_name, 'where', $._declaration_block)
         ),
 
         ////////////////////////////////////////////////////////////////////////
@@ -385,7 +384,7 @@ module.exports = grammar({
             optional($._typed_untyped_binding1),
             optional(seq(':', $.expr)),
             'where',
-            $._declaration_block0,
+            $._declaration_block,
         ),
 
         //////////////////////////////////////////////////////////////////////
@@ -475,7 +474,7 @@ module.exports = grammar({
             alias(choice($.qualified_name, $.anonymous_name), $.module_name),
             optional($._typed_untyped_binding1),
             'where',
-            $._declaration_block0
+            $._declaration_block
         ),
 
         module_application: $ => choice(
@@ -524,42 +523,42 @@ module.exports = grammar({
         // Mutually recursive declarations.
         mutual: $ => seq(
             'mutual',
-            $._declaration_block0
+            $._declaration_block
         ),
 
         ////////////////////////////////////////////////////////////////////////
         // Abstract declarations.
         abstract: $ => seq(
             'abstract',
-            $._declaration_block0
+            $._declaration_block
         ),
 
         ////////////////////////////////////////////////////////////////////////
         // Private can only appear on the top-level (or rather the module level)
         private: $ => seq(
             'private',
-            $._declaration_block0
+            $._declaration_block
         ),
 
         ////////////////////////////////////////////////////////////////////////
         // Instance declarations.
         instance: $ => seq(
             'instance',
-            $._declaration_block0
+            $._declaration_block
         ),
 
         ////////////////////////////////////////////////////////////////////////
         // Macro declarations.
         macro: $ => seq(
             'macro',
-            $._declaration_block0
+            $._declaration_block
         ),
 
         ////////////////////////////////////////////////////////////////////////
         // Postulates.
         postulate: $ => seq(
             'postulate',
-            $._declaration_block0
+            $._declaration_block
         ),
 
 

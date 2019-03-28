@@ -60,3 +60,24 @@ f = do m
                 (do
                     (do_stmt (atom (qualified_name)))
                     (do_stmt (atom (qualified_name))))))))
+
+==================
+Let binding
+==================
+f = do
+    let m = m
+    m'
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name)))
+        (rhs
+            (expr
+                (do
+                    (do_stmt (let
+                        (function_clause
+                            (lhs (atom (qualified_name)))
+                            (rhs (expr (atom (qualified_name)))))) )
+                    (do_stmt (atom (qualified_name))))))))
