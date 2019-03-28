@@ -62,6 +62,30 @@ f = do m
                     (do_stmt (atom (qualified_name))))))))
 
 ==================
+Nested
+==================
+f = do
+    a
+    do
+        c
+        d
+    b
+---
+
+(source_file
+    (function_clause
+        (lhs
+            (atom (qualified_name)))
+        (rhs
+            (expr
+                (do
+                    (do_stmt (atom (qualified_name)))
+                    (do_stmt (do
+                        (do_stmt (atom (qualified_name)))
+                        (do_stmt (atom (qualified_name)))))
+                    (do_stmt (atom (qualified_name))))))))
+
+==================
 Let binding (Single line)
 ==================
 f = do
@@ -105,27 +129,4 @@ f = do
                         (function_clause
                             (lhs (atom (qualified_name)))
                             (rhs (expr (atom (qualified_name))))))
-                    (do_stmt (atom (qualified_name))))))))
-
-==================
-Let binding (mixed)
-==================
-f = do
-    let m = m
-    let a = b in c
-    m'
----
-
-(source_file
-    (function_clause
-        (lhs
-            (atom (qualified_name)))
-        (rhs
-            (expr
-                (do
-                    (do_let
-                        (function_clause
-                            (lhs (atom (qualified_name)))
-                            (rhs (expr (atom (qualified_name))))))
-                    (do_stmt (atom (qualified_name))))))))
                     (do_stmt (atom (qualified_name))))))))

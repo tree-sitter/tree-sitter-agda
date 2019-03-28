@@ -170,11 +170,16 @@ namespace {
 
             uint32_t indent_length = readCarriage(lexer);
 
+            bool in = indent_length > indent_length_stack.back();
+            bool noop = indent_length == indent_length_stack.back();
+            bool out = indent_length < indent_length_stack.back();
+
             if (!next_token_is_comment) {
+
                 // do
                 //      line0  <newline>
                 //      line1
-                if (valid_symbols[NEWLINE] && skippedNewline && indent_length == indent_length_stack.back()) {
+                if (valid_symbols[NEWLINE] && skippedNewline && noop) {
                     lexer->result_symbol = NEWLINE;
                     return true;
                 }
@@ -183,7 +188,7 @@ namespace {
                 // do
                 //      line0
                 //          still0
-                if (valid_symbols[INDENT] && indent_length > indent_length_stack.back()) {
+                if (valid_symbols[INDENT] && in) {
                     indent_length_stack.push_back(indent_length);
                     lexer->result_symbol = INDENT;
                     return true;
@@ -192,7 +197,7 @@ namespace {
                 // do
                 //      line0 <newline>
                 //    line1
-                if (skippedNewline && indent_length < indent_length_stack.back()) {
+                if (skippedNewline && out) {
                     lexer->result_symbol = NEWLINE;
                     return true;
                 }
@@ -202,7 +207,7 @@ namespace {
                 //          line0
                 //      line1
                 //      ^ here
-                if (!skippedNewline && indent_length < indent_length_stack.back()) {
+                if (!skippedNewline && out) {
                     indent_length_stack.pop_back();
                     while (indent_length < indent_length_stack.back()) {
                         indent_length_stack.pop_back();

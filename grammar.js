@@ -743,19 +743,12 @@ module.exports = grammar({
 
         do: $ => seq(
             'do',
-            block($, {
-                inline: $._do_stmt,
-                block: choice(
-                    $.do_let,
-                    $._do_stmt_where
-                ),
-            }),
+            block2($, choice(
+                $._do_stmt,
+                $.do_let,
+                $._do_stmt_where
+            )),
         ),
-
-        indent: $ => $._indent,
-        dedent: $ => $._dedent,
-        newline: $ => $._newline,
-
 
 
         let: $ => seq(
@@ -852,6 +845,15 @@ function block($, rules) {
            ))
        );
    }
+}
+
+function block2($, rules) {
+    return indent($,
+        repeat1(choice(
+            seq(rules, $._newline),
+            rules
+        ))
+    );
 }
 
 // Like "block", except that the $._newline of the last element can be elided

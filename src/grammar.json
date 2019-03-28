@@ -3631,8 +3631,21 @@
                     "type": "SEQ",
                     "members": [
                       {
-                        "type": "SYMBOL",
-                        "name": "_do_stmt"
+                        "type": "CHOICE",
+                        "members": [
+                          {
+                            "type": "SYMBOL",
+                            "name": "_do_stmt"
+                          },
+                          {
+                            "type": "SYMBOL",
+                            "name": "do_let"
+                          },
+                          {
+                            "type": "SYMBOL",
+                            "name": "_do_stmt_where"
+                          }
+                        ]
                       },
                       {
                         "type": "SYMBOL",
@@ -3643,6 +3656,10 @@
                   {
                     "type": "CHOICE",
                     "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "_do_stmt"
+                      },
                       {
                         "type": "SYMBOL",
                         "name": "do_let"
@@ -3663,18 +3680,6 @@
           ]
         }
       ]
-    },
-    "indent": {
-      "type": "SYMBOL",
-      "name": "_indent"
-    },
-    "dedent": {
-      "type": "SYMBOL",
-      "name": "_dedent"
-    },
-    "newline": {
-      "type": "SYMBOL",
-      "name": "_newline"
     },
     "let": {
       "type": "SEQ",
