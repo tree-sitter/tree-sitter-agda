@@ -34,6 +34,7 @@ module.exports = grammar({
 
     conflicts: $ => [
         [$.lhs_decl, $.lhs_defn],
+        [$.do_let, $.let],
     ],
 
     rules: {
@@ -378,28 +379,28 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////////////////////////
-        data: $ => seq(
+        data: $ => prec(1, seq(
             choice('data', 'codata'),
             alias($.name, $.data_name),
             optional($._typed_untyped_binding1),
             optional(seq(':', $.expr)),
             'where',
             $._declaration_block,
-        ),
+        )),
 
         //////////////////////////////////////////////////////////////////////
         // Record
         //////////////////////////////////////////////////////////////////////
 
         _record_name: $ => alias($._atom_no_curly, $.record_name),
-        record: $ => seq(
+        record: $ => prec(1, seq(
             'record',
             $._record_name,
             optional($._typed_untyped_binding1),
             optional(seq(':', $.expr)),
             'where',
             choice($._newline, $.record_declarations_block),
-        ),
+        )),
 
         // Record declarations, including an optional record constructor name.
         record_declarations_block: $ => indent($,
@@ -667,7 +668,7 @@ module.exports = grammar({
                 $._application, ':', $.expr
             ))),
             seq('(', $.open, ')'),
-            seq('(', 'let', $._let_body, ')')
+            // seq('(', 'let', $._let_body, ')')
         ),
 
         _typed_untyped_binding1: $ => repeat1(choice(
@@ -679,9 +680,24 @@ module.exports = grammar({
         // Do-notation
         ////////////////////////////////////////////////////////////////////////
 
-        _do_stmt: $ => alias($.expr, $.do_stmt),
+        // NOTE: we are using $._with_expr instead of $.expr in $._do_stmt
+        //       to prevent clashes in examples like "let a = b"
+
+        _do_stmt: $ => alias($._with_expr, $.do_stmt),
+        do_let: $ => seq(
+            'let',
+            $._indent,
+            repeat1(choice(
+                seq($._inline_declaration, $._newline),
+                $._block_declaration
+            )),
+            $._dedent,
+        ),
         _do_stmt_where: $ => seq(
-            alias($.expr, $.do_stmt),
+            choice(
+                alias($._with_expr, $.do_stmt),
+                $.do_let,
+            ),
             'where',
             alias($._lambda_where_block, $.do_where),
         ),
@@ -694,7 +710,7 @@ module.exports = grammar({
             seq($._typed_bindings1, $._const_right_arrow, $.expr),
             seq($._atoms1         , $._const_right_arrow, $.expr),
             seq($._with_expr      , '='                 , $.expr),
-            prec(-1, $._with_expr) // lowest precedence
+            prec(-1, $._with_expr), // lowest precedence
         ),
 
         // Level 1 Expressions: Application
@@ -729,18 +745,28 @@ module.exports = grammar({
             'do',
             block($, {
                 inline: $._do_stmt,
-                block: $._do_stmt_where,
+                block: choice(
+                    $.do_let,
+                    $._do_stmt_where
+                ),
             }),
         ),
 
-        let: $ => prec.right(seq(
-            'let',
-            $._let_body,
-        )),
+        indent: $ => $._indent,
+        dedent: $ => $._dedent,
+        newline: $ => $._newline,
 
-        _let_body: $ => seq(
-            letBlock($,
-                $._inline_declaration,
+
+
+        let: $ => seq(
+            'let',
+            optional($._indent),
+            repeat(choice(
+                seq($._inline_declaration, $._newline),
+                $._block_declaration
+            )),
+            choice(
+                seq($._inline_declaration, optional($._newline)),
                 $._block_declaration
             ),
             'in',
