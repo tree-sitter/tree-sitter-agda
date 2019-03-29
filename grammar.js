@@ -34,11 +34,8 @@ module.exports = grammar({
 
     conflicts: $ => [
         [$.lhs_decl, $.lhs_defn],
-        // [$.do_let, $.let],
         [$._let_only, $._let_in],
         [$._let_only],
-        // [$.do_let, $._inline_declaration],
-        // [$.let],
     ],
 
     rules: {
@@ -128,7 +125,7 @@ module.exports = grammar({
         // indented, 0 or more declarations
         _declaration_block: $ => choice(
             // $._newline,
-            block3($, choice(
+            block($, choice(
                 $._inline_declaration,
                 $._block_declaration,
             ))
@@ -203,12 +200,6 @@ module.exports = grammar({
             optional($.with_expressions)
         )),
 
-
-        // lhs: $ => prec.right(seq(
-        //     $._with_expr,
-        //     optional($.rewrite_equations),
-        //     optional($.with_expressions)
-        // )),
 
         rewrite_equations: $ => seq('rewrite', $._with_expr),
         with_expressions: $ => seq('with', $.expr),
@@ -423,7 +414,7 @@ module.exports = grammar({
         // Declaration of record constructor name.
         record_constructor_instance: $ => seq(
             'instance',
-            block3($, seq('constructor', $.name)),
+            block($, seq('constructor', $.name)),
         ),
         _record_directive: $ => choice(
             $.record_constructor,
@@ -495,7 +486,7 @@ module.exports = grammar({
 
         // A variant of TypeSignatures which uses arg_type_signatures instead of
         // _type_signature
-        _type_sig_block: $ => block3($, choice(
+        _type_sig_block: $ => block($, choice(
             $.type_sig,
             $.type_sig_instance,
         )),
@@ -577,7 +568,7 @@ module.exports = grammar({
         // For $.primitive only
         // Non-empty list of type signatures, with several identifiers allowed
         // for every signature.
-        _simple_type_sig_block: $ => block3($, $.simple_type_sig),
+        _simple_type_sig_block: $ => block($, $.simple_type_sig),
         simple_type_sig: $ => seq(
             repeat1($.name),
             ':',
@@ -645,7 +636,7 @@ module.exports = grammar({
         // Appears after "where"
         // Parses all extended lambda clauses including a single absurd clause.
         // For λ where this is not taken care of in AbsurdLambda
-        _lambda_where_block: $ => block3($, $._lambda_clause),
+        _lambda_where_block: $ => block($, $._lambda_clause),
 
         forall_bindings: $ => seq(
             $._typed_untyped_binding1,
@@ -686,44 +677,8 @@ module.exports = grammar({
 
         _do_stmt: $ => alias($._with_expr, $.do_stmt),
 
-            // optional($._indent),
-            // repeat(choice(
-            //     seq($._inline_declaration, $._newline),
-            //     seq($._block_declaration, $._newline),
-            // )),
-            // // in case of
-            // choice(
-            //     seq($._inline_declaration),
-            //     seq($._block_declaration),
-            // ),
-            // optional($._newline),
-            // optional($._dedent),
-        do_let: $ => seq(
-            'let',
-            // optional($._indent),
-            $._indent,
-            $._inline_declaration,
-            $._newline,
-            $._inline_declaration,
-            $._newline,
-            $._dedent,
-            // optional($._newline),
-            // optional($._dedent),
-            // repeat1(choice(
-            //     seq($._inline_declaration, $._newline),
-            //     seq($._block_declaration, $._newline)
-            // )),
-            // block3($, choice(
-            //     $._inline_declaration,
-            //     $._block_declaration,
-            // ))
-        ),
-
         _do_stmt_where: $ => seq(
-            choice(
-                alias($._with_expr, $.do_stmt),
-                // $.do_let,
-            ),
+            alias($._with_expr, $.do_stmt),
             'where',
             alias($._lambda_where_block, $.do_where),
         ),
@@ -770,7 +725,7 @@ module.exports = grammar({
 
         do: $ => seq(
             'do',
-            block3($, choice(
+            block($, choice(
                 $._do_stmt,
                 // $.do_let,
                 $._do_stmt_where
@@ -781,17 +736,12 @@ module.exports = grammar({
         _let_only: $ => prec.right(seq(
             'let',
 
-            optional($._indent),
-            repeat(choice(
+            $._indent,
+            repeat1(choice(
                 seq($._inline_declaration, $._newline),
                 seq($._block_declaration, $._newline),
             )),
-            choice(
-                seq($._inline_declaration),
-                seq($._block_declaration),
-            ),
-            optional($._newline),
-            optional($._dedent),
+            $._dedent,
         )),
 
         _let_in: $ => seq(
@@ -806,8 +756,6 @@ module.exports = grammar({
                 seq($._inline_declaration),
                 seq($._block_declaration),
             ),
-            optional($._newline),
-            optional($._dedent),
 
             'in',
             $.expr,
@@ -877,53 +825,10 @@ function indent($, ...rule) {
     );
 }
 
-// A mix of the rules (inline or block) enclosed in a indentation
 function block($, rules) {
-   if (rules.inline !== undefined && rules.block === undefined) {
-       return indent($,
-           repeat1(seq(rules.inline, $._newline))
-       );
-   } else if (rules.inline === undefined && rules.block !== undefined) {
-       return indent($,
-           repeat1(choice(
-               rules.block
-           ))
-       );
-   } else {
-       return indent($,
-           repeat1(choice(
-               seq(rules.inline, $._newline),
-               rules.block
-           ))
-       );
-   }
-}
-
-function block2($, rules) {
-    return indent($,
-        repeat1(rules)
-    );
-}
-
-function block3($, rules) {
     return indent($,
         repeat1(seq(rules, $._newline))
     );
-}
-
-// Like "block", except that the $._newline of the last element can be elided
-function letBlock($, inlines, blocks) {
-    return seq(
-            optional($._indent),
-            repeat(choice(
-                seq(inlines, $._newline),
-                blocks
-            )),
-            choice(
-                seq(inlines, optional($._newline)),
-                blocks
-            ),
-        );
 }
 
 ////////////////////////////////////////////////////////////////////////

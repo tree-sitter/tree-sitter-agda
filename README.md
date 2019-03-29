@@ -6,6 +6,16 @@ Syntax highlighting and code folding done right (with context-free grammar, fina
 
 ![tree-sitter](https://i.imgur.com/7Pfmqjv.png)
 
+## Issues to be resolved
+
+* Dangling `in` after `let`, please refrain from putting `in` after a newline.
+
+```
+f x = let y = x
+          z = x
+      in y
+```
+
 ## How to contribute
 
 * [documentation](http://tree-sitter.github.io/tree-sitter/)
