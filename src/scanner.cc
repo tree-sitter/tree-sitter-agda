@@ -9,8 +9,6 @@ namespace {
 
     enum TokenType {
         NEWLINE,
-        INDENT,
-        DEDENT,
     };
 
     struct Scanner {
@@ -65,85 +63,17 @@ namespace {
         }
 
         bool scan(TSLexer *lexer, const bool *valid_symbols) {
-            bool skippedNewline = false;
-
-            if (valid_symbols[DEDENT] && queued_dedent_count > 0) {
-                queued_dedent_count--;
-                lexer->result_symbol = DEDENT;
-                return true;
-            }
 
             // skip spaces and newline
-            skippedNewline = skippedNewline || skipJunk(lexer);
-
+            skipJunk(lexer);
 
             // in case of EOF
             if (lexer->lookahead == 0) {
-                if (valid_symbols[DEDENT] && indent_length_stack.size() > 1) {
-                    indent_length_stack.pop_back();
-                    lexer->result_symbol = DEDENT;
-                    return true;
-                }
-
-                if (valid_symbols[NEWLINE]) {
-                    lexer->result_symbol = NEWLINE;
-                    return true;
-                }
-
                 return false;
             }
 
+            printf("\ncolumn before [%c]: %i \n", lexer->lookahead, lexer->get_column(lexer));
 
-            // TODO: handle comments
-            bool next_token_is_comment = false;
-            uint32_t indent_length = lexer->get_column(lexer);
-
-            if (!next_token_is_comment) {
-                // do
-                //      line0  <newline>
-                //      line1
-                if (valid_symbols[NEWLINE] && skippedNewline && indent_length == indent_length_stack.back()) {
-                    lexer->result_symbol = NEWLINE;
-                    return true;
-                }
-
-
-                // do
-                //      line0
-                //          still0
-                if (valid_symbols[INDENT] && indent_length > indent_length_stack.back()) {
-                    indent_length_stack.push_back(indent_length);
-                    lexer->result_symbol = INDENT;
-                    return true;
-                }
-
-                // do
-                //      line0 <newline>
-                //    line1
-                if (skippedNewline && indent_length < indent_length_stack.back()) {
-                    lexer->result_symbol = NEWLINE;
-                    return true;
-                }
-
-                // do
-                //      do
-                //          line0
-                //      line1
-                //      ^ here
-                if (!skippedNewline && indent_length < indent_length_stack.back()) {
-                    indent_length_stack.pop_back();
-                    while (indent_length < indent_length_stack.back()) {
-                        indent_length_stack.pop_back();
-                        queued_dedent_count++;
-                    }
-                    if (valid_symbols[DEDENT]) {
-                        lexer->result_symbol = DEDENT;
-                        return true;
-                    } else {
-                        queued_dedent_count++;
-                    }
-                }
-            }
 
             return false;
         }
