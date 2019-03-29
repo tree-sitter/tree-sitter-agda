@@ -34,7 +34,11 @@ module.exports = grammar({
 
     conflicts: $ => [
         [$.lhs_decl, $.lhs_defn],
-        [$.do_let, $.let],
+        // [$.do_let, $.let],
+        [$._let_only, $._let_in],
+        [$._let_only],
+        // [$.do_let, $._inline_declaration],
+        // [$.let],
     ],
 
     rules: {
@@ -210,7 +214,8 @@ module.exports = grammar({
         with_expressions: $ => seq('with', $.expr),
 
         rhs_decl: $ => seq(':', $.expr),
-        rhs_defn: $ => seq('=', $.expr),
+        // NOTE: we are using "$._with_expr" instead of "$.expr" on the RHS of "="
+        rhs_defn: $ => seq('=', alias($._with_expr, $.expr)),
 
         where_clause: $ => choice(
             seq(                            'where', $._declaration_block),
@@ -641,7 +646,7 @@ module.exports = grammar({
         // Appears after "where"
         // Parses all extended lambda clauses including a single absurd clause.
         // For λ where this is not taken care of in AbsurdLambda
-        _lambda_where_block: $ => block($, { inline: $._lambda_clause }),
+        _lambda_where_block: $ => block3($, $._lambda_clause),
 
         forall_bindings: $ => seq(
             $._typed_untyped_binding1,
@@ -680,23 +685,45 @@ module.exports = grammar({
         // NOTE: we are using $._with_expr instead of $.expr in $._do_stmt
         //       to prevent clashes in examples like "let a = b"
 
-        _do_stmt: $ => seq(
-            alias($._with_expr, $.do_stmt),
-            optional($._newline)
-        ),
+        _do_stmt: $ => alias($._with_expr, $.do_stmt),
+
+            // optional($._indent),
+            // repeat(choice(
+            //     seq($._inline_declaration, $._newline),
+            //     seq($._block_declaration, $._newline),
+            // )),
+            // // in case of
+            // choice(
+            //     seq($._inline_declaration),
+            //     seq($._block_declaration),
+            // ),
+            // optional($._newline),
+            // optional($._dedent),
         do_let: $ => seq(
             'let',
+            // optional($._indent),
             $._indent,
-            repeat1(choice(
-                seq($._inline_declaration, $._newline),
-                seq($._block_declaration, $._newline)
-            )),
+            $._inline_declaration,
+            $._newline,
+            $._inline_declaration,
+            $._newline,
             $._dedent,
+            // optional($._newline),
+            // optional($._dedent),
+            // repeat1(choice(
+            //     seq($._inline_declaration, $._newline),
+            //     seq($._block_declaration, $._newline)
+            // )),
+            // block3($, choice(
+            //     $._inline_declaration,
+            //     $._block_declaration,
+            // ))
         ),
+
         _do_stmt_where: $ => seq(
             choice(
                 alias($._with_expr, $.do_stmt),
-                $.do_let,
+                // $.do_let,
             ),
             'where',
             alias($._lambda_where_block, $.do_where),
@@ -743,27 +770,52 @@ module.exports = grammar({
 
         do: $ => seq(
             'do',
-            block2($, choice(
+            block3($, choice(
                 $._do_stmt,
-                $.do_let,
+                // $.do_let,
                 $._do_stmt_where
             )),
         ),
 
 
-        let: $ => seq(
+        _let_only: $ => prec.right(seq(
             'let',
+
             optional($._indent),
             repeat(choice(
                 seq($._inline_declaration, $._newline),
-                $._block_declaration
+                seq($._block_declaration, $._newline),
             )),
             choice(
-                seq($._inline_declaration, optional($._newline)),
-                $._block_declaration
+                seq($._inline_declaration),
+                seq($._block_declaration),
             ),
+            optional($._newline),
+            optional($._dedent),
+        )),
+
+        _let_in: $ => seq(
+            'let',
+
+            optional($._indent),
+            repeat(choice(
+                seq($._inline_declaration, $._newline),
+                seq($._block_declaration, $._newline),
+            )),
+            choice(
+                seq($._inline_declaration),
+                seq($._block_declaration),
+            ),
+            optional($._newline),
+            optional($._dedent),
+
             'in',
             $.expr,
+        ),
+
+        let: $ => choice(
+            $._let_in,
+            $._let_only,
         ),
 
         lambda: $ => choice(

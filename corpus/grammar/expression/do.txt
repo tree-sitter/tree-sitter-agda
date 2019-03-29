@@ -100,17 +100,18 @@ f = do
         (rhs
             (expr
                 (do
-                    (do_let
+                    (do_stmt (let
                         (function_clause
                             (lhs (atom (qualified_name)))
-                            (rhs (expr (atom (qualified_name))))))
+                            (rhs (expr (atom (qualified_name)))))))
                     (do_stmt (atom (qualified_name))))))))
 
 ==================
 Let binding (Multiline)
 ==================
 f = do
-    let m = m
+    let
+        m = m
         b = c
     m'
 ---
@@ -122,11 +123,11 @@ f = do
         (rhs
             (expr
                 (do
-                    (do_let
+                    (do_stmt (let
                         (function_clause
                             (lhs (atom (qualified_name)))
                             (rhs (expr (atom (qualified_name)))))
                         (function_clause
                             (lhs (atom (qualified_name)))
-                            (rhs (expr (atom (qualified_name))))))
+                            (rhs (expr (atom (qualified_name)))))))
                     (do_stmt (atom (qualified_name))))))))
