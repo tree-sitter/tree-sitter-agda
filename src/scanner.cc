@@ -136,13 +136,28 @@ namespace {
             return skippedNewline;
         }
 
+        bool indent(TSLexer *lexer) {
+            indent_length_stack.push_back(readCarriage(lexer));
+            lexer->result_symbol = INDENT;
+            return true;
+        }
+
+        bool dedent(TSLexer *lexer) {
+            lexer->result_symbol = DEDENT;
+            return true;
+        }
+
+        bool newline(TSLexer *lexer) {
+            lexer->result_symbol = NEWLINE;
+            return true;
+        }
+
         bool scan(TSLexer *lexer, const bool *valid_symbols) {
             bool skippedNewline = false;
 
             if (valid_symbols[DEDENT] && queued_dedent_count > 0) {
                 queued_dedent_count--;
-                lexer->result_symbol = DEDENT;
-                return true;
+                return dedent(lexer);
             }
 
             // skip spaces and newline
@@ -152,13 +167,11 @@ namespace {
             if (lexer->lookahead == 0) {
                 if (valid_symbols[DEDENT] && indent_length_stack.size() > 1) {
                     indent_length_stack.pop_back();
-                    lexer->result_symbol = DEDENT;
-                    return true;
+                    return dedent(lexer);
                 }
 
                 if (valid_symbols[NEWLINE]) {
-                    lexer->result_symbol = NEWLINE;
-                    return true;
+                    return newline(lexer);
                 }
 
                 return false;
@@ -174,53 +187,55 @@ namespace {
             bool noop = indent_length == indent_length_stack.back();
             bool out = indent_length < indent_length_stack.back();
 
-            // TODO: tidy this mess up
             if (!next_token_is_comment) {
 
-                // do
-                //      line0  <newline>
-                //      line1
-                if (valid_symbols[NEWLINE] && skippedNewline && noop) {
-                    lexer->result_symbol = NEWLINE;
-                    return true;
-                }
-
-                // do
-                //      line0 <newline>
-                //    line1
-                if (valid_symbols[NEWLINE] && skippedNewline && out) {
-                    lexer->result_symbol = NEWLINE;
-                    return true;
-                }
-
-
-                // do
-                //      line0
-                //          still0
-                // or
-                //      line0 still0
-                if (valid_symbols[INDENT] && in) {
-                    indent_length_stack.push_back(indent_length);
-                    lexer->result_symbol = INDENT;
-                    return true;
-                }
-
-                // do
-                //      do
-                //          line0
-                //      line1
-                //      ^ here
-                if (!skippedNewline && out) {
-                    indent_length_stack.pop_back();
-                    while (indent_length < indent_length_stack.back()) {
-                        indent_length_stack.pop_back();
-                        queued_dedent_count++;
-                    }
-                    if (valid_symbols[DEDENT]) {
-                        lexer->result_symbol = DEDENT;
-                        return true;
+                if (skippedNewline) {
+                    if (in) {
+                        // do
+                        //      line0  <newline>
+                        //          still-line0
+                        if (valid_symbols[INDENT]) {
+                            return indent(lexer);
+                        }
+                    } else if (out) {
+                        // do
+                        //      line0  <newline>
+                        //    line1
+                        if (valid_symbols[NEWLINE]) {
+                            return newline(lexer);
+                        }
                     } else {
-                        queued_dedent_count++;
+                        // do
+                        //      line0  <newline>
+                        //      line1
+                        if (valid_symbols[NEWLINE]) {
+                            return newline(lexer);
+                        }
+                    }
+                } else {
+                    if (in) {
+                        // do
+                        //      line0 still-line0
+                        if (valid_symbols[INDENT]) {
+                            return indent(lexer);
+                        }
+                    } else if (out) {
+                        // should <DEDENT> and then <NEWLINE>
+                        // do
+                        //      line0  <newline>
+                        //    line1
+                        indent_length_stack.pop_back();
+                        while (indent_length < indent_length_stack.back()) {
+                            indent_length_stack.pop_back();
+                            queued_dedent_count++;
+                        }
+                        if (valid_symbols[DEDENT]) {
+                            return dedent(lexer);
+                        } else {
+                            queued_dedent_count++;
+                        }
+                    } else {
+
                     }
                 }
             }
