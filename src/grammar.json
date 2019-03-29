@@ -810,13 +810,8 @@
           "value": "="
         },
         {
-          "type": "ALIAS",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_with_expr"
-          },
-          "named": true,
-          "value": "expr"
+          "type": "SYMBOL",
+          "name": "expr"
         }
       ]
     },
@@ -3452,23 +3447,6 @@
             {
               "type": "SYMBOL",
               "name": "_const_right_arrow"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "expr"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "_with_expr"
-            },
-            {
-              "type": "STRING",
-              "value": "="
             },
             {
               "type": "SYMBOL",

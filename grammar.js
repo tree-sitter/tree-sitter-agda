@@ -214,8 +214,7 @@ module.exports = grammar({
         with_expressions: $ => seq('with', $.expr),
 
         rhs_decl: $ => seq(':', $.expr),
-        // NOTE: we are using "$._with_expr" instead of "$.expr" on the RHS of "="
-        rhs_defn: $ => seq('=', alias($._with_expr, $.expr)),
+        rhs_defn: $ => seq('=', $.expr),
 
         where_clause: $ => choice(
             seq(                            'where', $._declaration_block),
@@ -733,10 +732,11 @@ module.exports = grammar({
         // Expressions
         ////////////////////////////////////////////////////////////////////////
 
+        // NOTE: seq($._with_expr, '=', $.expr) is taken out
         expr: $ => choice(
             seq($._typed_bindings1, $._const_right_arrow, $.expr),
             seq($._atoms1         , $._const_right_arrow, $.expr),
-            seq($._with_expr      , '='                 , $.expr),
+            // seq($._with_expr      , '='                 , $.expr),
             prec(-1, $._with_expr), // lowest precedence
         ),
 

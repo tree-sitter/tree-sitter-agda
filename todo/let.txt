@@ -1,1 +1,1 @@
-f x = let y = x in y
+f x = let y = x in let y = x in y
