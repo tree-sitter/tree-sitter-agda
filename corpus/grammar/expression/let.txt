@@ -48,31 +48,6 @@ f x = let y = x in
                     (expr (atom (qualified_name))))))))
 
 ==================
-Single line III
-==================
-
-f x = let y = x
-      in y
-
----
-
-(source_file
-    (function_clause
-        (lhs
-            (atom (qualified_name))
-            (atom (qualified_name)))
-        (rhs
-            (expr
-                (let
-                    (function_clause
-                        (lhs
-                            (atom (qualified_name)))
-                        (rhs
-                            (expr
-                                (atom (qualified_name)))))
-                    (expr (atom (qualified_name))))))))
-
-==================
 Multiline I
 ==================
 
@@ -128,36 +103,6 @@ f x = let y = x
                     (rhs
                         (expr (atom (qualified_name)))))
                 (expr (atom (qualified_name))))))))
-
-==================
-Multiline III
-==================
-
-f x = let y = x
-          y = x
-      in y
-
----
-
-(source_file
-    (function_clause
-        (lhs
-            (atom (qualified_name))
-            (atom (qualified_name)))
-        (rhs
-            (expr (let
-                (function_clause
-                    (lhs
-                        (atom (qualified_name)))
-                    (rhs
-                        (expr (atom (qualified_name)))))
-                (function_clause
-                    (lhs
-                        (atom (qualified_name)))
-                    (rhs
-                        (expr (atom (qualified_name)))))
-                (expr (atom (qualified_name))))))))
-
 
 ==================
 Telescope single line I
