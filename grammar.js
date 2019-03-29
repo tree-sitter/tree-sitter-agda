@@ -494,10 +494,10 @@ module.exports = grammar({
 
         // A variant of TypeSignatures which uses arg_type_signatures instead of
         // _type_signature
-        _type_sig_block: $ => block($, {
-            inline: $.type_sig,
-            block: $.type_sig_instance,
-        }),
+        _type_sig_block: $ => block2($, choice(
+            $.type_sig,
+            $.type_sig_instance,
+        )),
 
         // A variant of _type_signature where any sub-sequence of names can be
         // marked as hidden or irrelevant using braces and dots:
@@ -507,6 +507,7 @@ module.exports = grammar({
             $._arg_names,
             ':',
             $.expr,
+            $._newline
         ),
         type_sig_instance: $ => seq(
             'instance',
@@ -683,7 +684,10 @@ module.exports = grammar({
         // NOTE: we are using $._with_expr instead of $.expr in $._do_stmt
         //       to prevent clashes in examples like "let a = b"
 
-        _do_stmt: $ => alias($._with_expr, $.do_stmt),
+        _do_stmt: $ => seq(
+            alias($._with_expr, $.do_stmt),
+            optional($._newline)
+        ),
         do_let: $ => seq(
             'let',
             $._indent,
@@ -849,10 +853,7 @@ function block($, rules) {
 
 function block2($, rules) {
     return indent($,
-        repeat1(choice(
-            seq(rules, $._newline),
-            rules
-        ))
+        repeat1(rules)
     );
 }
 

@@ -174,6 +174,7 @@ namespace {
             bool noop = indent_length == indent_length_stack.back();
             bool out = indent_length < indent_length_stack.back();
 
+            // TODO: tidy this mess up
             if (!next_token_is_comment) {
 
                 // do
@@ -184,21 +185,23 @@ namespace {
                     return true;
                 }
 
+                // do
+                //      line0 <newline>
+                //    line1
+                if (valid_symbols[NEWLINE] && skippedNewline && out) {
+                    lexer->result_symbol = NEWLINE;
+                    return true;
+                }
+
 
                 // do
                 //      line0
                 //          still0
+                // or
+                //      line0 still0
                 if (valid_symbols[INDENT] && in) {
                     indent_length_stack.push_back(indent_length);
                     lexer->result_symbol = INDENT;
-                    return true;
-                }
-
-                // do
-                //      line0 <newline>
-                //    line1
-                if (skippedNewline && out) {
-                    lexer->result_symbol = NEWLINE;
                     return true;
                 }
 
