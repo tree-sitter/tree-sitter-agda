@@ -186,7 +186,7 @@ namespace {
             if (lexer->lookahead == 0) {
                 if (valid_symbols[DEDENT] && indent_length_stack.size() > 1) {
                     indent_length_stack.pop_back();
-                    // unissued_newline++;
+                    unissued_newline++;
                     return dedent(lexer);
                 }
 
@@ -221,9 +221,9 @@ namespace {
                         // do
                         //      line0  <newline>
                         //    line1
-                        // if (valid_symbols[NEWLINE]) {
-                        //     return newline(lexer);
-                        // }
+                        if (valid_symbols[NEWLINE]) {
+                            return newline(lexer);
+                        }
                     } else {
                         // do
                         //      line0  <newline>

@@ -40,7 +40,7 @@ module.exports = grammar({
     rules: {
         source_file: $ => repeat(choice(
             seq($._inline_declaration, $._newline),
-            $._block_declaration
+            seq($._block_declaration, $._newline),
         )),
 
         ////////////////////////////////////////////////////////////////////////
@@ -123,11 +123,11 @@ module.exports = grammar({
 
         // indented, 0 or more declarations
         _declaration_block: $ => choice(
-            $._newline,
-            block($, {
-                inline: $._inline_declaration,
-                block: $._block_declaration,
-            })
+            // $._newline,
+            block3($, choice(
+                $._inline_declaration,
+                $._block_declaration,
+            ))
         ),
 
         _inline_declaration: $ => choice(
@@ -211,10 +211,6 @@ module.exports = grammar({
 
         rhs_decl: $ => seq(':', $.expr),
         rhs_defn: $ => seq('=', $.expr),
-        // rhs: $ => choice(
-        //     seq('=', $.expr),
-        //     seq(':', $.expr)
-        // ),
 
         where_clause: $ => choice(
             seq(                            'where', $._declaration_block),
@@ -385,7 +381,7 @@ module.exports = grammar({
             optional($._typed_untyped_binding1),
             optional(seq(':', $.expr)),
             'where',
-            $._declaration_block,
+            optional($._declaration_block),
         )),
 
         //////////////////////////////////////////////////////////////////////
@@ -399,35 +395,36 @@ module.exports = grammar({
             optional($._typed_untyped_binding1),
             optional(seq(':', $.expr)),
             'where',
-            choice($._newline, $.record_declarations_block),
+            optional($.record_declarations_block),
         )),
 
         // Record declarations, including an optional record constructor name.
         record_declarations_block: $ => indent($,
-            repeat(choice(
-                $._record_directive,
-                $.record_constructor_instance,
+            repeat(seq(
+                choice(
+                    $._record_directive,
+                    $.record_constructor_instance,
+                ),
+                $._newline
             )),
-            repeat(choice(
-                seq($._inline_declaration, $._newline),
-                $._block_declaration)
-            ),
+            repeat(seq(
+                choice(
+                    $._inline_declaration,
+                    $._block_declaration,
+                ),
+                $._newline
+            )),
         ),
 
         // Declaration of record constructor name.
         record_constructor_instance: $ => seq(
             'instance',
-            block($, {
-                inline: seq('constructor', $.name)
-            }),
+            block3($, seq('constructor', $.name)),
         ),
-        _record_directive: $ => seq(
-            choice(
-                $.record_constructor,
-                $.record_induction,
-                $.record_eta
-            ),
-            $._newline
+        _record_directive: $ => choice(
+            $.record_constructor,
+            $.record_induction,
+            $.record_eta
         ),
 
         record_constructor: $ => seq('constructor', $.name),
@@ -470,13 +467,13 @@ module.exports = grammar({
         // http://agda.readthedocs.io/en/v2.5.3/language/module-system.html
         ////////////////////////////////////////////////////////////////////////
 
-        module: $ => seq(
+        module: $ => prec.left(seq(
             'module',
             alias(choice($.qualified_name, $.anonymous_name), $.module_name),
             optional($._typed_untyped_binding1),
             'where',
-            $._declaration_block
-        ),
+            optional($._declaration_block)
+        )),
 
         module_application: $ => choice(
             prec(1, seq($.qualified_name, '{{', '...', '}}')),
@@ -494,7 +491,7 @@ module.exports = grammar({
 
         // A variant of TypeSignatures which uses arg_type_signatures instead of
         // _type_signature
-        _type_sig_block: $ => block2($, choice(
+        _type_sig_block: $ => block3($, choice(
             $.type_sig,
             $.type_sig_instance,
         )),
@@ -507,7 +504,6 @@ module.exports = grammar({
             $._arg_names,
             ':',
             $.expr,
-            $._newline
         ),
         type_sig_instance: $ => seq(
             'instance',
@@ -577,7 +573,7 @@ module.exports = grammar({
         // For $.primitive only
         // Non-empty list of type signatures, with several identifiers allowed
         // for every signature.
-        _simple_type_sig_block: $ => block($, { inline: $.simple_type_sig }),
+        _simple_type_sig_block: $ => block3($, $.simple_type_sig),
         simple_type_sig: $ => seq(
             repeat1($.name),
             ':',
@@ -693,7 +689,7 @@ module.exports = grammar({
             $._indent,
             repeat1(choice(
                 seq($._inline_declaration, $._newline),
-                $._block_declaration
+                seq($._block_declaration, $._newline)
             )),
             $._dedent,
         ),
@@ -854,6 +850,12 @@ function block($, rules) {
 function block2($, rules) {
     return indent($,
         repeat1(rules)
+    );
+}
+
+function block3($, rules) {
+    return indent($,
+        repeat1(seq(rules, $._newline))
     );
 }
 
