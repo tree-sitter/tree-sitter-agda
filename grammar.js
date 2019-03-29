@@ -33,16 +33,11 @@ module.exports = grammar({
     ],
 
     conflicts: $ => [
-        [$.lhs_decl, $.lhs_defn],
-        [$._let_only, $._let_in],
-        [$._let_only],
+        // [$.lhs_decl, $.lhs_defn],
     ],
 
     rules: {
-        source_file: $ => repeat(choice(
-            seq($._inline_declaration, $._newline),
-            seq($._block_declaration, $._newline),
-        )),
+        source_file: $ => repeat(seq($._declaration, $._newline)),
 
         ////////////////////////////////////////////////////////////////////////
         // Comment
@@ -123,15 +118,9 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
 
         // indented, 0 or more declarations
-        _declaration_block: $ => choice(
-            // $._newline,
-            block($, choice(
-                $._inline_declaration,
-                $._block_declaration,
-            ))
-        ),
+        _declaration_block: $ => block($, $._declaration),
 
-        _inline_declaration: $ => choice(
+        _declaration: $ => choice(
             $.function_clause,
             $.data_signature_only,
             $.record_signature_only,
@@ -140,9 +129,6 @@ module.exports = grammar({
             $.infix,
             $.pattern,
             $.syntax,
-        ),
-
-        _block_declaration: $ => choice(
             $.data,
             $.record,
             $.module,
@@ -175,7 +161,7 @@ module.exports = grammar({
         // to allow declarations like 'x::xs ++ ys = e', when '::' has higher
         // precedence than '++'.
         // function_clause also handle possibly dotted type signatures.
-        function_clause: $ => prec.right(choice(
+        function_clause: $ => choice(
             seq(
                 alias($.lhs_decl, $.lhs),
                 optional(alias($.rhs_decl, $.rhs)),
@@ -186,19 +172,19 @@ module.exports = grammar({
                 optional(alias($.rhs_defn, $.rhs)),
                 optional($.where_clause),
             ),
-        )),
+        ),
 
-        lhs_decl: $ => prec.right(seq(
+        lhs_decl: $ => seq(
             alias($.atom, $.function_name),
             optional($.rewrite_equations),
             optional($.with_expressions)
-        )),
+        ),
 
-        lhs_defn: $ => prec.right(seq(
+        lhs_defn: $ => seq(
             $._with_expr,
             optional($.rewrite_equations),
             optional($.with_expressions)
-        )),
+        ),
 
 
         rewrite_equations: $ => seq('rewrite', $._with_expr),
@@ -261,7 +247,7 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
         _module_name: $ => alias($.qualified_name, $.module_name),
 
-        open: $ => prec.right(seq(
+        open: $ => seq(
             choice(
                 seq(        'import'),
                 seq('open', 'import'),
@@ -271,11 +257,11 @@ module.exports = grammar({
             optional($._open_as),
             optional($._open_args1),
             repeat($.import_directive),
-        )),
+        ),
 
         _open_as: $ => seq('as', $._module_name),
 
-        _open_args1: $ => prec.left(repeat1($.atom)),
+        _open_args1: $ => repeat1($.atom),
 
         import_directive: $ => choice(
             'public',
@@ -370,28 +356,28 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
 
         ////////////////////////////////////////////////////////////////////////
-        data: $ => prec(1, seq(
+        data: $ => seq(
             choice('data', 'codata'),
             alias($.name, $.data_name),
             optional($._typed_untyped_binding1),
             optional(seq(':', $.expr)),
             'where',
             optional($._declaration_block),
-        )),
+        ),
 
         //////////////////////////////////////////////////////////////////////
         // Record
         //////////////////////////////////////////////////////////////////////
 
         _record_name: $ => alias($._atom_no_curly, $.record_name),
-        record: $ => prec(1, seq(
+        record: $ => seq(
             'record',
             $._record_name,
             optional($._typed_untyped_binding1),
             optional(seq(':', $.expr)),
             'where',
             optional($.record_declarations_block),
-        )),
+        ),
 
         // Record declarations, including an optional record constructor name.
         record_declarations_block: $ => indent($,
@@ -403,10 +389,7 @@ module.exports = grammar({
                 $._newline
             )),
             repeat(seq(
-                choice(
-                    $._inline_declaration,
-                    $._block_declaration,
-                ),
+                $._declaration,
                 $._newline
             )),
         ),
@@ -462,13 +445,13 @@ module.exports = grammar({
         // http://agda.readthedocs.io/en/v2.5.3/language/module-system.html
         ////////////////////////////////////////////////////////////////////////
 
-        module: $ => prec.left(seq(
+        module: $ => seq(
             'module',
             alias(choice($.qualified_name, $.anonymous_name), $.module_name),
             optional($._typed_untyped_binding1),
             'where',
             optional($._declaration_block)
-        )),
+        ),
 
         module_application: $ => choice(
             prec(1, seq($.qualified_name, '{{', '...', '}}')),
@@ -591,7 +574,7 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
 
         // "LamBinds"
-        _lambda_binding: $ => prec.right(choice(
+        _lambda_binding: $ => (choice(
             seq($.untyped_binding, $._lambda_binding),
             seq($.typed_binding, $._lambda_binding),
             $.untyped_binding,
@@ -652,7 +635,7 @@ module.exports = grammar({
             seq('{{', $._application, '}}')
         )),
 
-        _typed_bindings1: $ => prec.right(repeat1($.typed_binding)),
+        _typed_bindings1: $ => (repeat1($.typed_binding)),
 
         // "TypedBindings"
         typed_binding: $ => choice(
@@ -733,29 +716,17 @@ module.exports = grammar({
         ),
 
 
-        _let_only: $ => prec.right(seq(
+        _let_only: $ => seq(
             'let',
-
-            $._indent,
-            repeat1(choice(
-                seq($._inline_declaration, $._newline),
-                seq($._block_declaration, $._newline),
-            )),
-            $._dedent,
-        )),
+            block($, $._declaration),
+        ),
 
         _let_in: $ => seq(
             'let',
 
             optional($._indent),
-            repeat(choice(
-                seq($._inline_declaration, $._newline),
-                seq($._block_declaration, $._newline),
-            )),
-            choice(
-                seq($._inline_declaration),
-                seq($._block_declaration),
-            ),
+            repeat(seq($._declaration, $._newline)),
+            $._declaration,
 
             'in',
             $.expr,
@@ -774,7 +745,7 @@ module.exports = grammar({
         ),
 
         // Level 3 Expressions: Atoms
-        _atoms1: $ => prec.right(repeat1($.atom)), // right
+        _atoms1: $ => (repeat1($.atom)), // right
         atom: $ => choice(
             $._atom_curly,
             $._atom_no_curly
@@ -825,10 +796,9 @@ function indent($, ...rule) {
     );
 }
 
+// 1 or more $RULE ending with a NEWLINE
 function block($, rules) {
-    return indent($,
-        repeat1(seq(rules, $._newline))
-    );
+    return indent($, repeat1(seq(rules, $._newline)));
 }
 
 ////////////////////////////////////////////////////////////////////////
