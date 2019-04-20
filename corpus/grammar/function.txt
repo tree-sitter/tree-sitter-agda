@@ -115,3 +115,52 @@ f a with g a
             (atom (qualified_name)))
         (rhs
             (expr (atom)))))
+
+==================
+Idiom brackets
+==================
+
+x : _
+x = (| if a then b else c |)
+
+---
+
+(source_file
+    (function_clause
+        (lhs (function_name (qualified_name)))
+        (rhs (expr (atom))))
+    (function_clause
+        (lhs (atom (qualified_name)))
+        (rhs
+          (expr (atom (expr
+            (atom (qualified_name))
+            (atom (qualified_name))
+            (atom (qualified_name))
+            (atom (qualified_name))
+            (atom (qualified_name))
+            (atom (qualified_name))))))))
+
+
+==================
+Idiom brackets (Unicode)
+==================
+
+x : _
+x = ⦇ if a then b else c ⦈
+
+---
+
+(source_file
+    (function_clause
+        (lhs (function_name (qualified_name)))
+        (rhs (expr (atom))))
+    (function_clause
+        (lhs (atom (qualified_name)))
+        (rhs
+          (expr (atom (expr
+            (atom (qualified_name))
+            (atom (qualified_name))
+            (atom (qualified_name))
+            (atom (qualified_name))
+            (atom (qualified_name))
+            (atom (qualified_name))))))))
