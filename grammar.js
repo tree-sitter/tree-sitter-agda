@@ -15,6 +15,14 @@ const float = /(\-?(0x[0-9a-fA-F]+|[0-9]+)\.(0x[0-9a-fA-F]+|[0-9]+)([eE][-+]?(0x
 const name = /([^\s\\.\"\(\)\{\}@\'\\_]|\\[^\sa-zA-Z]|_[^\s;\.\"\(\)\{\}@])[^\s;\.\"\(\)\{\}@]*/;
 const qualified_name = /(([^\s;\.\"\(\)\{\}@\'\\_]|\\[^\sa-zA-Z]|_[^\s;\.\"\(\)\{\}@])[^\s;\.\"\(\)\{\}@]*\.)*([^\s;\.\"\(\)\{\}@\'\\_]|\\[^\sa-zA-Z]|_[^\s;\.\"\(\)\{\}@])[^\s;\.\"\(\)\{\}@]*/;
 
+const BKT_CURL1 = [['{', '}']];
+const BKT_CURL2 = [['{{', '}}']];
+const BKT_CURLS = [...BKT_CURL1, ...BKT_CURL2];
+
+const BKT_IDIOM = [['(|', '|)']];
+const BKT_PAREN = [['(', ')']];
+
+
 module.exports = grammar({
     name: 'agda',
 
@@ -106,8 +114,7 @@ module.exports = grammar({
                 seq('.', left, repeat1($._field_name), right),
                 seq('..', left, repeat1($._field_name), right),
               ),
-              ['{', '}'],
-              ['{{', '}}'],
+              BKT_CURLS,
             ),
         ),
 
@@ -341,8 +348,7 @@ module.exports = grammar({
                 seq($.simple_hole),
                 seq($.simple_hole, '=', $.simple_hole),
               ),
-              ['{', '}'],
-              ['{{', '}}'],
+              BKT_CURLS,
             ),
         ),
 
@@ -464,7 +470,7 @@ module.exports = grammar({
         module_application: $ => choice(
             bracketWith(
               (left, right) => prec(1, seq($.qualified_name, left, $._const_ellipsis, right)),
-              ['{{', '}}'],
+              BKT_CURL2,
             ),
             seq($.qualified_name, optional($._open_args1)),
         ),
@@ -592,9 +598,8 @@ module.exports = grammar({
             $.typed_binding,
             bracket(
               seq(),
-              ['(', ')'],
-              ['{', '}'],
-              ['{{', '}}'],
+              BKT_PAREN,
+              BKT_CURLS,
             ),
         ),
 
@@ -647,8 +652,7 @@ module.exports = grammar({
             seq($._binding_name),
             bracket(
               $._application,
-              ['{', '}'],
-              ['{{', '}}'],
+              BKT_CURLS,
             ),
         )),
 
@@ -658,13 +662,12 @@ module.exports = grammar({
         typed_binding: $ => choice(
             maybeDotted(bracket(
               seq($._application, ':', $.expr),
-              ['(', ')'],
-              ['{', '}'],
-              ['{{', '}}'],
+              BKT_PAREN,
+              BKT_CURLS,
             )),
             bracket(
               $.open,
-              ['(', ')'],
+              BKT_PAREN,
             ),
             // seq('(', 'let', $._let_body, ')')
         ),
@@ -787,14 +790,14 @@ module.exports = grammar({
             'unquote',
             bracket(
               $.expr,
-              ['{{', '}}'],
-              ['(|', '|)'],
-              ['(', ')'],
+              BKT_CURL2,
+              BKT_IDIOM,
+              BKT_PAREN,
             ),
             bracket(
               seq(),
-              ['{{', '}}'],
-              ['(', ')'],
+              BKT_CURL2,
+              BKT_PAREN,
             ),
             seq('.', $.atom),
             $.record_assignments,
@@ -841,9 +844,12 @@ function maybeDotted(rule) {
     );
 }
 
+function flatten(arrOfArrs) {
+  return arrOfArrs.reduce((res, arr) => [...res, ...arr], []);
+}
 
 function bracketWith(fn, ...pairs) {
-  return choice(...pairs.map(([left, right]) => fn(left, right)));
+  return choice(...flatten(pairs).map(([left, right]) => fn(left, right)));
 }
 
 function bracket(expr, ...pairs) {
