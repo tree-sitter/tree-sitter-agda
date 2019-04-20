@@ -100,12 +100,15 @@ module.exports = grammar({
         _arg_names: $ => repeat1($._arg_name),
         _arg_name: $ => choice(
             maybeDotted($._field_name),
-            seq('{' , repeat1(maybeDotted($._field_name)), '}' ),
-            seq('{{', repeat1(maybeDotted($._field_name)), '}}'),
-            seq('.' , '{',  repeat1($._field_name), '}'),
-            seq('..', '{',  repeat1($._field_name), '}'),
-            seq('.' , '{{', repeat1($._field_name), '}}'),
-            seq('..', '{{', repeat1($._field_name), '}}'),
+            bracketWith(
+              (left, right) => choice(
+                seq(left, repeat1(maybeDotted($._field_name)), right),
+                seq('.', left, repeat1($._field_name), right),
+                seq('..', left, repeat1($._field_name), right),
+              ),
+              ['{', '}'],
+              ['{{', '}}'],
+            ),
         ),
 
         ////////////////////////////////////////////////////////////////////////
@@ -333,10 +336,14 @@ module.exports = grammar({
             $.name,
             seq('(', $._const_lambda, $.name, $._const_right_arrow, $.name, ')'),
             seq('(', $._const_lambda, '_',    $._const_right_arrow, $.name, ')'),
-            seq('{', $.simple_hole, '}'),
-            seq('{{', $.simple_hole, '}}'),
-            seq('{', $.simple_hole, '=', $.simple_hole, '}'),
-            seq('{{', $.simple_hole, '=', $.simple_hole, '}}')
+            bracket(
+              choice(
+                seq($.simple_hole),
+                seq($.simple_hole, '=', $.simple_hole),
+              ),
+              ['{', '}'],
+              ['{{', '}}'],
+            ),
         ),
 
         simple_hole: $ => choice(
@@ -455,7 +462,10 @@ module.exports = grammar({
         ),
 
         module_application: $ => choice(
-            prec(1, seq($.qualified_name, '{{', $._const_ellipsis, '}}')),
+            bracketWith(
+              (left, right) => prec(1, seq($.qualified_name, left, $._const_ellipsis, right)),
+              ['{{', '}}'],
+            ),
             seq($.qualified_name, optional($._open_args1)),
         ),
 
@@ -575,15 +585,18 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
 
         // "LamBinds"
-        _lambda_binding: $ => (choice(
+        _lambda_binding: $ => choice(
             seq($.untyped_binding, $._lambda_binding),
             seq($.typed_binding, $._lambda_binding),
             $.untyped_binding,
             $.typed_binding,
-            seq('(', ')'),
-            seq('{', '}'),
-            seq('{{', '}}')
-        )),
+            bracket(
+              seq(),
+              ['(', ')'],
+              ['{', '}'],
+              ['{{', '}}'],
+            ),
+        ),
 
         catchall_pragma: $ => seq('{-#', 'CATCHALL', '#-}'),
 
@@ -632,18 +645,27 @@ module.exports = grammar({
         // "DomainFreeBinding"
         untyped_binding: $ => maybeDotted(choice(
             seq($._binding_name),
-            seq('{', $._application, '}'),
-            seq('{{', $._application, '}}')
+            bracket(
+              $._application,
+              ['{', '}'],
+              ['{{', '}}'],
+            ),
         )),
 
         _typed_bindings1: $ => (repeat1($.typed_binding)),
 
         // "TypedBindings"
         typed_binding: $ => choice(
-            maybeDotted(bracketed(seq(
-                $._application, ':', $.expr
-            ))),
-            seq('(', $.open, ')'),
+            maybeDotted(bracket(
+              seq($._application, ':', $.expr),
+              ['(', ')'],
+              ['{', '}'],
+              ['{{', '}}'],
+            )),
+            bracket(
+              $.open,
+              ['(', ')'],
+            ),
             // seq('(', 'let', $._let_body, ')')
         ),
 
@@ -763,12 +785,17 @@ module.exports = grammar({
             'quote',
             'quoteTerm',
             'unquote',
-            seq('{{', $.expr, '}}'),
-            seq('(', $.expr, ')'),
-            seq('(|', $.expr, '|)'),
-            seq('(', ')'),
-            seq('{{', '}}'),
-            // seq($.name_at, $.atom),
+            bracket(
+              $.expr,
+              ['{{', '}}'],
+              ['(|', '|)'],
+              ['(', ')'],
+            ),
+            bracket(
+              seq(),
+              ['{{', '}}'],
+              ['(', ')'],
+            ),
             seq('.', $.atom),
             $.record_assignments,
             $._const_ellipsis,
@@ -811,13 +838,14 @@ function maybeDotted(rule) {
         rule,               // Relevant
         seq('.', rule),     // Irrelevant
         seq('..', rule),    // NonStrict
-    )
+    );
 }
 
-function bracketed(rule) {
-    return choice(
-        seq('(', rule, ')'),    // (   )
-        seq('{', rule, '}'),    // {   }
-        seq('{{', rule, '}}'),  // {{ }}
-    )
+
+function bracketWith(fn, ...pairs) {
+  return choice(...pairs.map(([left, right]) => fn(left, right)));
+}
+
+function bracket(expr, ...pairs) {
+  return bracketWith((left, right) => seq(left, expr, right), ...pairs);
 }
