@@ -74,3 +74,21 @@ open module Nat (A : Set) = Sort {{ ... }}
     (module_macro
         (name) (typed_binding (atom (qualified_name)) (expr (atom)))
         (module_application (qualified_name))))
+
+==================
+Module macros (Unicode)
+==================
+
+module Sort.Nat (A : Set) = Sort ℕ
+
+open module Nat (A : Set) = Sort {{ … }}
+
+---
+
+(source_file
+    (module_macro
+        (qualified_name) (typed_binding (atom (qualified_name)) (expr (atom)))
+        (module_application (qualified_name) (atom (qualified_name))))
+    (module_macro
+        (name) (typed_binding (atom (qualified_name)) (expr (atom)))
+        (module_application (qualified_name))))

@@ -64,6 +64,7 @@ module.exports = grammar({
         _const_forall: $ => token(choice('forall', '∀')),
         _const_right_arrow: $ => token(choice('->','→')),
         _const_lambda: $ => token(choice('\\','λ')),
+        _const_ellipsis: $ => token(choice('...','…')),
 
         ////////////////////////////////////////////////////////////////////////
         // Literals
@@ -454,7 +455,7 @@ module.exports = grammar({
         ),
 
         module_application: $ => choice(
-            prec(1, seq($.qualified_name, '{{', '...', '}}')),
+            prec(1, seq($.qualified_name, '{{', $._const_ellipsis, '}}')),
             seq($.qualified_name, optional($._open_args1)),
         ),
 
@@ -770,7 +771,7 @@ module.exports = grammar({
             // seq($.name_at, $.atom),
             seq('.', $.atom),
             $.record_assignments,
-            '...'
+            $._const_ellipsis,
         ),
 
     }
