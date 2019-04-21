@@ -15,6 +15,14 @@ const float = /(\-?(0x[0-9a-fA-F]+|[0-9]+)\.(0x[0-9a-fA-F]+|[0-9]+)([eE][-+]?(0x
 const name = /([^\s\\.\"\(\)\{\}@\'\\_]|\\[^\sa-zA-Z]|_[^\s;\.\"\(\)\{\}@])[^\s;\.\"\(\)\{\}@]*/;
 const qualified_name = /(([^\s;\.\"\(\)\{\}@\'\\_]|\\[^\sa-zA-Z]|_[^\s;\.\"\(\)\{\}@])[^\s;\.\"\(\)\{\}@]*\.)*([^\s;\.\"\(\)\{\}@\'\\_]|\\[^\sa-zA-Z]|_[^\s;\.\"\(\)\{\}@])[^\s;\.\"\(\)\{\}@]*/;
 
+const BKT_CURL1 = [['{', '}']];
+const BKT_CURL2 = [['{{', '}}'], ['⦃', '⦄']];
+const BKT_CURLS = [...BKT_CURL1, ...BKT_CURL2];
+
+const BKT_IDIOM = [['(|', '|)'], ['⦇', '⦈']];
+const BKT_PAREN = [['(', ')']];
+
+
 module.exports = grammar({
     name: 'agda',
 
@@ -64,6 +72,7 @@ module.exports = grammar({
         _const_forall: $ => token(choice('forall', '∀')),
         _const_right_arrow: $ => token(choice('->','→')),
         _const_lambda: $ => token(choice('\\','λ')),
+        _const_ellipsis: $ => token(choice('...','…')),
 
         ////////////////////////////////////////////////////////////////////////
         // Literals
@@ -99,12 +108,14 @@ module.exports = grammar({
         _arg_names: $ => repeat1($._arg_name),
         _arg_name: $ => choice(
             maybeDotted($._field_name),
-            seq('{' , repeat1(maybeDotted($._field_name)), '}' ),
-            seq('{{', repeat1(maybeDotted($._field_name)), '}}'),
-            seq('.' , '{',  repeat1($._field_name), '}'),
-            seq('..', '{',  repeat1($._field_name), '}'),
-            seq('.' , '{{', repeat1($._field_name), '}}'),
-            seq('..', '{{', repeat1($._field_name), '}}'),
+            bracketWith(
+              (left, right) => choice(
+                seq(left, repeat1(maybeDotted($._field_name)), right),
+                seq('.', left, repeat1($._field_name), right),
+                seq('..', left, repeat1($._field_name), right),
+              ),
+              BKT_CURLS,
+            ),
         ),
 
         ////////////////////////////////////////////////////////////////////////
@@ -332,10 +343,13 @@ module.exports = grammar({
             $.name,
             seq('(', $._const_lambda, $.name, $._const_right_arrow, $.name, ')'),
             seq('(', $._const_lambda, '_',    $._const_right_arrow, $.name, ')'),
-            seq('{', $.simple_hole, '}'),
-            seq('{{', $.simple_hole, '}}'),
-            seq('{', $.simple_hole, '=', $.simple_hole, '}'),
-            seq('{{', $.simple_hole, '=', $.simple_hole, '}}')
+            bracket(
+              choice(
+                seq($.simple_hole),
+                seq($.simple_hole, '=', $.simple_hole),
+              ),
+              BKT_CURLS,
+            ),
         ),
 
         simple_hole: $ => choice(
@@ -454,7 +468,10 @@ module.exports = grammar({
         ),
 
         module_application: $ => choice(
-            prec(1, seq($.qualified_name, '{{', '...', '}}')),
+            bracketWith(
+              (left, right) => prec(1, seq($.qualified_name, left, $._const_ellipsis, right)),
+              BKT_CURL2,
+            ),
             seq($.qualified_name, optional($._open_args1)),
         ),
 
@@ -574,15 +591,17 @@ module.exports = grammar({
         ////////////////////////////////////////////////////////////////////////
 
         // "LamBinds"
-        _lambda_binding: $ => (choice(
+        _lambda_binding: $ => choice(
             seq($.untyped_binding, $._lambda_binding),
             seq($.typed_binding, $._lambda_binding),
             $.untyped_binding,
             $.typed_binding,
-            seq('(', ')'),
-            seq('{', '}'),
-            seq('{{', '}}')
-        )),
+            bracket(
+              seq(),
+              BKT_PAREN,
+              BKT_CURLS,
+            ),
+        ),
 
         catchall_pragma: $ => seq('{-#', 'CATCHALL', '#-}'),
 
@@ -631,18 +650,25 @@ module.exports = grammar({
         // "DomainFreeBinding"
         untyped_binding: $ => maybeDotted(choice(
             seq($._binding_name),
-            seq('{', $._application, '}'),
-            seq('{{', $._application, '}}')
+            bracket(
+              $._application,
+              BKT_CURLS,
+            ),
         )),
 
         _typed_bindings1: $ => (repeat1($.typed_binding)),
 
         // "TypedBindings"
         typed_binding: $ => choice(
-            maybeDotted(bracketed(seq(
-                $._application, ':', $.expr
-            ))),
-            seq('(', $.open, ')'),
+            maybeDotted(bracket(
+              seq($._application, ':', $.expr),
+              BKT_PAREN,
+              BKT_CURLS,
+            )),
+            bracket(
+              $.open,
+              BKT_PAREN,
+            ),
             // seq('(', 'let', $._let_body, ')')
         ),
 
@@ -762,15 +788,20 @@ module.exports = grammar({
             'quote',
             'quoteTerm',
             'unquote',
-            seq('{{', $.expr, '}}'),
-            seq('(', $.expr, ')'),
-            seq('(|', $.expr, '|)'),
-            seq('(', ')'),
-            seq('{{', '}}'),
-            // seq($.name_at, $.atom),
+            bracket(
+              $.expr,
+              BKT_CURL2,
+              BKT_IDIOM,
+              BKT_PAREN,
+            ),
+            bracket(
+              seq(),
+              BKT_CURL2,
+              BKT_PAREN,
+            ),
             seq('.', $.atom),
             $.record_assignments,
-            '...'
+            $._const_ellipsis,
         ),
 
     }
@@ -810,13 +841,17 @@ function maybeDotted(rule) {
         rule,               // Relevant
         seq('.', rule),     // Irrelevant
         seq('..', rule),    // NonStrict
-    )
+    );
 }
 
-function bracketed(rule) {
-    return choice(
-        seq('(', rule, ')'),    // (   )
-        seq('{', rule, '}'),    // {   }
-        seq('{{', rule, '}}'),  // {{ }}
-    )
+function flatten(arrOfArrs) {
+  return arrOfArrs.reduce((res, arr) => [...res, ...arr], []);
+}
+
+function bracketWith(fn, ...pairs) {
+  return choice(...flatten(pairs).map(([left, right]) => fn(left, right)));
+}
+
+function bracket(expr, ...pairs) {
+  return bracketWith((left, right) => seq(left, expr, right), ...pairs);
 }
