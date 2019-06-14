@@ -3,8 +3,14 @@
 #include <cwctype>
 #include <cassert>
 #include <cstring>
+#include <cstdint>
 
 namespace {
+
+    // If we could somehow force the CI to use C++11, we could use decltype
+    // instead of using this work-around of declaring aliases up-front.
+    typedef uint32_t queued_dedent_count_type;
+    typedef uint16_t indent_length_stack_element_type;
 
     using std::vector;
 
@@ -22,18 +28,17 @@ namespace {
 
         unsigned serialize(char *buffer) {
             size_t n_copied_so_far = 0;
-            size_t n_to_copy = sizeof(decltype(queued_dedent_count));
+            size_t n_to_copy = sizeof(queued_dedent_count_type);
 
             std::memcpy((void *) &(buffer[n_copied_so_far]),
                         (void *) &queued_dedent_count,
                         n_to_copy);
             n_copied_so_far += n_to_copy;
 
-            using element_type = decltype(indent_length_stack)::value_type;
-            n_to_copy = indent_length_stack.size() * sizeof(element_type);
+            n_to_copy = indent_length_stack.size() * sizeof(indent_length_stack_element_type);
             if (n_copied_so_far + n_to_copy > TREE_SITTER_SERIALIZATION_BUFFER_SIZE) {
                 n_to_copy = TREE_SITTER_SERIALIZATION_BUFFER_SIZE - n_copied_so_far;
-                n_to_copy -= n_to_copy % sizeof(element_type);
+                n_to_copy -= n_to_copy % sizeof(indent_length_stack_element_type);
             }
             std::memcpy((void *) &(buffer[n_copied_so_far]),
                         (void *) indent_length_stack.data(),
@@ -61,14 +66,13 @@ namespace {
                         n_to_copy);
             n_copied_so_far += n_to_copy;
 
-            using element_type = decltype(indent_length_stack)::value_type;
             n_to_copy = length - n_copied_so_far;
-            n_to_copy -= n_to_copy % sizeof(element_type);
+            n_to_copy -= n_to_copy % sizeof(indent_length_stack_element_type);
             if (n_to_copy == 0) {
                 indent_length_stack.push_back(0);
                 return;
             }
-            indent_length_stack.resize(n_to_copy / sizeof(element_type));
+            indent_length_stack.resize(n_to_copy / sizeof(indent_length_stack_element_type));
             std::memcpy((void *) indent_length_stack.data(),
                         (void *) &(buffer[n_copied_so_far]),
                         n_to_copy);
@@ -264,8 +268,8 @@ namespace {
             return false;
         }
 
-        vector<uint16_t> indent_length_stack;
-        uint32_t queued_dedent_count;
+        vector<indent_length_stack_element_type> indent_length_stack;
+        queued_dedent_count_type queued_dedent_count;
 
         // column_number : Maybe Int
         // -1 as Nothing,
