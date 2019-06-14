@@ -22,13 +22,12 @@ addons:
     - clang-5.0
 branches:
   only:
-  - /.*/
-  # - master
-  # - "/^v.*$/"
+  - master
+  - "/^v.*$/"
+  - pr4
 deploy:
   provider: script
-  script: |
-    npm run prebuild && npm run prebuild:upload -u ${PREBUILD_UPLOAD}
+  script: npm run prebuild && npm run prebuild:upload -u ${PREBUILD_UPLOAD}
   skip_cleanup: true
   on:
     all_branches: true

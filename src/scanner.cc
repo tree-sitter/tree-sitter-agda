@@ -3,7 +3,7 @@
 #include <cwctype>
 #include <cassert>
 #include <cstring>
-#include <cstdint>
+#include <stdint.h>
 
 namespace {
 
