@@ -23,6 +23,7 @@ namespace {
     struct Scanner {
         Scanner() {
             unissued_newline = 0;
+            column_number = 0;
             deserialize(NULL, 0);
         }
 
@@ -80,27 +81,24 @@ namespace {
 
         void advance(TSLexer *lexer) {
             lexer->advance(lexer, false);
-
             advanceCarriage();
         }
 
         void skip(TSLexer *lexer) {
             lexer->advance(lexer, true);
-
             advanceCarriage();
         }
 
         // https://github.com/tree-sitter/tree-sitter/issues/312
         // maintaining the column position by ourselves
-
         void advanceCarriage() {
-            if (column_number != -1) {
-                column_number++;
-            }
+            column_number++;
         }
 
         // set `column_number` with `get_column`
-        void setCarriage(TSLexer *lexer) {
+        // WARNING: this function would advance the lexer and cause side effects
+        // https://github.com/tree-sitter/tree-sitter/issues/314
+        void setCarriageAndAdvance(TSLexer *lexer) {
             column_number = (int)lexer->get_column(lexer);
         }
 
@@ -122,12 +120,10 @@ namespace {
         bool skipJunk(TSLexer *lexer) {
             bool skippedNewline = false;
 
-            // assuming that `get_column` is correct before skipping
-            setCarriage(lexer);
-
             while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r' || lexer->lookahead == '\n') {
                 if (lexer->lookahead == '\n') {
                     skippedNewline = true;
+                    // skip the newline
                     skip(lexer);
                     // mark the end of the last lexeme
                     lexer->mark_end(lexer);
@@ -137,7 +133,6 @@ namespace {
                     skip(lexer);
                 }
             }
-
             return skippedNewline;
         }
 
@@ -210,7 +205,6 @@ namespace {
             bool in = indent_length > indent_length_stack.back();
             bool noop = indent_length == indent_length_stack.back();
             bool out = indent_length < indent_length_stack.back();
-
             if (!next_token_is_comment) {
 
                 if (skippedNewline) {
@@ -271,8 +265,6 @@ namespace {
         vector<indent_length_stack_element_type> indent_length_stack;
         queued_dedent_count_type queued_dedent_count;
 
-        // column_number : Maybe Int
-        // -1 as Nothing,
         int column_number;
 
         // sometimes we would want to recognize more tokens at once
