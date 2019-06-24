@@ -22,7 +22,6 @@ namespace {
 
     struct Scanner {
         Scanner() {
-            column_number = 0;
             deserialize(NULL, 0);
         }
 
@@ -80,38 +79,10 @@ namespace {
 
         void advance(TSLexer *lexer) {
             lexer->advance(lexer, false);
-            advanceCarriage();
         }
 
         void skip(TSLexer *lexer) {
             lexer->advance(lexer, true);
-            advanceCarriage();
-        }
-
-        // https://github.com/tree-sitter/tree-sitter/issues/312
-        // maintaining the column position by ourselves
-        void advanceCarriage() {
-            column_number++;
-        }
-
-        // set `column_number` with `get_column`
-        // WARNING: this function would advance the lexer and cause side effects
-        // https://github.com/tree-sitter/tree-sitter/issues/314
-        void setCarriageAndAdvance(TSLexer *lexer) {
-            column_number = (int)lexer->get_column(lexer);
-        }
-
-        // set `column_number` to 0, use after newline
-        void returnCarriage() {
-            column_number = 0;
-        }
-
-        // see if `column_number` is available
-        // else retrieve from `get_column`
-        uint32_t readCarriage(TSLexer *lexer) {
-            return column_number == -1
-                ? lexer->get_column(lexer)
-                : (uint32_t)column_number;
         }
 
 
@@ -126,8 +97,6 @@ namespace {
                     skip(lexer);
                     // mark the end of the last lexeme
                     lexer->mark_end(lexer);
-                    // set column_number to 0
-                    returnCarriage();
                 } else {
                     skip(lexer);
                 }
@@ -136,7 +105,7 @@ namespace {
         }
 
         bool indent(TSLexer *lexer) {
-            indent_length_stack.push_back(readCarriage(lexer));
+            indent_length_stack.push_back(lexer->get_column(lexer));
             lexer->result_symbol = INDENT;
             return true;
         }
@@ -181,7 +150,7 @@ namespace {
             // TODO: handle comments
             bool next_token_is_comment = false;
 
-            int indent_length = readCarriage(lexer);
+            int indent_length = lexer->get_column(lexer);
 
             bool in = indent_length > indent_length_stack.back();
             bool noop = indent_length == indent_length_stack.back();
@@ -244,8 +213,6 @@ namespace {
 
         vector<indent_length_stack_element_type> indent_length_stack;
         queued_dedent_count_type queued_dedent_count;
-
-        int column_number;
     };
 
 }
