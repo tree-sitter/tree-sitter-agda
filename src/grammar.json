@@ -2,8 +2,24 @@
   "name": "agda",
   "rules": {
     "source_file": {
-      "type": "STRING",
-      "value": "hello"
+      "type": "REPEAT",
+      "content": {
+        "type": "SYMBOL",
+        "name": "hello"
+      }
+    },
+    "hello": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "hello"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "newline"
+        }
+      ]
     }
   },
   "extras": [
@@ -13,7 +29,20 @@
     }
   ],
   "conflicts": [],
-  "externals": [],
+  "externals": [
+    {
+      "type": "SYMBOL",
+      "name": "newline"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "indent"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "dedent"
+    }
+  ],
   "inline": [],
   "supertypes": []
 }

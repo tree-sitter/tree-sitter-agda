@@ -4,8 +4,8 @@
   "description": "tree sitter for Agda",
   "main": "index.js",
   "scripts": {
-    "test": "npx tree-sitter test",
-    "iterate": "npx tree-sitter generate && npx tree-sitter test"
+    "test": "npx tree-sitter parse test/example.txt",
+    "iterate": "npx tree-sitter generate && npx tree-sitter parse test/example.txt"
   },
   "repository": {
     "type": "git",

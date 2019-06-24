@@ -1,8 +1,17 @@
 module.exports = grammar({
   name: 'agda',
 
+
+  externals: $ => [
+    $.newline,
+    $.indent,
+    $.dedent
+  ],
+
   rules: {
-    // The production rules of the context-free grammar
-    source_file: $ => 'hello'
+    // 'hello' seperated by 'newline'
+    source_file: $ => repeat($.hello),
+
+    hello: $ => seq('hello', $.newline)
   }
 });
