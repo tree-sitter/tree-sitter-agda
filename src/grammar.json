@@ -33,14 +33,6 @@
     {
       "type": "SYMBOL",
       "name": "newline"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "indent"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "dedent"
     }
   ],
   "inline": [],

@@ -7,29 +7,25 @@
 
 #define LANGUAGE_VERSION 10
 #define STATE_COUNT 7
-#define SYMBOL_COUNT 8
+#define SYMBOL_COUNT 6
 #define ALIAS_COUNT 0
-#define TOKEN_COUNT 5
-#define EXTERNAL_TOKEN_COUNT 3
+#define TOKEN_COUNT 3
+#define EXTERNAL_TOKEN_COUNT 1
 #define FIELD_COUNT 0
 #define MAX_ALIAS_SEQUENCE_LENGTH 2
 
 enum {
   anon_sym_hello = 1,
   sym_newline = 2,
-  sym_indent = 3,
-  sym_dedent = 4,
-  sym_source_file = 5,
-  sym_hello = 6,
-  aux_sym_source_file_repeat1 = 7,
+  sym_source_file = 3,
+  sym_hello = 4,
+  aux_sym_source_file_repeat1 = 5,
 };
 
 static const char *ts_symbol_names[] = {
   [ts_builtin_sym_end] = "end",
   [anon_sym_hello] = "hello",
   [sym_newline] = "newline",
-  [sym_indent] = "indent",
-  [sym_dedent] = "dedent",
   [sym_source_file] = "source_file",
   [sym_hello] = "hello",
   [aux_sym_source_file_repeat1] = "source_file_repeat1",
@@ -45,14 +41,6 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
     .named = false,
   },
   [sym_newline] = {
-    .visible = true,
-    .named = true,
-  },
-  [sym_indent] = {
-    .visible = true,
-    .named = true,
-  },
-  [sym_dedent] = {
     .visible = true,
     .named = true,
   },
@@ -107,7 +95,7 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
 static TSLexMode ts_lex_modes[STATE_COUNT] = {
   [0] = {.lex_state = 0, .external_lex_state = 1},
   [1] = {.lex_state = 0},
-  [2] = {.lex_state = 0, .external_lex_state = 2},
+  [2] = {.lex_state = 0, .external_lex_state = 1},
   [3] = {.lex_state = 0},
   [4] = {.lex_state = 0},
   [5] = {.lex_state = 0},
@@ -116,34 +104,23 @@ static TSLexMode ts_lex_modes[STATE_COUNT] = {
 
 enum {
   ts_external_token_newline = 0,
-  ts_external_token_indent = 1,
-  ts_external_token_dedent = 2,
 };
 
 static TSSymbol ts_external_scanner_symbol_map[EXTERNAL_TOKEN_COUNT] = {
   [ts_external_token_newline] = sym_newline,
-  [ts_external_token_indent] = sym_indent,
-  [ts_external_token_dedent] = sym_dedent,
 };
 
-static bool ts_external_scanner_states[3][EXTERNAL_TOKEN_COUNT] = {
+static bool ts_external_scanner_states[2][EXTERNAL_TOKEN_COUNT] = {
   [1] = {
-    [ts_external_token_newline] = true,
-    [ts_external_token_indent] = true,
-    [ts_external_token_dedent] = true,
-  },
-  [2] = {
     [ts_external_token_newline] = true,
   },
 };
 
 static uint16_t ts_parse_table[STATE_COUNT][SYMBOL_COUNT] = {
   [0] = {
-    [sym_newline] = ACTIONS(1),
-    [sym_dedent] = ACTIONS(1),
-    [ts_builtin_sym_end] = ACTIONS(1),
     [anon_sym_hello] = ACTIONS(1),
-    [sym_indent] = ACTIONS(1),
+    [sym_newline] = ACTIONS(1),
+    [ts_builtin_sym_end] = ACTIONS(1),
   },
   [1] = {
     [aux_sym_source_file_repeat1] = STATE(3),
