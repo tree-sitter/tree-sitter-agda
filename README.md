@@ -65,7 +65,9 @@ int counter;
 There's no problem with the readings from `get_column`, but the line numbers of the parsing result are off after the 4th `hello`.
 
 ```
-#3: not reading
+#1: noop
+#2: noop
+#3: noop
 #4: colomn 5
 #5: colomn 5
 #6: colomn 5
