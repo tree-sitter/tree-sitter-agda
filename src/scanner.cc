@@ -170,102 +170,101 @@ namespace {
 
 
         bool scan(TSLexer *lexer, const bool *valid_symbols) {
-            bool result = issueUnrecognizeToken(lexer);
-            if (result) {
-                return true;
-            }
-
+            bool tokenRecognized = false;
             bool skippedNewline = false;
 
-            if (valid_symbols[DEDENT] && queued_dedent_count > 0) {
+            // issue queued tokens when possible
+            if (issueUnrecognizeToken(lexer)) {
+                tokenRecognized = true;
+
+            // indent when possible
+            } else if (valid_symbols[DEDENT] && queued_dedent_count > 0) {
                 queued_dedent_count--;
                 unissued_newline++;
-                return dedent(lexer);
-            }
+                tokenRecognized = dedent(lexer);
 
-            // skip spaces and newline
-            skippedNewline = skippedNewline || skipJunk(lexer);
+            } else {
+                // skip spaces and newline
+                skippedNewline = skippedNewline || skipJunk(lexer);
 
-            // in case of EOF
-            if (lexer->lookahead == 0) {
-                if (valid_symbols[DEDENT] && indent_length_stack.size() > 1) {
-                    indent_length_stack.pop_back();
-                    unissued_newline++;
-                    return dedent(lexer);
-                }
-
-                if (valid_symbols[NEWLINE]) {
-                    return newline(lexer);
-                }
-
-                return false;
-            }
-
-
-            // TODO: handle comments
-            bool next_token_is_comment = false;
-
-            int indent_length = readCarriage(lexer);
-
-            bool in = indent_length > indent_length_stack.back();
-            bool noop = indent_length == indent_length_stack.back();
-            bool out = indent_length < indent_length_stack.back();
-
-            if (!next_token_is_comment) {
-
-                if (skippedNewline) {
-                    if (in) {
-                        // do
-                        //      line0  <newline>
-                        //          still-line0
-                        if (valid_symbols[INDENT]) {
-                            return indent(lexer);
-                        }
-                    } else if (out) {
-                        // do
-                        //      line0  <newline>
-                        //    line1
-                        if (valid_symbols[NEWLINE]) {
-                            return newline(lexer);
-                        }
+                // in case of EOF
+                if (lexer->lookahead == 0) {
+                    if (valid_symbols[DEDENT] && indent_length_stack.size() > 1) {
+                        indent_length_stack.pop_back();
+                        unissued_newline++;
+                        tokenRecognized = dedent(lexer);
+                    } else if (valid_symbols[NEWLINE]) {
+                        tokenRecognized = newline(lexer);
                     } else {
-                        // do
-                        //      line0  <newline>
-                        //      line1
-                        if (valid_symbols[NEWLINE]) {
-                            return newline(lexer);
-                        }
+                        tokenRecognized = false;
                     }
                 } else {
-                    if (in) {
-                        // do
-                        //      line0 still-line0
-                        if (valid_symbols[INDENT]) {
-                            return indent(lexer);
-                        }
-                    } else if (out) {
-                        // should <DEDENT> and then <NEWLINE>
-                        // do
-                        //      line0  <newline>
-                        //    line1
-                        indent_length_stack.pop_back();
-                        while (indent_length < indent_length_stack.back()) {
-                            indent_length_stack.pop_back();
-                            queued_dedent_count++;
-                        }
-                        if (valid_symbols[DEDENT]) {
-                            unissued_newline++;
-                            return dedent(lexer);
-                        } else {
-                            queued_dedent_count++;
-                        }
-                    } else {
+                    // TODO: handle comments
+                    bool next_token_is_comment = false;
 
+                    int indent_length = readCarriage(lexer);
+
+                    bool in = indent_length > indent_length_stack.back();
+                    bool noop = indent_length == indent_length_stack.back();
+                    bool out = indent_length < indent_length_stack.back();
+
+                    if (!next_token_is_comment) {
+
+                        if (skippedNewline) {
+                            if (in) {
+                                // do
+                                //      line0  <newline>
+                                //          still-line0
+                                if (valid_symbols[INDENT]) {
+                                    tokenRecognized = indent(lexer);
+                                }
+                            } else if (out) {
+                                // do
+                                //      line0  <newline>
+                                //    line1
+                                if (valid_symbols[NEWLINE]) {
+                                    tokenRecognized = newline(lexer);
+                                }
+                            } else {
+                                // do
+                                //      line0  <newline>
+                                //      line1
+                                if (valid_symbols[NEWLINE]) {
+                                    tokenRecognized = newline(lexer);
+                                }
+                            }
+                        } else {
+                            if (in) {
+                                // do
+                                //      line0 still-line0
+                                if (valid_symbols[INDENT]) {
+                                    tokenRecognized = indent(lexer);
+                                }
+                            } else if (out) {
+                                // should <DEDENT> and then <NEWLINE>
+                                // do
+                                //      line0  <newline>
+                                //    line1
+                                indent_length_stack.pop_back();
+                                while (indent_length < indent_length_stack.back()) {
+                                    indent_length_stack.pop_back();
+                                    queued_dedent_count++;
+                                }
+                                if (valid_symbols[DEDENT]) {
+                                    unissued_newline++;
+                                    tokenRecognized = dedent(lexer);
+                                } else {
+                                    queued_dedent_count++;
+                                }
+                            } else {
+
+                            }
+                        }
                     }
                 }
-            }
 
-            return false;
+            }
+            return tokenRecognized;
         }
 
         vector<indent_length_stack_element_type> indent_length_stack;
