@@ -24,7 +24,6 @@ namespace {
 
     struct Scanner {
         Scanner() {
-            unissued_newline = 0;
             deserialize(NULL, 0);
         }
 
@@ -159,23 +158,14 @@ namespace {
             return true;
         }
 
-        // sometimes we would want to recognize more tokens at once
-        // we check the number of unrecognized tokens and issue them here
-        bool issueUnrecognizeToken(TSLexer *lexer) {
+        bool issueToken(TSLexer *lexer) {
             // pop the queue and issue the token if there's any
-            // if (token_queue.empty()) {
-            //     return false;
-            // } else {
-            //     lexer->result_symbol = token_queue.front();
-            //     token_queue.pop();
-            //     return true;
-            // }
-
-            if (unissued_newline > 0) {
-                unissued_newline--;
-                return newline(lexer);
-            } else {
+            if (token_queue.empty()) {
                 return false;
+            } else {
+                lexer->result_symbol = token_queue.front();
+                token_queue.pop();
+                return true;
             }
         }
 
@@ -185,15 +175,14 @@ namespace {
             bool skippedNewline = false;
 
             // issue queued tokens when possible
-            if (issueUnrecognizeToken(lexer)) {
+            if (issueToken(lexer)) {
                 tokenRecognized = true;
 
             // indent when possible
             } else if (valid_symbols[DEDENT] && queued_dedent_count > 0) {
                 queued_dedent_count--;
-                unissued_newline++;
+                token_queue.push(NEWLINE);
                 tokenRecognized = dedent(lexer);
-
             } else {
                 // skip spaces and newline
                 skippedNewline = skippedNewline || skipJunk(lexer);
@@ -202,7 +191,8 @@ namespace {
                 if (lexer->lookahead == 0) {
                     if (valid_symbols[DEDENT] && indent_length_stack.size() > 1) {
                         indent_length_stack.pop_back();
-                        unissued_newline++;
+
+                        token_queue.push(NEWLINE);
                         tokenRecognized = dedent(lexer);
                     } else if (valid_symbols[NEWLINE]) {
                         tokenRecognized = newline(lexer);
@@ -262,7 +252,7 @@ namespace {
                                     queued_dedent_count++;
                                 }
                                 if (valid_symbols[DEDENT]) {
-                                    unissued_newline++;
+                                    token_queue.push(NEWLINE);
                                     tokenRecognized = dedent(lexer);
                                 } else {
                                     queued_dedent_count++;
@@ -285,12 +275,6 @@ namespace {
         // column_number : Maybe Int
         // -1 as Nothing,
         int column_number;
-
-        // sometimes we would want to recognize more tokens at once
-        // here we keep the number of unrecognized tokens so that we can
-        // recognize them in the next round
-        uint32_t unissued_newline;
-
     };
 
 }
