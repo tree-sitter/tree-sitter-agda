@@ -24,6 +24,7 @@ namespace {
 
     struct Scanner {
         Scanner() {
+            column_number = 0;
             deserialize(NULL, 0);
         }
 
@@ -95,9 +96,7 @@ namespace {
         // maintaining the column position by ourselves
 
         void advanceCarriage() {
-            if (column_number != -1) {
-                column_number++;
-            }
+            column_number++;
         }
 
         // set `column_number` with `get_column`
@@ -113,9 +112,7 @@ namespace {
         // see if `column_number` is available
         // else retrieve from `get_column`
         uint32_t readCarriage(TSLexer *lexer) {
-            return column_number == -1
-                ? lexer->get_column(lexer)
-                : (uint32_t)column_number;
+            return (uint32_t)column_number;
         }
 
 
