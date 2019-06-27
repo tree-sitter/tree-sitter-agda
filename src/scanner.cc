@@ -142,20 +142,17 @@ namespace {
             return skippedNewline;
         }
 
-        bool indent(TSLexer *lexer) {
+        void indent(TSLexer *lexer) {
             indent_length_stack.push_back(readCarriage(lexer));
-            lexer->result_symbol = INDENT;
-            return true;
+            token_queue.push(INDENT);
         }
 
-        bool dedent(TSLexer *lexer) {
-            lexer->result_symbol = DEDENT;
-            return true;
+        void dedent() {
+            token_queue.push(DEDENT);
         }
 
-        bool newline(TSLexer *lexer) {
-            lexer->result_symbol = NEWLINE;
-            return true;
+        void newline() {
+            token_queue.push(NEWLINE);
         }
 
         bool issueToken(TSLexer *lexer) {
@@ -171,6 +168,7 @@ namespace {
 
 
         bool scan(TSLexer *lexer, const bool *valid_symbols) {
+            // we can only recognized 1 token at each scan
             bool tokenRecognized = false;
             bool skippedNewline = false;
 
@@ -181,8 +179,8 @@ namespace {
             // indent when possible
             } else if (valid_symbols[DEDENT] && queued_dedent_count > 0) {
                 queued_dedent_count--;
-                token_queue.push(NEWLINE);
-                tokenRecognized = dedent(lexer);
+                dedent();
+                newline();
             } else {
                 // skip spaces and newline
                 skippedNewline = skippedNewline || skipJunk(lexer);
@@ -191,13 +189,10 @@ namespace {
                 if (lexer->lookahead == 0) {
                     if (valid_symbols[DEDENT] && indent_length_stack.size() > 1) {
                         indent_length_stack.pop_back();
-
-                        token_queue.push(NEWLINE);
-                        tokenRecognized = dedent(lexer);
+                        dedent();
+                        newline();
                     } else if (valid_symbols[NEWLINE]) {
-                        tokenRecognized = newline(lexer);
-                    } else {
-                        tokenRecognized = false;
+                        newline();
                     }
                 } else {
                     // TODO: handle comments
@@ -217,21 +212,21 @@ namespace {
                                 //      line0  <newline>
                                 //          still-line0
                                 if (valid_symbols[INDENT]) {
-                                    tokenRecognized = indent(lexer);
+                                    indent(lexer);
                                 }
                             } else if (out) {
                                 // do
                                 //      line0  <newline>
                                 //    line1
                                 if (valid_symbols[NEWLINE]) {
-                                    tokenRecognized = newline(lexer);
+                                    newline();
                                 }
                             } else {
                                 // do
                                 //      line0  <newline>
                                 //      line1
                                 if (valid_symbols[NEWLINE]) {
-                                    tokenRecognized = newline(lexer);
+                                    newline();
                                 }
                             }
                         } else {
@@ -239,7 +234,7 @@ namespace {
                                 // do
                                 //      line0 still-line0
                                 if (valid_symbols[INDENT]) {
-                                    tokenRecognized = indent(lexer);
+                                    indent(lexer);
                                 }
                             } else if (out) {
                                 // should <DEDENT> and then <NEWLINE>
@@ -252,8 +247,8 @@ namespace {
                                     queued_dedent_count++;
                                 }
                                 if (valid_symbols[DEDENT]) {
-                                    token_queue.push(NEWLINE);
-                                    tokenRecognized = dedent(lexer);
+                                    dedent();
+                                    newline();
                                 } else {
                                     queued_dedent_count++;
                                 }
@@ -265,6 +260,13 @@ namespace {
                 }
 
             }
+
+            if (!tokenRecognized) {
+                if (issueToken(lexer)) {
+                    tokenRecognized = true;
+                }
+            }
+
             return tokenRecognized;
         }
 
