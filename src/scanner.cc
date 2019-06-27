@@ -1,5 +1,6 @@
 #include <tree_sitter/parser.h>
 #include <vector>
+#include <queue>
 #include <cwctype>
 #include <cassert>
 #include <cstring>
@@ -13,6 +14,7 @@ namespace {
     typedef uint16_t indent_length_stack_element_type;
 
     using std::vector;
+    using std::queue;
 
     enum TokenType {
         NEWLINE,
@@ -160,6 +162,15 @@ namespace {
         // sometimes we would want to recognize more tokens at once
         // we check the number of unrecognized tokens and issue them here
         bool issueUnrecognizeToken(TSLexer *lexer) {
+            // pop the queue and issue the token if there's any
+            // if (token_queue.empty()) {
+            //     return false;
+            // } else {
+            //     lexer->result_symbol = token_queue.front();
+            //     token_queue.pop();
+            //     return true;
+            // }
+
             if (unissued_newline > 0) {
                 unissued_newline--;
                 return newline(lexer);
@@ -269,6 +280,7 @@ namespace {
 
         vector<indent_length_stack_element_type> indent_length_stack;
         queued_dedent_count_type queued_dedent_count;
+        queue<TokenType> token_queue;
 
         // column_number : Maybe Int
         // -1 as Nothing,
@@ -278,6 +290,7 @@ namespace {
         // here we keep the number of unrecognized tokens so that we can
         // recognize them in the next round
         uint32_t unissued_newline;
+
     };
 
 }
