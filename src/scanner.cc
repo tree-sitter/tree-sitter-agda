@@ -19,7 +19,7 @@ namespace {
     enum TokenType {
         NEWLINE,
         INDENT,
-        DEDENT,
+        DEDENT
     };
 
     struct Scanner {
@@ -139,6 +139,7 @@ namespace {
             return skippedNewline;
         }
 
+
         void indent(TSLexer *lexer) {
             indent_length_stack.push_back(readCarriage(lexer));
             token_queue.push(INDENT);
@@ -163,6 +164,20 @@ namespace {
             }
         }
 
+        // bool skipToken(TSLexer *lexer) {
+        //     bool advanced = false;
+        //     while (lexer->lookahead != ' ' && lexer->lookahead != '\t' && lexer->lookahead != '\r' && lexer->lookahead != '\n' && lexer->lookahead != 0) {
+        //         printf("%c", lexer->lookahead);
+        //         advanced = true;
+        //         advance(lexer);
+        //     }
+        //     printf(" ");
+        //
+        //     if (advanced) {
+        //         lexer->mark_end(lexer);
+        //     }
+        //     return advanced;
+        // }
 
         bool scan(TSLexer *lexer, const bool *valid_symbols) {
 
@@ -254,8 +269,7 @@ namespace {
             }
 
             // we can only recognized 1 token at each scan
-            bool tokenRecognized = issueToken(lexer);
-            return tokenRecognized;
+            return issueToken(lexer);
         }
 
         vector<indent_length_stack_element_type> indent_length_stack;
