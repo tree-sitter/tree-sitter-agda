@@ -165,105 +165,96 @@ namespace {
 
 
         bool scan(TSLexer *lexer, const bool *valid_symbols) {
-            // we can only recognized 1 token at each scan
-            bool tokenRecognized = false;
-            bool skippedNewline = false;
 
-            // issue queued tokens when possible
-            if (issueToken(lexer)) {
-                tokenRecognized = true;
-
-            // indent when possible
-            } else if (valid_symbols[DEDENT] && queued_dedent_count > 0) {
-                queued_dedent_count--;
-                dedent();
-                newline();
-            } else {
-                // skip spaces and newline
-                skippedNewline = skippedNewline || skipJunk(lexer);
-
-                // in case of EOF
-                if (lexer->lookahead == 0) {
-                    if (valid_symbols[DEDENT] && indent_length_stack.size() > 1) {
-                        indent_length_stack.pop_back();
-                        dedent();
-                        newline();
-                    } else if (valid_symbols[NEWLINE]) {
-                        newline();
-                    }
+            if (token_queue.empty()) {
+                // indent when possible
+                if (valid_symbols[DEDENT] && queued_dedent_count > 0) {
+                    queued_dedent_count--;
+                    dedent();
+                    newline();
                 } else {
-                    // TODO: handle comments
-                    bool next_token_is_comment = false;
+                    // skip spaces and newline
+                    bool skippedNewline = false || skipJunk(lexer);
 
-                    int indent_length = readCarriage(lexer);
+                    // in case of EOF
+                    if (lexer->lookahead == 0) {
+                        if (valid_symbols[DEDENT] && indent_length_stack.size() > 1) {
+                            indent_length_stack.pop_back();
+                            dedent();
+                            newline();
+                        } else if (valid_symbols[NEWLINE]) {
+                            newline();
+                        }
+                    } else {
+                        // TODO: handle comments
+                        bool next_token_is_comment = false;
 
-                    bool in = indent_length > indent_length_stack.back();
-                    bool noop = indent_length == indent_length_stack.back();
-                    bool out = indent_length < indent_length_stack.back();
+                        int indent_length = readCarriage(lexer);
 
-                    if (!next_token_is_comment) {
+                        bool in = indent_length > indent_length_stack.back();
+                        bool noop = indent_length == indent_length_stack.back();
+                        bool out = indent_length < indent_length_stack.back();
 
-                        if (skippedNewline) {
-                            if (in) {
-                                // do
-                                //      line0  <newline>
-                                //          still-line0
-                                if (valid_symbols[INDENT]) {
-                                    indent(lexer);
-                                }
-                            } else if (out) {
-                                // do
-                                //      line0  <newline>
-                                //    line1
-                                if (valid_symbols[NEWLINE]) {
-                                    newline();
-                                }
-                            } else {
-                                // do
-                                //      line0  <newline>
-                                //      line1
-                                if (valid_symbols[NEWLINE]) {
-                                    newline();
-                                }
-                            }
-                        } else {
-                            if (in) {
-                                // do
-                                //      line0 still-line0
-                                if (valid_symbols[INDENT]) {
-                                    indent(lexer);
-                                }
-                            } else if (out) {
-                                // should <DEDENT> and then <NEWLINE>
-                                // do
-                                //      line0  <newline>
-                                //    line1
-                                indent_length_stack.pop_back();
-                                while (indent_length < indent_length_stack.back()) {
-                                    indent_length_stack.pop_back();
-                                    queued_dedent_count++;
-                                }
-                                if (valid_symbols[DEDENT]) {
-                                    dedent();
-                                    newline();
+                        if (!next_token_is_comment) {
+
+                            if (skippedNewline) {
+                                if (in) {
+                                    // do
+                                    //      line0  <newline>
+                                    //          still-line0
+                                    if (valid_symbols[INDENT]) {
+                                        indent(lexer);
+                                    }
+                                } else if (out) {
+                                    // do
+                                    //      line0  <newline>
+                                    //    line1
+                                    if (valid_symbols[NEWLINE]) {
+                                        newline();
+                                    }
                                 } else {
-                                    queued_dedent_count++;
+                                    // do
+                                    //      line0  <newline>
+                                    //      line1
+                                    if (valid_symbols[NEWLINE]) {
+                                        newline();
+                                    }
                                 }
                             } else {
+                                if (in) {
+                                    // do
+                                    //      line0 still-line0
+                                    if (valid_symbols[INDENT]) {
+                                        indent(lexer);
+                                    }
+                                } else if (out) {
+                                    // should <DEDENT> and then <NEWLINE>
+                                    // do
+                                    //      line0  <newline>
+                                    //    line1
+                                    indent_length_stack.pop_back();
+                                    while (indent_length < indent_length_stack.back()) {
+                                        indent_length_stack.pop_back();
+                                        queued_dedent_count++;
+                                    }
+                                    if (valid_symbols[DEDENT]) {
+                                        dedent();
+                                        newline();
+                                    } else {
+                                        queued_dedent_count++;
+                                    }
+                                } else {
 
+                                }
                             }
                         }
                     }
-                }
 
-            }
-
-            if (!tokenRecognized) {
-                if (issueToken(lexer)) {
-                    tokenRecognized = true;
                 }
             }
 
+            // we can only recognized 1 token at each scan
+            bool tokenRecognized = issueToken(lexer);
             return tokenRecognized;
         }
 
@@ -271,8 +262,6 @@ namespace {
         queued_dedent_count_type queued_dedent_count;
         queue<TokenType> token_queue;
 
-        // column_number : Maybe Int
-        // -1 as Nothing,
         int column_number;
     };
 
