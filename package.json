@@ -10,7 +10,7 @@
     "prebuild:upload": "prebuild --upload-all",
     "test": "npx tree-sitter test",
     "iterate": "npx tree-sitter generate && npx tree-sitter test",
-    "test-scanner": "npx tree-sitter parse test/example.txt"
+    "test-scanner": "npx tree-sitter generate && npx tree-sitter parse test/example.txt"
   },
   "repository": {
     "type": "git",

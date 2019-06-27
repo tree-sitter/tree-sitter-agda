@@ -684,6 +684,10 @@
         {
           "type": "SYMBOL",
           "name": "primitive"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "test"
         }
       ]
     },
@@ -2703,6 +2707,17 @@
           "name": "expr"
         }
       ]
+    },
+    "test": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "SYMBOL",
+        "name": "test2"
+      }
+    },
+    "test2": {
+      "type": "STRING",
+      "value": "test"
     },
     "_lambda_binding": {
       "type": "CHOICE",
