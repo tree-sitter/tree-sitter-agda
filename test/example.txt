@@ -4,5 +4,5 @@ record RawMonoid c ℓ : Set (suc (c ⊔ ℓ)) where
   field
     Carrier : Set c
     _≈_     : Rel Carrier ℓ
-    _∙_     : Op₂ Carrier
-    ε       : Carrier
+    _b_     : Op Carrier
+    a       : Carrier
