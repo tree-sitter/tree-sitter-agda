@@ -24,7 +24,7 @@ namespace {
 
     struct Scanner {
         Scanner() {
-            column_number = 0;
+            // column_number = 0;
             deserialize(NULL, 0);
         }
 
@@ -83,45 +83,47 @@ namespace {
         void advance(TSLexer *lexer) {
             lexer->advance(lexer, false);
 
-            advanceCarriage();
+            // advanceCarriage();
         }
 
         void skip(TSLexer *lexer) {
             lexer->advance(lexer, true);
 
-            advanceCarriage();
+            // advanceCarriage();
         }
 
         // https://github.com/tree-sitter/tree-sitter/issues/312
         // maintaining the column position by ourselves
+        // however, this requires invoking lexer->get_column()
+        // which would incorrectly offset the line numbers
 
-        void advanceCarriage() {
-            column_number++;
-        }
-
-        // set `column_number` with `get_column`
-        void setCarriage(TSLexer *lexer) {
-            column_number = (int)lexer->get_column(lexer);
-        }
-
-        // set `column_number` to 0, use after newline
-        void returnCarriage() {
-            column_number = 0;
-        }
-
-        // see if `column_number` is available
-        // else retrieve from `get_column`
-        uint32_t readCarriage(TSLexer *lexer) {
-            return (uint32_t)column_number;
-        }
+        // void advanceCarriage() {
+        //     column_number++;
+        // }
+        //
+        // // set `column_number` with `get_column`
+        // void setCarriage(TSLexer *lexer) {
+        //     column_number = (int)lexer->get_column(lexer);
+        // }
+        //
+        // // set `column_number` to 0, use after newline
+        // void returnCarriage() {
+        //     column_number = 0;
+        // }
+        //
+        // // see if `column_number` is available
+        // // else retrieve from `get_column`
+        // uint32_t readCarriage(TSLexer *lexer) {
+        //     return (uint32_t)column_number;
+        // }
 
 
         // returns True if newline \n were skipped
         bool skipJunk(TSLexer *lexer) {
             bool skippedNewline = false;
 
-            // assuming that `get_column` is correct before skipping
-            setCarriage(lexer);
+            // // assuming that `get_column` is correct before skipping
+            // setCarriage(lexer);
 
             while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r' || lexer->lookahead == '\n') {
                 if (lexer->lookahead == '\n') {
@@ -129,8 +131,8 @@ namespace {
                     skip(lexer);
                     // mark the end of the last lexeme
                     lexer->mark_end(lexer);
-                    // set column_number to 0
-                    returnCarriage();
+                    // // set column_number to 0
+                    // returnCarriage();
                 } else {
                     skip(lexer);
                 }
@@ -140,8 +142,9 @@ namespace {
         }
 
 
-        void indent(TSLexer *lexer) {
-            indent_length_stack.push_back(readCarriage(lexer));
+        void indent(TSLexer *lexer, uint32_t indent_length) {
+            // indent_length_stack.push_back(readCarriage(lexer));
+            indent_length_stack.push_back(indent_length);
             token_queue.push(INDENT);
         }
 
@@ -204,7 +207,8 @@ namespace {
                         // TODO: handle comments
                         bool next_token_is_comment = false;
 
-                        int indent_length = readCarriage(lexer);
+                        uint32_t indent_length = lexer->get_column(lexer);
+                        // int indent_length = readCarriage(lexer);
 
                         bool in = indent_length > indent_length_stack.back();
                         bool noop = indent_length == indent_length_stack.back();
@@ -218,7 +222,7 @@ namespace {
                                     //      line0  <newline>
                                     //          still-line0
                                     if (valid_symbols[INDENT]) {
-                                        indent(lexer);
+                                        indent(lexer, indent_length);
                                     }
                                 } else if (out) {
                                     // do
@@ -240,7 +244,7 @@ namespace {
                                     // do
                                     //      line0 still-line0
                                     if (valid_symbols[INDENT]) {
-                                        indent(lexer);
+                                        indent(lexer, indent_length);
                                     }
                                 } else if (out) {
                                     // should <DEDENT> and then <NEWLINE>
@@ -276,7 +280,7 @@ namespace {
         queued_dedent_count_type queued_dedent_count;
         queue<TokenType> token_queue;
 
-        int column_number;
+        // int column_number;
     };
 
 }
