@@ -1,5 +1,60 @@
 [
   {
+    "type": "Expr2",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "DoBlock",
+          "named": true
+        },
+        {
+          "type": "Expr2",
+          "named": true
+        },
+        {
+          "type": "ExtendedOrAbsurdLam",
+          "named": true
+        },
+        {
+          "type": "ForallBindings",
+          "named": true
+        },
+        {
+          "type": "LamBindings",
+          "named": true
+        },
+        {
+          "type": "LetBody",
+          "named": true
+        },
+        {
+          "type": "atom",
+          "named": true
+        },
+        {
+          "type": "atoms",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "arg_type_sig",
     "named": true,
     "fields": {},
@@ -12,6 +67,10 @@
           "named": true
         },
         {
+          "type": "attribute",
+          "named": true
+        },
+        {
           "type": "expr",
           "named": true
         },
@@ -20,7 +79,60 @@
           "named": true
         },
         {
-          "type": "ids1",
+          "type": "ids",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "atoms",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "atom",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "attribute",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "Literal",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "qid",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "attributes1",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "attribute",
           "named": true
         }
       ]
@@ -32,10 +144,22 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
-          "type": "Attributes1",
+          "type": "Expr2",
+          "named": true
+        },
+        {
+          "type": "atom",
+          "named": true
+        },
+        {
+          "type": "atoms",
+          "named": true
+        },
+        {
+          "type": "attributes1",
           "named": true
         },
         {
@@ -65,7 +189,7 @@
     }
   },
   {
-    "type": "ids1",
+    "type": "ids",
     "named": true,
     "fields": {},
     "children": {
@@ -103,15 +227,19 @@
       "required": true,
       "types": [
         {
-          "type": "Application",
-          "named": true
-        },
-        {
-          "type": "Attributes1",
+          "type": "Expr2",
           "named": true
         },
         {
           "type": "Open",
+          "named": true
+        },
+        {
+          "type": "atom",
+          "named": true
+        },
+        {
+          "type": "attributes1",
           "named": true
         },
         {
@@ -158,10 +286,6 @@
   },
   {
     "type": "instance",
-    "named": false
-  },
-  {
-    "type": "@",
     "named": false
   },
   {
@@ -217,6 +341,14 @@
     "named": false
   },
   {
+    "type": "@",
+    "named": false
+  },
+  {
+    "type": "|",
+    "named": false
+  },
+  {
     "type": "(",
     "named": false
   },
@@ -225,11 +357,31 @@
     "named": false
   },
   {
+    "type": "atom",
+    "named": true
+  },
+  {
     "type": "let",
     "named": false
   },
   {
-    "type": "Application",
+    "type": "do",
+    "named": false
+  },
+  {
+    "type": "quoteGoal",
+    "named": false
+  },
+  {
+    "type": "in",
+    "named": false
+  },
+  {
+    "type": "tactic",
+    "named": false
+  },
+  {
+    "type": "Literal",
     "named": true
   },
   {
@@ -237,7 +389,23 @@
     "named": true
   },
   {
-    "type": "Attributes1",
+    "type": "LamBindings",
+    "named": true
+  },
+  {
+    "type": "ExtendedOrAbsurdLam",
+    "named": true
+  },
+  {
+    "type": "ForallBindings",
+    "named": true
+  },
+  {
+    "type": "LetBody",
+    "named": true
+  },
+  {
+    "type": "DoBlock",
     "named": true
   }
 ]

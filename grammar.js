@@ -29,10 +29,10 @@ module.exports = grammar({
     // Constants
     ////////////////////////////////////////////////////////////////////////
 
-    // _const_forall: $ => token(choice('forall', '∀')),
+    _FORALL: $ => token(choice('forall', '∀')),
     _ARROW: $ => token(choice('->','→')),
-    // _const_lambda: $ => token(choice('\\','λ')),
-    // _const_ellipsis: $ => token(choice('...','…')),
+    _LAMBDA: $ => token(choice('\\','λ')),
+    _ELLIPSIS: $ => token(choice('...','…')),
 
     ////////////////////////////////////////////////////////////////////////
     // Top-level Declarations
@@ -75,10 +75,7 @@ module.exports = grammar({
     ),
 
     // ModalArgIds
-    _modal_arg_ids: $ => seq(repeat($._attribute), $._arg_ids1),
-
-    // Attribute
-    _attribute: $ => seq('@', $._expr_or_attr),
+    _modal_arg_ids: $ => seq(repeat($.attribute), $._arg_ids),
 
     ////////////////////////////////////////////////////////////////////////
     // Names
@@ -91,35 +88,39 @@ module.exports = grammar({
     qid: $ => QID,
 
     // SpaceIds
-    ids1: $ => repeat1($.id),
+    ids: $ => repeat1($.id),
 
     // MaybeDottedId
     _maybe_dotted_id: $ => maybeDotted($.id),
-    _maybe_dotted_ids1: $ => repeat1($._maybe_dotted_id),
+    _maybe_dotted_ids: $ => repeat1($._maybe_dotted_id),
 
     // ArgIds
-    _arg_ids1: $ => repeat1($._arg_id),
+    _arg_ids: $ => repeat1($._arg_id),
     _arg_id: $ => choice(
       $._maybe_dotted_id,
 
-      enclose($._maybe_dotted_ids1, BRACE1),
-      enclose($._maybe_dotted_ids1, BRACE2),
+      brace($._maybe_dotted_ids),
+      brace_double($._maybe_dotted_ids),
 
-      seq('.', enclose($.ids1, BRACE1)),
-      seq('.', enclose($.ids1, BRACE2)),
+      seq('.', brace($.ids)),
+      seq('.', brace_double($.ids)),
 
-      seq('..', enclose($.ids1, BRACE1)),
-      seq('..', enclose($.ids1, BRACE2)),
+      seq('..', brace($.ids)),
+      seq('..', brace_double($.ids)),
     ),
 
     // CommaBIdAndAbsurds
     _binding_ids_and_absurds: $ => choice(
-      $.Application,
+      $._application,
       seq($.qid, '=', $.qid),
       seq($.qid, '=', '_'  ),
       seq('-'  , '=', $.qid),
       seq('-'  , '=', '_'  ),
     ),
+
+    // Attribute
+    attribute: $ => seq('@', $._expr_or_attr),
+    attributes1: $ => repeat1($.attribute),
 
     ////////////////////////////////////////////////////////////////////////
     // Expressions (terms and types)
@@ -128,10 +129,48 @@ module.exports = grammar({
     // Expr
     expr: $ => choice(
       seq($.typed_bindings1, $._ARROW, $.expr),
-      seq(optional($.Attributes1), $._application3, $._ARROW, $.expr),
-      seq($._expr1, '=', $.expr),
-      prec(-1, $._expr1), // lowest precedence
+      seq(optional($.attributes1), $.atoms, $._ARROW, $.expr),
+      seq($._with_exprs, '=', $.expr),
+      prec(-1, $._with_exprs), // lowest precedence
     ),
+
+    // WithExprs/Expr1
+    _with_exprs: $ => seq(
+      repeat(seq($.atoms, '|')),
+      $._application,
+    ),
+
+    // ExprOrAttr
+    _expr_or_attr: $ => choice(
+      $.qid,
+      $.Literal,
+      paren($.expr),
+    ),
+
+    // Expr3
+    atom: $ => 'atom',
+    // Application3
+    atoms: $ => repeat1($.atom),
+
+    // Application
+    _application: $ => seq(
+      repeat($.atom),
+      $.Expr2,
+    ),
+
+    // Expr2
+    Expr2: $ => choice(
+      seq($._LAMBDA, $.LamBindings, $.expr),
+      $.ExtendedOrAbsurdLam,
+      seq($._FORALL, $.ForallBindings, $.expr),
+      seq('let', $._declaration_block, $.LetBody),
+      seq('do', $.DoBlock),
+      $.atom,
+      seq('quoteGoal', $.id, 'in', $.expr),
+      seq('tactic', $.atoms),
+      seq('tactic', $.atoms, '|', $._with_exprs),
+    ),
+
 
     ////////////////////////////////////////////////////////////////////////
     // Bindings
@@ -141,40 +180,41 @@ module.exports = grammar({
     typed_bindings1: $ => repeat1($.typed_binding),
     typed_binding: $ => choice(
       maybeDotted(choice(
-        enclose(seq($.Application             , ':', $.expr), PAREN),
-        enclose(seq($._binding_ids_and_absurds, ':', $.expr), BRACE1),
-        enclose(seq($._binding_ids_and_absurds, ':', $.expr), BRACE2),
+        paren(seq($._application             , ':', $.expr)),
+        brace(seq($._binding_ids_and_absurds, ':', $.expr)),
+        brace_double(seq($._binding_ids_and_absurds, ':', $.expr)),
       )),
-      enclose(seq($.Attributes1, $.Application             , ':', $.expr), PAREN),
-      enclose(seq($.Attributes1, $._binding_ids_and_absurds, ':', $.expr), BRACE1),
-      enclose(seq($.Attributes1, $._binding_ids_and_absurds, ':', $.expr), BRACE2),
-      enclose($.Open, PAREN),
-      enclose(seq('let', $._declaration_block), PAREN),
+      paren(seq($.attributes1, $._application             , ':', $.expr)),
+      brace(seq($.attributes1, $._binding_ids_and_absurds, ':', $.expr)),
+      brace_double(seq($.attributes1, $._binding_ids_and_absurds, ':', $.expr)),
+      paren($.Open),
+      paren(seq('let', $._declaration_block)),
     ),
 
     ////////////////////////////////////////////////////////////////////////
     // Unimplemented
     ////////////////////////////////////////////////////////////////////////
 
-    // Application
-    Application: $ => 'Application',
+    // Literal
+    Literal: $ => 'Literal',
 
     // Open
     Open: $ => 'Open',
 
-    // Expr1
-    _expr1: $ => 'Expr1',
+    // LamBindings
+    LamBindings: $ => 'LamBindings',
 
-    // Attributes1
-    Attributes1: $ => 'Attributes1',
+    // ExtendedOrAbsurdLam
+    ExtendedOrAbsurdLam: $ => 'ExtendedOrAbsurdLam',
 
-    // Application3
-    _application3: $ => 'Application3',
+    // ForallBindings
+    ForallBindings: $ => 'ForallBindings',
 
-    // ExprOrAttr
-    _expr_or_attr: $ => 'ExprOrAttr',
+    // LetBody
+    LetBody: $ => 'LetBody',
 
-
+    // DoStmts
+    DoBlock: $ => 'DoBlock',
   }
 });
 
@@ -226,4 +266,16 @@ function encloseWith(fn, ...pairs) {
 
 function enclose(expr, ...pairs) {
   return encloseWith((left, right) => seq(left, expr, right), ...pairs);
+}
+
+function paren(...rules) {
+  return enclose(seq(...rules), PAREN);
+}
+
+function brace(...rules) {
+  return enclose(seq(...rules), BRACE1);
+}
+
+function brace_double(...rules) {
+  return enclose(seq(...rules), BRACE2);
 }
