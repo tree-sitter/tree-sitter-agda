@@ -35,7 +35,15 @@
       "required": false,
       "types": [
         {
+          "type": "Attributes1",
+          "named": true
+        },
+        {
           "type": "expr",
+          "named": true
+        },
+        {
+          "type": "typed_bindings1",
           "named": true
         }
       ]
@@ -87,6 +95,56 @@
     }
   },
   {
+    "type": "typed_binding",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "Application",
+          "named": true
+        },
+        {
+          "type": "Attributes1",
+          "named": true
+        },
+        {
+          "type": "Open",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "qid",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "typed_bindings1",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "typed_binding",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "field",
     "named": false
   },
@@ -108,6 +166,10 @@
   },
   {
     "type": "id",
+    "named": true
+  },
+  {
+    "type": "qid",
     "named": true
   },
   {
@@ -145,5 +207,37 @@
   {
     "type": "=",
     "named": false
+  },
+  {
+    "type": "_",
+    "named": false
+  },
+  {
+    "type": "-",
+    "named": false
+  },
+  {
+    "type": "(",
+    "named": false
+  },
+  {
+    "type": ")",
+    "named": false
+  },
+  {
+    "type": "let",
+    "named": false
+  },
+  {
+    "type": "Application",
+    "named": true
+  },
+  {
+    "type": "Open",
+    "named": true
+  },
+  {
+    "type": "Attributes1",
+    "named": true
   }
 ]

@@ -38,6 +38,11 @@ module.exports = grammar({
     // Top-level Declarations
     ////////////////////////////////////////////////////////////////////////
 
+    // Declarations
+    // indented, 1 or more declarations
+    _declaration_block: $ => block($, $._declaration),
+
+    // Declaration
     _declaration: $ => choice(
         $.fields,
     ),
@@ -82,6 +87,9 @@ module.exports = grammar({
     // Id
     id: $ => ID,
 
+    // QId
+    qid: $ => QID,
+
     // SpaceIds
     ids1: $ => repeat1($.id),
 
@@ -104,31 +112,61 @@ module.exports = grammar({
       seq('..', enclose($.ids1, BRACE2)),
     ),
 
+    // CommaBIdAndAbsurds
+    _binding_ids_and_absurds: $ => choice(
+      $.Application,
+      seq($.qid, '=', $.qid),
+      seq($.qid, '=', '_'  ),
+      seq('-'  , '=', $.qid),
+      seq('-'  , '=', '_'  ),
+    ),
+
     ////////////////////////////////////////////////////////////////////////
     // Expressions (terms and types)
     ////////////////////////////////////////////////////////////////////////
 
     // Expr
     expr: $ => choice(
-      seq($._tele_arrow, $.expr),
-      seq($._application3, $._ARROW, $.expr),
-      seq($._attributes1, $._application3, $._ARROW, $.expr),
+      seq($.typed_bindings1, $._ARROW, $.expr),
+      seq(optional($.Attributes1), $._application3, $._ARROW, $.expr),
       seq($._expr1, '=', $.expr),
       prec(-1, $._expr1), // lowest precedence
     ),
 
     ////////////////////////////////////////////////////////////////////////
-    // Temp
+    // Bindings
     ////////////////////////////////////////////////////////////////////////
+
+    // TypedBinding
+    typed_bindings1: $ => repeat1($.typed_binding),
+    typed_binding: $ => choice(
+      maybeDotted(choice(
+        enclose(seq($.Application             , ':', $.expr), PAREN),
+        enclose(seq($._binding_ids_and_absurds, ':', $.expr), BRACE1),
+        enclose(seq($._binding_ids_and_absurds, ':', $.expr), BRACE2),
+      )),
+      enclose(seq($.Attributes1, $.Application             , ':', $.expr), PAREN),
+      enclose(seq($.Attributes1, $._binding_ids_and_absurds, ':', $.expr), BRACE1),
+      enclose(seq($.Attributes1, $._binding_ids_and_absurds, ':', $.expr), BRACE2),
+      enclose($.Open, PAREN),
+      enclose(seq('let', $._declaration_block), PAREN),
+    ),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Unimplemented
+    ////////////////////////////////////////////////////////////////////////
+
+    // Application
+    Application: $ => 'Application',
+
+    // Open
+    Open: $ => 'Open',
 
     // Expr1
     _expr1: $ => 'Expr1',
 
     // Attributes1
-    _attributes1: $ => 'Attributes1',
-
-    // TeleArrow
-    _tele_arrow: $ => 'TeleArrow',
+    Attributes1: $ => 'Attributes1',
 
     // Application3
     _application3: $ => 'Application3',
