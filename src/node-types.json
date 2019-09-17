@@ -1,0 +1,21 @@
+[
+  {
+    "type": "source_file",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "hello",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "hello",
+    "named": true
+  }
+]

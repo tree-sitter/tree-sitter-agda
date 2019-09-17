@@ -28,6 +28,6 @@
   },
   "devDependencies": {
     "prebuild": "^7.6.1",
-    "tree-sitter-cli": "^0.14.5"
+    "tree-sitter-cli": "^0.15.8"
   }
 }
