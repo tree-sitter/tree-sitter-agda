@@ -6,10 +6,8 @@ const QID = /(([^\s;\.\"\(\)\{\}@\'\\_]|\\[^\sa-zA-Z]|_[^\s;\.\"\(\)\{\}@])[^\s;
 const BRACE1 = [['{', '}']];
 const BRACE2 = [['{{', '}}'], ['⦃', '⦄']];
 // const BRACES = [...BRACE1, ...BRACE2];
-
 const IDIOM = [['(|', '|)'], ['⦇', '⦈']];
 const PAREN = [['(', ')']];
-
 
 module.exports = grammar({
   name: 'agda',
@@ -25,32 +23,20 @@ module.exports = grammar({
   rules: {
     source_file: $ => repeat(seq($._declaration, $._newline)),
 
-    // -- Top-level definitions.
-    // Declaration :: { [Declaration] }
-    // Declaration
-    //     : Fields        {  $1  }
-    //     | FunClause     {  $1  }  -- includes type signatures
-    //     | Data          { [$1] }
-    //     | DataSig       { [$1] }  -- lone data type signature in mutual block
-    //     | Record        { [$1] }
-    //     | RecordSig     { [$1] }  -- lone record signature in mutual block
-    //     | Infix         { [$1] }
-    //     | Generalize    {  $1  }
-    //     | Mutual        { [$1] }
-    //     | Abstract      { [$1] }
-    //     | Private       { [$1] }
-    //     | Instance      { [$1] }
-    //     | Macro         { [$1] }
-    //     | Postulate     { [$1] }
-    //     | Primitive     { [$1] }
-    //     | Open          {  $1  }
-    // --    | Import      { [$1] }
-    //     | ModuleMacro   { [$1] }
-    //     | Module        { [$1] }
-    //     | Pragma        { [$1] }
-    //     | Syntax        { [$1] }
-    //     | PatternSyn    { [$1] }
-    //     | UnquoteDecl   { [$1] }
+
+
+    ////////////////////////////////////////////////////////////////////////
+    // Constants
+    ////////////////////////////////////////////////////////////////////////
+
+    // _const_forall: $ => token(choice('forall', '∀')),
+    _ARROW: $ => token(choice('->','→')),
+    // _const_lambda: $ => token(choice('\\','λ')),
+    // _const_ellipsis: $ => token(choice('...','…')),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Top-level Declarations
+    ////////////////////////////////////////////////////////////////////////
 
     _declaration: $ => choice(
         $.fields,
@@ -67,10 +53,10 @@ module.exports = grammar({
     ),
 
     // ArgTypeSignatures
-    _arg_type_sig_block: $ => block($, $.type_sig),
+    _arg_type_sig_block: $ => block($, $.arg_type_sig),
 
     // ArgTypeSigs
-    type_sig: $ => choice(
+    arg_type_sig: $ => choice(
       seq(
           optional('overlap'),
           $._modal_arg_ids,
@@ -79,7 +65,7 @@ module.exports = grammar({
       ),
       seq(
           'instance',
-          $._type_sig_block
+          $._arg_type_sig_block
       ),
     ),
 
@@ -90,10 +76,6 @@ module.exports = grammar({
     _attribute: $ => seq('@', $._expr_or_attr),
 
     ////////////////////////////////////////////////////////////////////////
-    // Expressions (terms and types)
-    ////////////////////////////////////////////////////////////////////////
-
-    ////////////////////////////////////////////////////////////////////////
     // Names
     ////////////////////////////////////////////////////////////////////////
 
@@ -101,39 +83,55 @@ module.exports = grammar({
     id: $ => ID,
 
     // SpaceIds
-    _spaces_ids: $ => repeat1($.id),
+    ids1: $ => repeat1($.id),
+
+    // MaybeDottedId
+    _maybe_dotted_id: $ => maybeDotted($.id),
+    _maybe_dotted_ids1: $ => repeat1($._maybe_dotted_id),
 
     // ArgIds
     _arg_ids1: $ => repeat1($._arg_id),
     _arg_id: $ => choice(
       $._maybe_dotted_id,
 
-      enclose($._maybe_dotted_ids, BRACE1),
-      enclose($._maybe_dotted_ids, BRACE2),
+      enclose($._maybe_dotted_ids1, BRACE1),
+      enclose($._maybe_dotted_ids1, BRACE2),
 
-      seq('.', enclose($._spaces_ids, BRACE1)),
-      seq('.', enclose($._spaces_ids, BRACE2)),
+      seq('.', enclose($.ids1, BRACE1)),
+      seq('.', enclose($.ids1, BRACE2)),
 
-      seq('..', enclose($._spaces_ids, BRACE1)),
-      seq('..', enclose($._spaces_ids, BRACE2)),
+      seq('..', enclose($.ids1, BRACE1)),
+      seq('..', enclose($.ids1, BRACE2)),
+    ),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Expressions (terms and types)
+    ////////////////////////////////////////////////////////////////////////
+
+    // Expr
+    expr: $ => choice(
+      seq($._tele_arrow, $.expr),
+      seq($._application3, $._ARROW, $.expr),
+      seq($._attributes1, $._application3, $._ARROW, $.expr),
+      seq($._expr1, '=', $.expr),
+      prec(-1, $._expr1), // lowest precedence
     ),
 
     ////////////////////////////////////////////////////////////////////////
     // Temp
     ////////////////////////////////////////////////////////////////////////
 
+    // Expr1
+    _expr1: $ => 'Expr1',
 
-    // MaybeDottedId
-    _maybe_dotted_id: $ => 'MaybeDottedId',
+    // Attributes1
+    _attributes1: $ => 'Attributes1',
 
-    // MaybeDottedIds
-    _maybe_dotted_ids: $ => 'MaybeDottedIds',
+    // TeleArrow
+    _tele_arrow: $ => 'TeleArrow',
 
-    // ArgTypeSignatures
-    _type_sig_block: $ => 'ArgTypeSignatures',
-
-    // Expr
-    expr: $ => 'Expr',
+    // Application3
+    _application3: $ => 'Application3',
 
     // ExprOrAttr
     _expr_or_attr: $ => 'ExprOrAttr',

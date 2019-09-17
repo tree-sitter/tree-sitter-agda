@@ -1,5 +1,47 @@
 [
   {
+    "type": "arg_type_sig",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "arg_type_sig",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "ids1",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expr",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expr",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "fields",
     "named": true,
     "fields": {},
@@ -8,7 +50,22 @@
       "required": true,
       "types": [
         {
-          "type": "type_sig",
+          "type": "arg_type_sig",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "ids1",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "id",
           "named": true
         }
       ]
@@ -24,25 +81,6 @@
       "types": [
         {
           "type": "fields",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "type_sig",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "expr",
-          "named": true
-        },
-        {
-          "type": "id",
           "named": true
         }
       ]
@@ -73,6 +111,14 @@
     "named": true
   },
   {
+    "type": ".",
+    "named": false
+  },
+  {
+    "type": "..",
+    "named": false
+  },
+  {
     "type": "{",
     "named": false
   },
@@ -97,15 +143,7 @@
     "named": false
   },
   {
-    "type": ".",
+    "type": "=",
     "named": false
-  },
-  {
-    "type": "..",
-    "named": false
-  },
-  {
-    "type": "expr",
-    "named": true
   }
 ]

@@ -1,0 +1,45 @@
+==================
+Field
+==================
+
+field
+    a : A
+    b : B
+
+---
+
+(source_file
+    (field
+        (arg_type_sig (field_name)
+            (expr (atom (qualified_name))))
+        (arg_type_sig (field_name)
+            (expr (atom (qualified_name))))))
+
+==================
+Field (same line)
+==================
+
+field a : A
+
+---
+
+(source_file
+    (field
+        (arg_type_sig (field_name)
+            (expr (atom (qualified_name))))))
+
+==================
+Field (same line + block)
+==================
+
+field a : A
+      b : B
+
+---
+
+(source_file
+    (field
+        (arg_type_sig (field_name)
+            (expr (atom (qualified_name))))
+        (arg_type_sig (field_name)
+            (expr (atom (qualified_name))))))
