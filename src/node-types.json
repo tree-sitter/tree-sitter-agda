@@ -102,6 +102,10 @@
           "named": true
         },
         {
+          "type": "data_signature",
+          "named": true
+        },
+        {
           "type": "expr",
           "named": true
         },
@@ -111,6 +115,33 @@
         },
         {
           "type": "function",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "typed_binding",
+          "named": true
+        },
+        {
+          "type": "untyped_binding",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "data_signature",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr",
           "named": true
         },
         {
@@ -162,6 +193,10 @@
         },
         {
           "type": "data",
+          "named": true
+        },
+        {
+          "type": "data_signature",
           "named": true
         },
         {
@@ -304,6 +339,10 @@
           "named": true
         },
         {
+          "type": "data_signature",
+          "named": true
+        },
+        {
           "type": "expr",
           "named": true
         },
@@ -369,6 +408,10 @@
         },
         {
           "type": "data",
+          "named": true
+        },
+        {
+          "type": "data_signature",
           "named": true
         },
         {
@@ -453,6 +496,10 @@
           "named": true
         },
         {
+          "type": "data_signature",
+          "named": true
+        },
+        {
           "type": "fields",
           "named": true
         },
@@ -501,6 +548,10 @@
         },
         {
           "type": "data",
+          "named": true
+        },
+        {
+          "type": "data_signature",
           "named": true
         },
         {
@@ -571,6 +622,10 @@
           "named": true
         },
         {
+          "type": "data_signature",
+          "named": true
+        },
+        {
           "type": "expr",
           "named": true
         },
@@ -607,6 +662,10 @@
       "types": [
         {
           "type": "data",
+          "named": true
+        },
+        {
+          "type": "data_signature",
           "named": true
         },
         {

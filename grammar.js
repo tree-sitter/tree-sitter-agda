@@ -51,7 +51,8 @@ module.exports = grammar({
     _declaration: $ => choice(
         $.fields,
         $.function,
-        $.data
+        $.data,
+        $.data_signature,
     ),
 
     ////////////////////////////////////////////////////////////////////////
@@ -136,6 +137,18 @@ module.exports = grammar({
       optional(seq(':', $.expr)),
       'where',
       optional($._declaration_block)
+    ),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Declaration: Data Signature
+    ////////////////////////////////////////////////////////////////////////
+
+    data_signature: $ => seq(
+      'data',
+      $.id,
+      optional($._typed_untyped_bindings),
+      ':',
+      $.expr,
     ),
 
     ////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,10 @@
+==================
+Simple
+==================
+
+data Nat : Set
+
+---
+
+(source_file
+    (data_signature (id) (expr (atom))))

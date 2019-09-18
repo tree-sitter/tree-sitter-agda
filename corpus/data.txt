@@ -23,7 +23,7 @@ data Nat : Set where
                     (expr (atom (qid))))))))
 
 ==================
-Signature only
+Without body
 ==================
 
 data Nat : Set where

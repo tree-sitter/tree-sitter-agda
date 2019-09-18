@@ -125,6 +125,10 @@
         {
           "type": "SYMBOL",
           "name": "data"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "data_signature"
         }
       ]
     },
@@ -487,6 +491,39 @@
               "type": "BLANK"
             }
           ]
+        }
+      ]
+    },
+    "data_signature": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "data"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "id"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_typed_untyped_bindings"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": ":"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expr"
         }
       ]
     },
