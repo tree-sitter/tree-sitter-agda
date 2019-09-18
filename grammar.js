@@ -140,17 +140,12 @@ module.exports = grammar({
       $._application,
     ),
 
-    // ExprOrAttr
-    _expr_or_attr: $ => choice(
+    // ExprOrAttr (left assoc unjustified)
+    _expr_or_attr: $ => prec.left(choice(
       $.qid,
       $.Literal,
       paren($.expr),
-    ),
-
-    // Expr3
-    atom: $ => 'atom',
-    // Application3
-    atoms: $ => repeat1($.atom),
+    )),
 
     // Application
     _application: $ => seq(
@@ -165,12 +160,45 @@ module.exports = grammar({
       seq($._FORALL, $.ForallBindings, $.expr),
       seq('let', $._declaration_block, $.LetBody),
       seq('do', $.DoBlock),
-      $.atom,
+      prec(-1, $.atom),
       seq('quoteGoal', $.id, 'in', $.expr),
       seq('tactic', $.atoms),
       seq('tactic', $.atoms, '|', $._with_exprs),
     ),
 
+    // Expr3
+    atom: $ => choice(
+      $._atom_curly,
+      $._atom_no_curly,
+    ),
+    // Application3
+    atoms: $ => repeat1($.atom),
+
+    _atom_curly: $ => brace(optional($.expr)),
+
+    _atom_no_curly: $ => choice(
+      '?',
+      '_',
+      'Prop',
+      'Set',
+      'quote',
+      'quoteTerm',
+      'quoteContext',
+      'unquote',
+      $.SetN,
+      $.PropN,
+      brace_double($.expr),
+      idiom($.expr),
+      seq('(', ')'),
+      seq('{{', '}}'),
+      seq('⦃', '⦄'),
+      seq($.id, '@', $.atom),
+      seq('.', $.atom),
+      seq('record', brace($.RecordAssignments)),
+      seq('record', $._atom_no_curly, brace($.FieldAssignments)),
+      $._ELLIPSIS,
+      $._expr_or_attr
+    ),
 
     ////////////////////////////////////////////////////////////////////////
     // Bindings
@@ -194,6 +222,18 @@ module.exports = grammar({
     ////////////////////////////////////////////////////////////////////////
     // Unimplemented
     ////////////////////////////////////////////////////////////////////////
+
+    // RecordAssignments
+    RecordAssignments: $ => 'RecordAssignments',
+
+    // FieldAssignments
+    FieldAssignments: $ => 'FieldAssignments',
+
+    // setN
+    SetN: $ => 'setN',
+
+    // propN
+    PropN: $ => 'propN',
 
     // Literal
     Literal: $ => 'Literal',
@@ -278,4 +318,8 @@ function brace(...rules) {
 
 function brace_double(...rules) {
   return enclose(seq(...rules), BRACE2);
+}
+
+function idiom(...rules) {
+  return enclose(seq(...rules), IDIOM);
 }
