@@ -80,12 +80,13 @@ g : {A : Set} -> A
     (function
         (lhs (atom (qid)))
         (rhs
-            (expr (forall_bindings (untyped_binding
-                (atom (qid))
-                (atom (qid))
-                (atom (qid))))
-            (expr (atom (qid))
-            (expr (atom (qid)))))))
+            (expr (forall
+                (untyped_binding
+                  (atom (qid))
+                  (atom (qid))
+                  (atom (qid)))
+                (expr (atom (qid))
+                (expr (atom (qid))))))))
     (function
         (lhs (atom (qid)))
         (rhs

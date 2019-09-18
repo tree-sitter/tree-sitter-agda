@@ -85,6 +85,11 @@
     }
   },
   {
+    "type": "bid",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "expr",
     "named": true,
     "fields": {},
@@ -98,10 +103,6 @@
         },
         {
           "type": "ExtendedOrAbsurdLam",
-          "named": true
-        },
-        {
-          "type": "ForallBindings",
           "named": true
         },
         {
@@ -129,6 +130,10 @@
           "named": true
         },
         {
+          "type": "forall",
+          "named": true
+        },
+        {
           "type": "function",
           "named": true
         },
@@ -153,6 +158,29 @@
       "types": [
         {
           "type": "signature",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "forall",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "typed_binding",
+          "named": true
+        },
+        {
+          "type": "untyped_binding",
           "named": true
         }
       ]
@@ -217,10 +245,6 @@
           "named": true
         },
         {
-          "type": "ForallBindings",
-          "named": true
-        },
-        {
           "type": "LamBindings",
           "named": true
         },
@@ -238,6 +262,10 @@
         },
         {
           "type": "fields",
+          "named": true
+        },
+        {
+          "type": "forall",
           "named": true
         },
         {
@@ -281,10 +309,6 @@
           "named": true
         },
         {
-          "type": "ForallBindings",
-          "named": true
-        },
-        {
           "type": "LamBindings",
           "named": true
         },
@@ -302,6 +326,10 @@
         },
         {
           "type": "fields",
+          "named": true
+        },
+        {
+          "type": "forall",
           "named": true
         },
         {
@@ -397,10 +425,6 @@
           "named": true
         },
         {
-          "type": "ForallBindings",
-          "named": true
-        },
-        {
           "type": "LamBindings",
           "named": true
         },
@@ -426,6 +450,73 @@
         },
         {
           "type": "fields",
+          "named": true
+        },
+        {
+          "type": "forall",
+          "named": true
+        },
+        {
+          "type": "function",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "qid",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "untyped_binding",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "DoBlock",
+          "named": true
+        },
+        {
+          "type": "ExtendedOrAbsurdLam",
+          "named": true
+        },
+        {
+          "type": "LamBindings",
+          "named": true
+        },
+        {
+          "type": "LetBody",
+          "named": true
+        },
+        {
+          "type": "atom",
+          "named": true
+        },
+        {
+          "type": "attributes",
+          "named": true
+        },
+        {
+          "type": "bid",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "forall",
           "named": true
         },
         {
@@ -671,10 +762,6 @@
   },
   {
     "type": "ExtendedOrAbsurdLam",
-    "named": true
-  },
-  {
-    "type": "ForallBindings",
     "named": true
   },
   {

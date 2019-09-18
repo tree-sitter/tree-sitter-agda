@@ -134,6 +134,9 @@ module.exports = grammar({
     // QId
     qid: $ => alias(choice(QID, $.id), 'qid'),
 
+    // BId
+    bid: $ => alias(choice('_', $.id), 'bid'),
+
     // SpaceIds
     ids: $ => repeat1($.id),
 
@@ -156,7 +159,7 @@ module.exports = grammar({
       seq('..', brace_double($.ids)),
     ),
 
-    // CommaBIdAndAbsurds
+    // CommaBIds / CommaBIdAndAbsurds
     _binding_ids_and_absurds: $ => prec(-1, choice(
       $._application,
       seq($.qid, '=', $.qid),
@@ -204,7 +207,7 @@ module.exports = grammar({
     _expr2: $ => choice(
       seq($._LAMBDA, $.LamBindings, $.expr),
       $.ExtendedOrAbsurdLam,
-      seq($._FORALL, $.ForallBindings, $.expr),
+      $.forall,
       seq('let', $._declaration_block, $.LetBody),
       seq('do', $.DoBlock),
       prec(-1, $.atom),
@@ -246,6 +249,11 @@ module.exports = grammar({
       $._expr_or_attr
     ),
 
+    // ForallBindings
+    forall: $ => seq($._FORALL, $._typed_untyped_bindings, $._ARROW, $.expr),
+
+
+
     ////////////////////////////////////////////////////////////////////////
     // Bindings
     ////////////////////////////////////////////////////////////////////////
@@ -263,6 +271,26 @@ module.exports = grammar({
       brace_double(seq($.attributes, $._binding_ids_and_absurds, ':', $.expr)),
       paren($.Open),
       paren(seq('let', $._declaration_block)),
+    ),
+
+    // TypedUntypedBindings1
+    _typed_untyped_bindings: $ => repeat1($._typed_untyped_binding),
+    _typed_untyped_binding: $ => choice(
+      $.untyped_binding,
+      $.typed_binding
+    ),
+
+    // DomainFreeBinding / DomainFreeBindingAbsurd
+    untyped_binding: $ => choice( // 13 variants
+      maybeDotted(choice(
+        $.bid,
+        brace($._binding_ids_and_absurds),
+        brace_double($._binding_ids_and_absurds),
+      )),
+      paren(seq(              $._binding_ids_and_absurds)),
+      paren(seq($.attributes, $._binding_ids_and_absurds)),
+      brace(seq($.attributes, $._binding_ids_and_absurds)),
+      brace_double(seq($.attributes, $._binding_ids_and_absurds)),
     ),
 
     ////////////////////////////////////////////////////////////////////////
@@ -292,9 +320,6 @@ module.exports = grammar({
 
     // ExtendedOrAbsurdLam
     ExtendedOrAbsurdLam: $ => 'ExtendedOrAbsurdLam',
-
-    // ForallBindings
-    ForallBindings: $ => 'ForallBindings',
 
     // LetBody
     LetBody: $ => 'LetBody',
