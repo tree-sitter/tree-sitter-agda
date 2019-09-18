@@ -1,36 +1,5 @@
 [
   {
-    "type": "arg_type_sig",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "arg_type_sig",
-          "named": true
-        },
-        {
-          "type": "attribute",
-          "named": true
-        },
-        {
-          "type": "expr",
-          "named": true
-        },
-        {
-          "type": "id",
-          "named": true
-        },
-        {
-          "type": "ids",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "atom",
     "named": true,
     "fields": {},
@@ -198,7 +167,7 @@
       "required": true,
       "types": [
         {
-          "type": "arg_type_sig",
+          "type": "signature",
           "named": true
         }
       ]
@@ -223,6 +192,37 @@
     "type": "qid",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "signature",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "attribute",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "ids",
+          "named": true
+        },
+        {
+          "type": "signature",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "source_file",

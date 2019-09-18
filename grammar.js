@@ -56,14 +56,14 @@ module.exports = grammar({
     // Fields
     fields: $ => seq(
         'field',
-        $._arg_type_sig_block,
+        $._signature_block,
     ),
 
     // ArgTypeSignatures
-    _arg_type_sig_block: $ => block($, $.arg_type_sig),
+    _signature_block: $ => block($, $.signature),
 
     // ArgTypeSigs
-    arg_type_sig: $ => choice(
+    signature: $ => choice(
       seq(
           optional('overlap'),
           $._modal_arg_ids,
@@ -72,7 +72,7 @@ module.exports = grammar({
       ),
       seq(
           'instance',
-          $._arg_type_sig_block
+          $._signature_block
       ),
     ),
 

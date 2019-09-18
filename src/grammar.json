@@ -129,11 +129,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_arg_type_sig_block"
+          "name": "_signature_block"
         }
       ]
     },
-    "_arg_type_sig_block": {
+    "_signature_block": {
       "type": "SEQ",
       "members": [
         {
@@ -147,7 +147,7 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "arg_type_sig"
+                "name": "signature"
               },
               {
                 "type": "SYMBOL",
@@ -162,7 +162,7 @@
         }
       ]
     },
-    "arg_type_sig": {
+    "signature": {
       "type": "CHOICE",
       "members": [
         {
@@ -203,7 +203,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_arg_type_sig_block"
+              "name": "_signature_block"
             }
           ]
         }

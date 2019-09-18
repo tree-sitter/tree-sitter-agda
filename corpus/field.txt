@@ -10,9 +10,9 @@ field
 
 (source_file
     (fields
-        (arg_type_sig (id)
+        (signature (id)
             (expr (atom (qid))))
-        (arg_type_sig (id)
+        (signature (id)
             (expr (atom (qid))))))
 
 ==================
@@ -24,8 +24,8 @@ field a : A
 ---
 
 (source_file
-    (field
-        (arg_type_sig (field_name)
+    (fields
+        (signature (id)
             (expr (atom (qid))))))
 
 ==================
@@ -38,8 +38,8 @@ field a : A
 ---
 
 (source_file
-    (field
-        (arg_type_sig (field_name)
+    (fields
+        (signature (id)
             (expr (atom (qid))))
-        (arg_type_sig (field_name)
+        (signature (id)
             (expr (atom (qid))))))
