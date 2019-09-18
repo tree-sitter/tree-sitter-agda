@@ -132,7 +132,7 @@ module.exports = grammar({
     data: $ => seq(
       choice('data', 'codata'),
       $.id,
-      $._typed_untyped_bindings,
+      optional($._typed_untyped_bindings),
       optional(seq(':', $.expr)),
       'where',
       optional($._declaration_block)

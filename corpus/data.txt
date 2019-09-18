@@ -10,7 +10,7 @@ data Nat : Set where
 
 (source_file
     (data
-        (id) (untyped_binding (bid)) (untyped_binding (bid))
+        (id) (expr (atom))
         (function
             (lhs (atom (qid)))
             (rhs
@@ -34,6 +34,6 @@ data Nat : Set where
 
 (source_file
     (data
-      (id) (untyped_binding (bid)) (untyped_binding (bid)))
+      (id) (expr (atom)))
     (data
-      (id) (untyped_binding (bid)) (untyped_binding (bid))))
+      (id) (expr (atom))))

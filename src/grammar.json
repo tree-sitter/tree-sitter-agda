@@ -440,8 +440,16 @@
           "name": "id"
         },
         {
-          "type": "SYMBOL",
-          "name": "_typed_untyped_bindings"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_typed_untyped_bindings"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "CHOICE",
