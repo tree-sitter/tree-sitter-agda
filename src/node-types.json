@@ -90,6 +90,45 @@
     "fields": {}
   },
   {
+    "type": "data",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "data",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "function",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "typed_binding",
+          "named": true
+        },
+        {
+          "type": "untyped_binding",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "expr",
     "named": true,
     "fields": {},
@@ -119,6 +158,10 @@
         },
         {
           "type": "attributes",
+          "named": true
+        },
+        {
+          "type": "data",
           "named": true
         },
         {
@@ -257,6 +300,10 @@
           "named": true
         },
         {
+          "type": "data",
+          "named": true
+        },
+        {
           "type": "expr",
           "named": true
         },
@@ -318,6 +365,10 @@
         },
         {
           "type": "atom",
+          "named": true
+        },
+        {
+          "type": "data",
           "named": true
         },
         {
@@ -398,6 +449,10 @@
       "required": false,
       "types": [
         {
+          "type": "data",
+          "named": true
+        },
+        {
           "type": "fields",
           "named": true
         },
@@ -442,6 +497,10 @@
         },
         {
           "type": "attributes",
+          "named": true
+        },
+        {
+          "type": "data",
           "named": true
         },
         {
@@ -508,6 +567,10 @@
           "named": true
         },
         {
+          "type": "data",
+          "named": true
+        },
+        {
           "type": "expr",
           "named": true
         },
@@ -540,8 +603,12 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
+        {
+          "type": "data",
+          "named": true
+        },
         {
           "type": "fields",
           "named": true
@@ -610,6 +677,14 @@
   },
   {
     "type": "where",
+    "named": false
+  },
+  {
+    "type": "data",
+    "named": false
+  },
+  {
+    "type": "codata",
     "named": false
   },
   {

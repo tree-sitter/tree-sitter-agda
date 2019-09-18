@@ -44,17 +44,18 @@ module.exports = grammar({
     // indented, 1 or more declarations
     _declaration_block: $ => block($, $._declaration),
 
-    // Declarations0
-    _declaration_block0: $ => block($, optional($._declaration)),
+    // Declarations0: use `optional($._declaration_block)` instead
+    // _declaration_block0: $ => block($, optional($._declaration)),
 
     // Declaration
     _declaration: $ => choice(
         $.fields,
-        $.function
+        $.function,
+        $.data
     ),
 
     ////////////////////////////////////////////////////////////////////////
-    // Field
+    // Declaration: Field
     ////////////////////////////////////////////////////////////////////////
 
     // Fields
@@ -84,7 +85,7 @@ module.exports = grammar({
     _modal_arg_ids: $ => seq(repeat($.attribute), $._arg_ids),
 
     ////////////////////////////////////////////////////////////////////////
-    // Functions
+    // Declaration: Functions
     ////////////////////////////////////////////////////////////////////////
 
     // FunClause = LHS + RHS
@@ -121,7 +122,20 @@ module.exports = grammar({
         choice($.id, '_')
       )),
       'where',
-      $._declaration_block0
+      optional($._declaration_block)
+    ),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Declaration: Data
+    ////////////////////////////////////////////////////////////////////////
+
+    data: $ => seq(
+      choice('data', 'codata'),
+      $.id,
+      $._typed_untyped_bindings,
+      optional(seq(':', $.expr)),
+      'where',
+      optional($._declaration_block)
     ),
 
     ////////////////////////////////////////////////////////////////////////
