@@ -1,60 +1,5 @@
 [
   {
-    "type": "Expr2",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "DoBlock",
-          "named": true
-        },
-        {
-          "type": "Expr2",
-          "named": true
-        },
-        {
-          "type": "ExtendedOrAbsurdLam",
-          "named": true
-        },
-        {
-          "type": "ForallBindings",
-          "named": true
-        },
-        {
-          "type": "LamBindings",
-          "named": true
-        },
-        {
-          "type": "LetBody",
-          "named": true
-        },
-        {
-          "type": "atom",
-          "named": true
-        },
-        {
-          "type": "atoms",
-          "named": true
-        },
-        {
-          "type": "expr",
-          "named": true
-        },
-        {
-          "type": "fields",
-          "named": true
-        },
-        {
-          "type": "id",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "arg_type_sig",
     "named": true,
     "fields": {},
@@ -194,7 +139,23 @@
       "required": true,
       "types": [
         {
-          "type": "Expr2",
+          "type": "DoBlock",
+          "named": true
+        },
+        {
+          "type": "ExtendedOrAbsurdLam",
+          "named": true
+        },
+        {
+          "type": "ForallBindings",
+          "named": true
+        },
+        {
+          "type": "LamBindings",
+          "named": true
+        },
+        {
+          "type": "LetBody",
           "named": true
         },
         {
@@ -211,6 +172,14 @@
         },
         {
           "type": "expr",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "id",
           "named": true
         },
         {
@@ -251,6 +220,11 @@
     }
   },
   {
+    "type": "qid",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "source_file",
     "named": true,
     "fields": {},
@@ -274,7 +248,23 @@
       "required": true,
       "types": [
         {
-          "type": "Expr2",
+          "type": "DoBlock",
+          "named": true
+        },
+        {
+          "type": "ExtendedOrAbsurdLam",
+          "named": true
+        },
+        {
+          "type": "ForallBindings",
+          "named": true
+        },
+        {
+          "type": "LamBindings",
+          "named": true
+        },
+        {
+          "type": "LetBody",
           "named": true
         },
         {
@@ -283,6 +273,10 @@
         },
         {
           "type": "atom",
+          "named": true
+        },
+        {
+          "type": "atoms",
           "named": true
         },
         {
@@ -295,6 +289,10 @@
         },
         {
           "type": "fields",
+          "named": true
+        },
+        {
+          "type": "id",
           "named": true
         },
         {
@@ -337,10 +335,6 @@
   },
   {
     "type": "id",
-    "named": true
-  },
-  {
-    "type": "qid",
     "named": true
   },
   {
@@ -421,10 +415,6 @@
   },
   {
     "type": "tactic",
-    "named": false
-  },
-  {
-    "type": "?",
     "named": false
   },
   {

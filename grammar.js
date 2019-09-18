@@ -12,6 +12,8 @@ const PAREN = [['(', ')']];
 module.exports = grammar({
   name: 'agda',
 
+  word: $ => $.id,
+
   externals: $ => [
       $._newline,
       $._indent,
@@ -82,10 +84,10 @@ module.exports = grammar({
     ////////////////////////////////////////////////////////////////////////
 
     // Id
-    id: $ => ID,
+    id: $ => token(ID),
 
     // QId
-    qid: $ => QID,
+    qid: $ => alias(choice(QID, $.id), 'qid'),
 
     // SpaceIds
     ids: $ => repeat1($.id),
@@ -110,13 +112,13 @@ module.exports = grammar({
     ),
 
     // CommaBIdAndAbsurds
-    _binding_ids_and_absurds: $ => choice(
+    _binding_ids_and_absurds: $ => prec(-1, choice(
       $._application,
       seq($.qid, '=', $.qid),
       seq($.qid, '=', '_'  ),
       seq('-'  , '=', $.qid),
       seq('-'  , '=', '_'  ),
-    ),
+    )),
 
     // Attribute
     attribute: $ => seq('@', $._expr_or_attr),
@@ -140,21 +142,21 @@ module.exports = grammar({
       $._application,
     ),
 
-    // ExprOrAttr (left assoc unjustified)
-    _expr_or_attr: $ => prec.left(choice(
+    // ExprOrAttr
+    _expr_or_attr: $ => choice(
       $.qid,
       $.Literal,
       paren($.expr),
-    )),
+    ),
 
     // Application
     _application: $ => seq(
       repeat($.atom),
-      $.Expr2,
+      $._expr2,
     ),
 
-    // Expr2
-    Expr2: $ => choice(
+    // Expr
+    _expr2: $ => choice(
       seq($._LAMBDA, $.LamBindings, $.expr),
       $.ExtendedOrAbsurdLam,
       seq($._FORALL, $.ForallBindings, $.expr),
@@ -177,7 +179,6 @@ module.exports = grammar({
     _atom_curly: $ => brace(optional($.expr)),
 
     _atom_no_curly: $ => choice(
-      '?',
       '_',
       'Prop',
       'Set',
@@ -208,12 +209,12 @@ module.exports = grammar({
     typed_bindings1: $ => repeat1($.typed_binding),
     typed_binding: $ => choice(
       maybeDotted(choice(
-        paren(seq($._application             , ':', $.expr)),
-        brace(seq($._binding_ids_and_absurds, ':', $.expr)),
+        paren(       seq($._application            , ':', $.expr)),
+        brace(       seq($._binding_ids_and_absurds, ':', $.expr)),
         brace_double(seq($._binding_ids_and_absurds, ':', $.expr)),
       )),
-      paren(seq($.attributes1, $._application             , ':', $.expr)),
-      brace(seq($.attributes1, $._binding_ids_and_absurds, ':', $.expr)),
+      paren(       seq($.attributes1, $._application            , ':', $.expr)),
+      brace(       seq($.attributes1, $._binding_ids_and_absurds, ':', $.expr)),
       brace_double(seq($.attributes1, $._binding_ids_and_absurds, ':', $.expr)),
       paren($.Open),
       paren(seq('let', $._declaration_block)),

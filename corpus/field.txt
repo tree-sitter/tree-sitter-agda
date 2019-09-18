@@ -4,16 +4,16 @@ Field
 
 field
     a : A
-    b : B
+    a : A
 
 ---
 
 (source_file
-    (field
-        (arg_type_sig (field_name)
-            (expr (atom (qualified_name))))
-        (arg_type_sig (field_name)
-            (expr (atom (qualified_name))))))
+    (fields
+        (arg_type_sig (id)
+            (expr (atom (qid))))
+        (arg_type_sig (id)
+            (expr (atom (qid))))))
 
 ==================
 Field (same line)
@@ -26,7 +26,7 @@ field a : A
 (source_file
     (field
         (arg_type_sig (field_name)
-            (expr (atom (qualified_name))))))
+            (expr (atom (qid))))))
 
 ==================
 Field (same line + block)
@@ -40,6 +40,6 @@ field a : A
 (source_file
     (field
         (arg_type_sig (field_name)
-            (expr (atom (qualified_name))))
+            (expr (atom (qid))))
         (arg_type_sig (field_name)
-            (expr (atom (qualified_name))))))
+            (expr (atom (qid))))))
