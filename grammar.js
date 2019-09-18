@@ -44,9 +44,13 @@ module.exports = grammar({
     // indented, 1 or more declarations
     _declaration_block: $ => block($, $._declaration),
 
+    // Declarations0
+    _declaration_block0: $ => block($, optional($._declaration)),
+
     // Declaration
     _declaration: $ => choice(
         $.fields,
+        $.function
     ),
 
     ////////////////////////////////////////////////////////////////////////
@@ -78,6 +82,47 @@ module.exports = grammar({
 
     // ModalArgIds
     _modal_arg_ids: $ => seq(repeat($.attribute), $._arg_ids),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Functions
+    ////////////////////////////////////////////////////////////////////////
+
+    // FunClause = LHS + RHS
+    function: $ => seq(
+      optional($.attributes),
+      $.lhs,
+      optional($.rhs),
+      optional($.where)
+    ),
+
+    // LHS
+    lhs: $ => seq(
+      $._with_exprs,
+      optional($.rewrite_equations),
+      optional($.with_expressions)
+    ),
+
+    // RHS
+    rhs: $ => choice(
+      seq('=', $.expr),
+      seq(':', $.expr),
+    ),
+
+    // WithExpressions
+    with_expressions: $ => seq('with', $.expr),
+
+    // RewriteEquations
+    rewrite_equations: $ => seq('rewrite', $._with_exprs),
+
+    // WhereClause
+    where: $ => seq(
+      optional(seq(
+        'module',
+        choice($.id, '_')
+      )),
+      'where',
+      $._declaration_block0
+    ),
 
     ////////////////////////////////////////////////////////////////////////
     // Names
@@ -122,7 +167,7 @@ module.exports = grammar({
 
     // Attribute
     attribute: $ => seq('@', $._expr_or_attr),
-    attributes1: $ => repeat1($.attribute),
+    attributes: $ => repeat1($.attribute),
 
     ////////////////////////////////////////////////////////////////////////
     // Expressions (terms and types)
@@ -130,15 +175,15 @@ module.exports = grammar({
 
     // Expr
     expr: $ => choice(
-      seq($.typed_bindings1, $._ARROW, $.expr),
-      seq(optional($.attributes1), $.atoms, $._ARROW, $.expr),
+      seq($._typed_bindings, $._ARROW, $.expr),
+      seq(optional($.attributes), $._atoms, $._ARROW, $.expr),
       seq($._with_exprs, '=', $.expr),
       prec(-1, $._with_exprs), // lowest precedence
     ),
 
     // WithExprs/Expr1
     _with_exprs: $ => seq(
-      repeat(seq($.atoms, '|')),
+      repeat(seq($._atoms, '|')),
       $._application,
     ),
 
@@ -151,7 +196,7 @@ module.exports = grammar({
 
     // Application
     _application: $ => seq(
-      repeat($.atom),
+      optional($._atoms),
       $._expr2,
     ),
 
@@ -164,8 +209,8 @@ module.exports = grammar({
       seq('do', $.DoBlock),
       prec(-1, $.atom),
       seq('quoteGoal', $.id, 'in', $.expr),
-      seq('tactic', $.atoms),
-      seq('tactic', $.atoms, '|', $._with_exprs),
+      seq('tactic', $._atoms),
+      seq('tactic', $._atoms, '|', $._with_exprs),
     ),
 
     // Expr3
@@ -174,7 +219,7 @@ module.exports = grammar({
       $._atom_no_curly,
     ),
     // Application3
-    atoms: $ => repeat1($.atom),
+    _atoms: $ => repeat1($.atom),
 
     _atom_curly: $ => brace(optional($.expr)),
 
@@ -206,16 +251,16 @@ module.exports = grammar({
     ////////////////////////////////////////////////////////////////////////
 
     // TypedBinding
-    typed_bindings1: $ => repeat1($.typed_binding),
+    _typed_bindings: $ => repeat1($.typed_binding),
     typed_binding: $ => choice(
       maybeDotted(choice(
         paren(       seq($._application            , ':', $.expr)),
         brace(       seq($._binding_ids_and_absurds, ':', $.expr)),
         brace_double(seq($._binding_ids_and_absurds, ':', $.expr)),
       )),
-      paren(       seq($.attributes1, $._application            , ':', $.expr)),
-      brace(       seq($.attributes1, $._binding_ids_and_absurds, ':', $.expr)),
-      brace_double(seq($.attributes1, $._binding_ids_and_absurds, ':', $.expr)),
+      paren(       seq($.attributes, $._application            , ':', $.expr)),
+      brace(       seq($.attributes, $._binding_ids_and_absurds, ':', $.expr)),
+      brace_double(seq($.attributes, $._binding_ids_and_absurds, ':', $.expr)),
       paren($.Open),
       paren(seq('let', $._declaration_block)),
     ),

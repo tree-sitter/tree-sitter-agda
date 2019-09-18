@@ -47,21 +47,6 @@
     }
   },
   {
-    "type": "atoms",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "atom",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "attribute",
     "named": true,
     "fields": {},
@@ -85,7 +70,7 @@
     }
   },
   {
-    "type": "attributes1",
+    "type": "attributes",
     "named": true,
     "fields": {},
     "children": {
@@ -132,11 +117,7 @@
           "named": true
         },
         {
-          "type": "atoms",
-          "named": true
-        },
-        {
-          "type": "attributes1",
+          "type": "attributes",
           "named": true
         },
         {
@@ -148,11 +129,15 @@
           "named": true
         },
         {
+          "type": "function",
+          "named": true
+        },
+        {
           "type": "id",
           "named": true
         },
         {
-          "type": "typed_bindings1",
+          "type": "typed_binding",
           "named": true
         }
       ]
@@ -174,6 +159,33 @@
     }
   },
   {
+    "type": "function",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "attributes",
+          "named": true
+        },
+        {
+          "type": "lhs",
+          "named": true
+        },
+        {
+          "type": "rhs",
+          "named": true
+        },
+        {
+          "type": "where",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "ids",
     "named": true,
     "fields": {},
@@ -189,9 +201,134 @@
     }
   },
   {
+    "type": "lhs",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "DoBlock",
+          "named": true
+        },
+        {
+          "type": "ExtendedOrAbsurdLam",
+          "named": true
+        },
+        {
+          "type": "ForallBindings",
+          "named": true
+        },
+        {
+          "type": "LamBindings",
+          "named": true
+        },
+        {
+          "type": "LetBody",
+          "named": true
+        },
+        {
+          "type": "atom",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "function",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "rewrite_equations",
+          "named": true
+        },
+        {
+          "type": "with_expressions",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "qid",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "rewrite_equations",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "DoBlock",
+          "named": true
+        },
+        {
+          "type": "ExtendedOrAbsurdLam",
+          "named": true
+        },
+        {
+          "type": "ForallBindings",
+          "named": true
+        },
+        {
+          "type": "LamBindings",
+          "named": true
+        },
+        {
+          "type": "LetBody",
+          "named": true
+        },
+        {
+          "type": "atom",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "function",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "rhs",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expr",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "signature",
@@ -235,6 +372,10 @@
         {
           "type": "fields",
           "named": true
+        },
+        {
+          "type": "function",
+          "named": true
         }
       ]
     }
@@ -276,11 +417,7 @@
           "named": true
         },
         {
-          "type": "atoms",
-          "named": true
-        },
-        {
-          "type": "attributes1",
+          "type": "attributes",
           "named": true
         },
         {
@@ -289,6 +426,10 @@
         },
         {
           "type": "fields",
+          "named": true
+        },
+        {
+          "type": "function",
           "named": true
         },
         {
@@ -303,7 +444,7 @@
     }
   },
   {
-    "type": "typed_bindings1",
+    "type": "where",
     "named": true,
     "fields": {},
     "children": {
@@ -311,7 +452,30 @@
       "required": true,
       "types": [
         {
-          "type": "typed_binding",
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "function",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "with_expressions",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expr",
           "named": true
         }
       ]
@@ -331,6 +495,30 @@
   },
   {
     "type": "instance",
+    "named": false
+  },
+  {
+    "type": "=",
+    "named": false
+  },
+  {
+    "type": "with",
+    "named": false
+  },
+  {
+    "type": "rewrite",
+    "named": false
+  },
+  {
+    "type": "module",
+    "named": false
+  },
+  {
+    "type": "_",
+    "named": false
+  },
+  {
+    "type": "where",
     "named": false
   },
   {
@@ -367,14 +555,6 @@
   },
   {
     "type": "⦄",
-    "named": false
-  },
-  {
-    "type": "=",
-    "named": false
-  },
-  {
-    "type": "_",
     "named": false
   },
   {
