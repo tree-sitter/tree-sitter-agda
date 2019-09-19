@@ -114,6 +114,10 @@
           "named": true
         },
         {
+          "type": "generalize",
+          "named": true
+        },
+        {
           "type": "id",
           "named": true
         },
@@ -337,6 +341,21 @@
     }
   },
   {
+    "type": "generalize",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "signature",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "ids",
     "named": true,
     "fields": {},
@@ -497,6 +516,10 @@
           "named": true
         },
         {
+          "type": "generalize",
+          "named": true
+        },
+        {
           "type": "infix",
           "named": true
         },
@@ -537,6 +560,10 @@
         },
         {
           "type": "function",
+          "named": true
+        },
+        {
+          "type": "generalize",
           "named": true
         },
         {
@@ -776,6 +803,10 @@
           "named": true
         },
         {
+          "type": "generalize",
+          "named": true
+        },
+        {
           "type": "infix",
           "named": true
         },
@@ -973,6 +1004,10 @@
           "named": true
         },
         {
+          "type": "generalize",
+          "named": true
+        },
+        {
           "type": "infix",
           "named": true
         },
@@ -1092,6 +1127,10 @@
           "named": true
         },
         {
+          "type": "generalize",
+          "named": true
+        },
+        {
           "type": "id",
           "named": true
         },
@@ -1195,6 +1234,10 @@
         },
         {
           "type": "function",
+          "named": true
+        },
+        {
+          "type": "generalize",
           "named": true
         },
         {
@@ -1313,6 +1356,10 @@
   },
   {
     "type": "infixr",
+    "named": false
+  },
+  {
+    "type": "variable",
     "named": false
   },
   {

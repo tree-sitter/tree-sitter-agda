@@ -141,6 +141,10 @@
         {
           "type": "SYMBOL",
           "name": "infix"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "generalize"
         }
       ]
     },
@@ -770,6 +774,27 @@
             "type": "SYMBOL",
             "name": "bid"
           }
+        }
+      ]
+    },
+    "generalize": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "variable"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_signature_block"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },

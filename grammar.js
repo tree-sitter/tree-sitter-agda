@@ -66,6 +66,7 @@ module.exports = grammar({
         $.record,
         $.record_signature,
         $.infix,
+        $.generalize,
     ),
 
     ////////////////////////////////////////////////////////////////////////
@@ -226,9 +227,18 @@ module.exports = grammar({
     ////////////////////////////////////////////////////////////////////////
 
     infix: $ => seq(
-        choice('infix', 'infixl', 'infixr'),
-        $.integer,
-        repeat1($.bid),
+      choice('infix', 'infixl', 'infixr'),
+      $.integer,
+      repeat1($.bid),
+    ),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Declaration: Generalize
+    ////////////////////////////////////////////////////////////////////////
+
+    generalize: $ => seq(
+      'variable',
+      optional($._signature_block)
     ),
 
     ////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,12 @@
+==================
+Generialize
+==================
+
+variable
+  δ σ γ : Sub Γ Δ
+
+---
+
+(source_file
+    (generalize
+      (signature (id) (id) (id) (expr (atom (qid)) (atom (qid)) (atom (qid))))))
