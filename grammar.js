@@ -9,6 +9,13 @@ const BRACE2 = [['{{', '}}'], ['⦃', '⦄']];
 const IDIOM = [['(|', '|)'], ['⦇', '⦈']];
 const PAREN = [['(', ')']];
 
+// numbers and literals
+const number = /0x[0-9a-fA-F]+|[0-9]+/;
+const integer = /\-?(0x[0-9a-fA-F]+|[0-9]+)/;
+const exponent = /[eE][-+]?(0x[0-9a-fA-F]+|[0-9]+)/;
+const float = /(\-?(0x[0-9a-fA-F]+|[0-9]+)\.(0x[0-9a-fA-F]+|[0-9]+)([eE][-+]?(0x[0-9a-fA-F]+|[0-9]+))?)|((0x[0-9a-fA-F]+|[0-9]+)[eE][-+]?(0x[0-9a-fA-F]+|[0-9]+))/;
+
+
 module.exports = grammar({
   name: 'agda',
 
@@ -232,8 +239,8 @@ module.exports = grammar({
 
     // ExprOrAttr
     _expr_or_attr: $ => choice(
+      $.literal,
       $.qid,
-      $.Literal,
       paren($.expr),
     ),
 
@@ -294,8 +301,8 @@ module.exports = grammar({
       seq('⦃', '⦄'),
       seq($.id, '@', $.atom),
       seq('.', $.atom),
-      seq('record', brace($.RecordAssignments)),
-      seq('record', $._atom_no_curly, brace($.FieldAssignments)),
+      $.record_assignments,
+      alias($.field_assignments, $.record_assignments),
       $._ELLIPSIS,
       $._expr_or_attr
     ),
@@ -423,6 +430,66 @@ module.exports = grammar({
       $._lambda_clauses,
     ),
 
+    // RecordAssignments
+    record_assignments: $ => seq(
+      'record',
+      brace(optional($._record_assignments)),
+    ),
+
+    field_assignments: $ => seq(
+      'record',
+      $._atom_no_curly,
+      brace(optional($._field_assignments)),
+    ),
+
+    // RecordAssignments1
+    _record_assignments: $ => seq(
+      repeat(seq($._record_assignment, ';')),
+      $._record_assignment,
+    ),
+
+
+    // FieldAssignments1
+    _field_assignments: $ => seq(
+      repeat(seq($.field_assignment, ';')),
+      $.field_assignment,
+    ),
+
+    // RecordAssignment
+    _record_assignment: $ => choice(
+      $.field_assignment,
+      $.module_ssignment,
+    ),
+
+    // FieldAssignment
+    field_assignment: $ => seq(
+      $.id,
+      '=',
+      $.expr
+    ),
+
+    // ModuleAssignment
+    module_ssignment: $ => seq(
+      $.ModuleName,
+      $.OpenArgs,
+      $.ImportDirective,
+    ),
+
+
+    // ModuleName
+    ModuleName: $ => 'ModuleName',
+
+    // OpenArgs
+    OpenArgs: $ => 'OpenArgs',
+
+    // ImportDirective
+    ImportDirective: $ => 'ImportDirective',
+
+    // FieldAssignments
+    FieldAssignments: $ => 'FieldAssignments',
+
+
+
     ////////////////////////////////////////////////////////////////////////
     // Bindings
     ////////////////////////////////////////////////////////////////////////
@@ -463,14 +530,24 @@ module.exports = grammar({
     ),
 
     ////////////////////////////////////////////////////////////////////////
-    // Unimplemented
+    // Literals
     ////////////////////////////////////////////////////////////////////////
 
-    // RecordAssignments
-    RecordAssignments: $ => 'RecordAssignments',
+    // -- Literals
+    // <0,code> \'             { litChar }
+    // <0,code,pragma_> \"     { litString }
+    // <0,code> @integer       { literal LitNat }
+    // <0,code> @float         { literal LitFloat }
+    integer: $ => integer,
+    string: $ => /\".*\"/,
+    literal: $ => choice(
+        integer,
+        /\".*\"/,
+    ),
 
-    // FieldAssignments
-    FieldAssignments: $ => 'FieldAssignments',
+    ////////////////////////////////////////////////////////////////////////
+    // Unimplemented
+    ////////////////////////////////////////////////////////////////////////
 
     // setN
     SetN: $ => 'setN',

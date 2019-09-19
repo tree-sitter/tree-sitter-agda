@@ -1207,11 +1207,11 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "qid"
+          "name": "literal"
         },
         {
           "type": "SYMBOL",
-          "name": "Literal"
+          "name": "qid"
         },
         {
           "type": "CHOICE",
@@ -1661,80 +1661,17 @@
           ]
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "record"
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SEQ",
-                  "members": [
-                    {
-                      "type": "STRING",
-                      "value": "{"
-                    },
-                    {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "SYMBOL",
-                          "name": "RecordAssignments"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "}"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "record_assignments"
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "record"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "_atom_no_curly"
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SEQ",
-                  "members": [
-                    {
-                      "type": "STRING",
-                      "value": "{"
-                    },
-                    {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "SYMBOL",
-                          "name": "FieldAssignments"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "}"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "field_assignments"
+          },
+          "named": true,
+          "value": "record_assignments"
         },
         {
           "type": "SYMBOL",
@@ -2290,6 +2227,211 @@
           "name": "_lambda_clauses"
         }
       ]
+    },
+    "record_assignments": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "record"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "{"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "_record_assignments"
+                        },
+                        {
+                          "type": "BLANK"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": "}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "field_assignments": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "record"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_atom_no_curly"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "{"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "_field_assignments"
+                        },
+                        {
+                          "type": "BLANK"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": "}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "_record_assignments": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_record_assignment"
+              },
+              {
+                "type": "STRING",
+                "value": ";"
+              }
+            ]
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_record_assignment"
+        }
+      ]
+    },
+    "_field_assignments": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "field_assignment"
+              },
+              {
+                "type": "STRING",
+                "value": ";"
+              }
+            ]
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "field_assignment"
+        }
+      ]
+    },
+    "_record_assignment": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "field_assignment"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "module_ssignment"
+        }
+      ]
+    },
+    "field_assignment": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "id"
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expr"
+        }
+      ]
+    },
+    "module_ssignment": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "ModuleName"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "OpenArgs"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "ImportDirective"
+        }
+      ]
+    },
+    "ModuleName": {
+      "type": "STRING",
+      "value": "ModuleName"
+    },
+    "OpenArgs": {
+      "type": "STRING",
+      "value": "OpenArgs"
+    },
+    "ImportDirective": {
+      "type": "STRING",
+      "value": "ImportDirective"
+    },
+    "FieldAssignments": {
+      "type": "STRING",
+      "value": "FieldAssignments"
     },
     "_typed_bindings": {
       "type": "REPEAT1",
@@ -3514,13 +3656,26 @@
         }
       ]
     },
-    "RecordAssignments": {
-      "type": "STRING",
-      "value": "RecordAssignments"
+    "integer": {
+      "type": "PATTERN",
+      "value": "\\-?(0x[0-9a-fA-F]+|[0-9]+)"
     },
-    "FieldAssignments": {
-      "type": "STRING",
-      "value": "FieldAssignments"
+    "string": {
+      "type": "PATTERN",
+      "value": "\\\".*\\\""
+    },
+    "literal": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "\\-?(0x[0-9a-fA-F]+|[0-9]+)"
+        },
+        {
+          "type": "PATTERN",
+          "value": "\\\".*\\\""
+        }
+      ]
     },
     "SetN": {
       "type": "STRING",

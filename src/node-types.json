@@ -8,19 +8,7 @@
       "required": true,
       "types": [
         {
-          "type": "FieldAssignments",
-          "named": true
-        },
-        {
-          "type": "Literal",
-          "named": true
-        },
-        {
           "type": "PropN",
-          "named": true
-        },
-        {
-          "type": "RecordAssignments",
           "named": true
         },
         {
@@ -40,7 +28,15 @@
           "named": true
         },
         {
+          "type": "literal",
+          "named": true
+        },
+        {
           "type": "qid",
+          "named": true
+        },
+        {
+          "type": "record_assignments",
           "named": true
         }
       ]
@@ -55,11 +51,11 @@
       "required": true,
       "types": [
         {
-          "type": "Literal",
+          "type": "expr",
           "named": true
         },
         {
-          "type": "expr",
+          "type": "literal",
           "named": true
         },
         {
@@ -245,6 +241,25 @@
     }
   },
   {
+    "type": "field_assignment",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "fields",
     "named": true,
     "fields": {},
@@ -323,6 +338,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "integer",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "lambda",
@@ -527,9 +547,84 @@
     }
   },
   {
+    "type": "literal",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "module_ssignment",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "ImportDirective",
+          "named": true
+        },
+        {
+          "type": "ModuleName",
+          "named": true
+        },
+        {
+          "type": "OpenArgs",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "qid",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "record_assignments",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "PropN",
+          "named": true
+        },
+        {
+          "type": "SetN",
+          "named": true
+        },
+        {
+          "type": "atom",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "field_assignment",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        },
+        {
+          "type": "qid",
+          "named": true
+        },
+        {
+          "type": "record_assignments",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "rewrite_equations",
@@ -693,6 +788,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "string",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "typed_binding",
@@ -1015,10 +1115,6 @@
     "named": false
   },
   {
-    "type": "record",
-    "named": false
-  },
-  {
     "type": "let",
     "named": false
   },
@@ -1031,7 +1127,19 @@
     "named": false
   },
   {
-    "type": "RecordAssignments",
+    "type": "record",
+    "named": false
+  },
+  {
+    "type": "ModuleName",
+    "named": true
+  },
+  {
+    "type": "OpenArgs",
+    "named": true
+  },
+  {
+    "type": "ImportDirective",
     "named": true
   },
   {
