@@ -1,0 +1,107 @@
+==================
+Directives only
+==================
+
+record Pair (A B : Set) : Set where
+    constructor _,_
+    inductive
+    eta-equality
+
+---
+
+(source_file
+    (record
+        (qid)
+        (typed_binding
+            (atom (qid))
+            (atom (qid))
+            (expr (atom)))
+        (expr (atom))
+        (record_declarations_block
+            (record_constructor (id))
+            (record_induction)
+            (record_eta))))
+
+==================
+Directives with declarations I
+==================
+
+record Pair (A B : Set) : Set where
+    constructor _,_
+    inductive
+    eta-equality
+    instance
+        a : b
+    field
+        fst : A
+        snd : B
+
+---
+
+(source_file
+    (record
+        (qid)
+        (typed_binding
+            (atom (qid))
+            (atom (qid))
+            (expr (atom)))
+        (expr (atom))
+        (record_declarations_block
+            (record_constructor (id))
+            (record_induction)
+            (record_eta)
+            (instance
+                (function_clause
+                    (lhs (function_name (qid)))
+                    (rhs (expr (atom (qid))))))
+            (field
+                (type_sig (field_name) (expr (atom (qid))))
+                (type_sig (field_name) (expr (atom (qid))))))))
+
+==================
+Directives with declarations II
+==================
+
+record Pair (A B : Set) : Set where
+    -- part of the directives
+    instance
+        constructor _,_
+    -- NOT part of the directives
+    instance
+        a = b
+
+---
+
+(source_file
+    (record
+        (qid)
+        (typed_binding
+            (atom (qid))
+            (atom (qid))
+            (expr (atom)))
+        (expr (atom))
+        (record_declarations_block
+            (comment)
+            (record_constructor_instance (id))
+            (comment)
+            (instance
+                (function_clause
+                    (lhs (atom (qid)))
+                    (rhs (expr (atom (qid)))))))))
+
+==================
+Signature only (found in mutual blocks)
+==================
+
+record Pair (A B : Set) : Set
+
+---
+
+(source_file
+    (record_signature_only
+        (qid)
+        (typed_binding
+            (atom (qid))
+            (atom (qid))
+            (expr (atom)))
+        (expr (atom))))

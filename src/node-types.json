@@ -118,6 +118,10 @@
           "named": true
         },
         {
+          "type": "record",
+          "named": true
+        },
+        {
           "type": "typed_binding",
           "named": true
         },
@@ -464,6 +468,10 @@
         {
           "type": "function",
           "named": true
+        },
+        {
+          "type": "record",
+          "named": true
         }
       ]
     }
@@ -494,6 +502,10 @@
         },
         {
           "type": "function",
+          "named": true
+        },
+        {
+          "type": "record",
           "named": true
         }
       ]
@@ -580,6 +592,61 @@
     "fields": {}
   },
   {
+    "type": "record",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "PropN",
+          "named": true
+        },
+        {
+          "type": "SetN",
+          "named": true
+        },
+        {
+          "type": "atom",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        },
+        {
+          "type": "qid",
+          "named": true
+        },
+        {
+          "type": "record_assignments",
+          "named": true
+        },
+        {
+          "type": "record_declarations_block",
+          "named": true
+        },
+        {
+          "type": "typed_binding",
+          "named": true
+        },
+        {
+          "type": "untyped_binding",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "record_assignments",
     "named": true,
     "fields": {},
@@ -625,6 +692,74 @@
         }
       ]
     }
+  },
+  {
+    "type": "record_constructor",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "id",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "record_declarations_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "data",
+          "named": true
+        },
+        {
+          "type": "data_signature",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "function",
+          "named": true
+        },
+        {
+          "type": "record",
+          "named": true
+        },
+        {
+          "type": "record_constructor",
+          "named": true
+        },
+        {
+          "type": "record_eta",
+          "named": true
+        },
+        {
+          "type": "record_induction",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "record_eta",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "record_induction",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "rewrite_equations",
@@ -733,6 +868,10 @@
         },
         {
           "type": "function",
+          "named": true
+        },
+        {
+          "type": "record",
           "named": true
         }
       ]
@@ -857,6 +996,10 @@
         {
           "type": "qid",
           "named": true
+        },
+        {
+          "type": "record",
+          "named": true
         }
       ]
     }
@@ -939,6 +1082,10 @@
         {
           "type": "id",
           "named": true
+        },
+        {
+          "type": "record",
+          "named": true
         }
       ]
     }
@@ -1004,6 +1151,30 @@
   },
   {
     "type": "codata",
+    "named": false
+  },
+  {
+    "type": "record",
+    "named": false
+  },
+  {
+    "type": "constructor",
+    "named": false
+  },
+  {
+    "type": "inductive",
+    "named": false
+  },
+  {
+    "type": "coinductive",
+    "named": false
+  },
+  {
+    "type": "eta-equality",
+    "named": false
+  },
+  {
+    "type": "no-eta-equality",
     "named": false
   },
   {
@@ -1127,10 +1298,6 @@
     "named": false
   },
   {
-    "type": "record",
-    "named": false
-  },
-  {
     "type": "ModuleName",
     "named": true
   },
@@ -1140,10 +1307,6 @@
   },
   {
     "type": "ImportDirective",
-    "named": true
-  },
-  {
-    "type": "FieldAssignments",
     "named": true
   },
   {

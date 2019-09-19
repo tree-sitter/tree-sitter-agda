@@ -28,7 +28,7 @@ module.exports = grammar({
   ],
 
   conflicts: $ => [
-    // [$._declaration_block, $.let],
+    [$.qid, $.field_assignment],
     // [$.let],
   ],
 
@@ -63,6 +63,7 @@ module.exports = grammar({
         $.function,
         $.data,
         $.data_signature,
+        $.record,
     ),
 
     ////////////////////////////////////////////////////////////////////////
@@ -160,6 +161,51 @@ module.exports = grammar({
       ':',
       $.expr,
     ),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Declaration: Record
+    ////////////////////////////////////////////////////////////////////////
+
+    record: $ => seq(
+      'record',
+      $._atom_no_curly,
+      optional($._typed_untyped_bindings),
+      optional(seq(':', $.expr)),
+      $.record_declarations_block,
+    ),
+
+    // RecordDeclarations
+    record_declarations_block: $ => seq(
+      'where',
+      optional($._record_directive_block),
+      optional($._declaration_block),
+    ),
+
+    // RecordDirectives
+    _record_directive_block: $ => block($, $._record_directive),
+
+    // RecordDirective
+    _record_directive: $ => choice(
+        $.record_constructor,
+        $.record_induction,
+        $.record_eta
+    ),
+
+    // RecordConstructorName
+    record_constructor: $ => seq('constructor', $.id),
+
+    // RecordInduction
+    record_induction: $ => choice(
+        'inductive',
+        'coinductive'
+    ),
+
+    // RecordEta
+    record_eta: $ => choice(
+        'eta-equality',
+        'no-eta-equality'
+    ),
+
 
     ////////////////////////////////////////////////////////////////////////
     // Names
@@ -484,11 +530,6 @@ module.exports = grammar({
 
     // ImportDirective
     ImportDirective: $ => 'ImportDirective',
-
-    // FieldAssignments
-    FieldAssignments: $ => 'FieldAssignments',
-
-
 
     ////////////////////////////////////////////////////////////////////////
     // Bindings
