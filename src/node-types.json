@@ -126,6 +126,10 @@
           "named": true
         },
         {
+          "type": "mutual",
+          "named": true
+        },
+        {
           "type": "record",
           "named": true
         },
@@ -524,6 +528,10 @@
           "named": true
         },
         {
+          "type": "mutual",
+          "named": true
+        },
+        {
           "type": "record",
           "named": true
         },
@@ -568,6 +576,10 @@
         },
         {
           "type": "infix",
+          "named": true
+        },
+        {
+          "type": "mutual",
           "named": true
         },
         {
@@ -651,6 +663,53 @@
         },
         {
           "type": "OpenArgs",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "mutual",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "data",
+          "named": true
+        },
+        {
+          "type": "data_signature",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "function",
+          "named": true
+        },
+        {
+          "type": "generalize",
+          "named": true
+        },
+        {
+          "type": "infix",
+          "named": true
+        },
+        {
+          "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "record",
+          "named": true
+        },
+        {
+          "type": "record_signature",
           "named": true
         }
       ]
@@ -808,6 +867,10 @@
         },
         {
           "type": "infix",
+          "named": true
+        },
+        {
+          "type": "mutual",
           "named": true
         },
         {
@@ -1012,6 +1075,10 @@
           "named": true
         },
         {
+          "type": "mutual",
+          "named": true
+        },
+        {
           "type": "record",
           "named": true
         },
@@ -1147,6 +1214,10 @@
           "named": true
         },
         {
+          "type": "mutual",
+          "named": true
+        },
+        {
           "type": "qid",
           "named": true
         },
@@ -1246,6 +1317,10 @@
         },
         {
           "type": "infix",
+          "named": true
+        },
+        {
+          "type": "mutual",
           "named": true
         },
         {
@@ -1360,6 +1435,10 @@
   },
   {
     "type": "variable",
+    "named": false
+  },
+  {
+    "type": "mutual",
     "named": false
   },
   {

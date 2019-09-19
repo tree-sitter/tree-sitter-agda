@@ -145,6 +145,10 @@
         {
           "type": "SYMBOL",
           "name": "generalize"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "mutual"
         }
       ]
     },
@@ -790,6 +794,27 @@
             {
               "type": "SYMBOL",
               "name": "_signature_block"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "mutual": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "mutual"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_declaration_block"
             },
             {
               "type": "BLANK"
