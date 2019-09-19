@@ -118,6 +118,10 @@
           "named": true
         },
         {
+          "type": "infix",
+          "named": true
+        },
+        {
           "type": "record",
           "named": true
         },
@@ -348,6 +352,25 @@
     }
   },
   {
+    "type": "infix",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "bid",
+          "named": true
+        },
+        {
+          "type": "integer",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "integer",
     "named": true,
     "fields": {}
@@ -474,6 +497,10 @@
           "named": true
         },
         {
+          "type": "infix",
+          "named": true
+        },
+        {
           "type": "record",
           "named": true
         },
@@ -510,6 +537,10 @@
         },
         {
           "type": "function",
+          "named": true
+        },
+        {
+          "type": "infix",
           "named": true
         },
         {
@@ -745,6 +776,10 @@
           "named": true
         },
         {
+          "type": "infix",
+          "named": true
+        },
+        {
           "type": "record",
           "named": true
         },
@@ -938,6 +973,10 @@
           "named": true
         },
         {
+          "type": "infix",
+          "named": true
+        },
+        {
           "type": "record",
           "named": true
         },
@@ -1057,6 +1096,10 @@
           "named": true
         },
         {
+          "type": "infix",
+          "named": true
+        },
+        {
           "type": "lambda",
           "named": true
         },
@@ -1159,6 +1202,10 @@
           "named": true
         },
         {
+          "type": "infix",
+          "named": true
+        },
+        {
           "type": "record",
           "named": true
         },
@@ -1254,6 +1301,18 @@
   },
   {
     "type": "no-eta-equality",
+    "named": false
+  },
+  {
+    "type": "infix",
+    "named": false
+  },
+  {
+    "type": "infixl",
+    "named": false
+  },
+  {
+    "type": "infixr",
     "named": false
   },
   {

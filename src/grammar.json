@@ -137,6 +137,10 @@
         {
           "type": "SYMBOL",
           "name": "record_signature"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "infix"
         }
       ]
     },
@@ -733,6 +737,39 @@
         {
           "type": "SYMBOL",
           "name": "expr"
+        }
+      ]
+    },
+    "infix": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "infix"
+            },
+            {
+              "type": "STRING",
+              "value": "infixl"
+            },
+            {
+              "type": "STRING",
+              "value": "infixr"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "integer"
+        },
+        {
+          "type": "REPEAT1",
+          "content": {
+            "type": "SYMBOL",
+            "name": "bid"
+          }
         }
       ]
     },
