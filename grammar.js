@@ -21,6 +21,8 @@ module.exports = grammar({
   ],
 
   conflicts: $ => [
+    // [$._declaration_block, $.let],
+    // [$.let],
   ],
 
   rules: {
@@ -211,11 +213,21 @@ module.exports = grammar({
       seq($._with_exprs, '=', $.expr),
       prec(-1, $._with_exprs), // lowest precedence
     ),
+    stmt: $ => choice(
+      seq($._typed_bindings, $._ARROW, $.expr),
+      seq(optional($.attributes), $._atoms, $._ARROW, $.expr),
+      seq($._with_exprs, '=', $.expr),
+      prec(-1, $._with_exprs_stmt), // lowest precedence
+    ),
 
     // WithExprs/Expr1
     _with_exprs: $ => seq(
       repeat(seq($._atoms, '|')),
       $._application,
+    ),
+    _with_exprs_stmt: $ => seq(
+      repeat(seq($._atoms, '|')),
+      $._application_stmt,
     ),
 
     // ExprOrAttr
@@ -230,18 +242,29 @@ module.exports = grammar({
       optional($._atoms),
       $._expr2,
     ),
+    _application_stmt: $ => seq(
+      optional($._atoms),
+      $._expr2_stmt,
+    ),
 
     // Expr
-    _expr2: $ => choice(
+    _expr2_without_let: $ => choice(
       $.lambda,
       alias($.lambda_extended_or_absurd, $.lambda),
       $.forall,
-      $.let,
-      seq('do', $.DoBlock),
+      $.do,
       prec(-1, $.atom),
       seq('quoteGoal', $.id, 'in', $.expr),
       seq('tactic', $._atoms),
       seq('tactic', $._atoms, '|', $._with_exprs),
+    ),
+    _expr2: $ => choice(
+      $._expr2_without_let,
+      $.let,
+    ),
+    _expr2_stmt: $ => choice(
+      $._expr2_without_let,
+      $.let_in_do,
     ),
 
     // Expr3
@@ -290,13 +313,32 @@ module.exports = grammar({
       //
       choice(
         // covers the part without $._let_body
-        $._newline,
+        seq($._newline),
+        // seq($._newline, $._dedent),
         // covers the newline between declarations and $._let_body
         seq($._newline, $._let_body),
         // covers the rest of the cases
         $._let_body,
       )
     )),
+
+    // special `let...in` in do statements
+    let_in_do: $ => prec.right(seq(
+      'let',
+      // declarations
+      optional($._indent),
+      repeat(seq($._declaration, $._newline)),
+      $._declaration,
+      //
+      choice(
+        seq($._newline, $._dedent),
+        // covers the newline between declarations and $._let_body
+        seq($._newline, $._let_body),
+        // covers the rest of the cases
+        $._let_body,
+      )
+    )),
+
 
     _let_body: $ => seq(
       'in',
@@ -364,6 +406,22 @@ module.exports = grammar({
       $.expr,
     ),
 
+    // DoStmts
+    do: $ => seq('do',
+      block($, $._do_stmt)
+    ),
+
+    // DoStmt
+    _do_stmt: $ => seq(
+      $.stmt,
+      optional($.do_where)
+    ),
+
+    // DoWhere
+    do_where: $ => seq(
+      'where',
+      $._lambda_clauses,
+    ),
 
     ////////////////////////////////////////////////////////////////////////
     // Bindings
@@ -425,10 +483,6 @@ module.exports = grammar({
 
     // Open
     Open: $ => 'Open',
-
-    // DoStmts
-    DoBlock: $ => 'DoBlock',
-
     // CatchallPragma
     CatchallPragma: $ => 'CatchallPragma',
   }

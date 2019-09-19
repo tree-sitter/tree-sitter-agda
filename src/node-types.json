@@ -160,6 +160,44 @@
     }
   },
   {
+    "type": "do",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "do_where",
+          "named": true
+        },
+        {
+          "type": "stmt",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "do_where",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "lambda_clause",
+          "named": true
+        },
+        {
+          "type": "lambda_clause_absurd",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "expr",
     "named": true,
     "fields": {},
@@ -168,15 +206,15 @@
       "required": true,
       "types": [
         {
-          "type": "DoBlock",
-          "named": true
-        },
-        {
           "type": "atom",
           "named": true
         },
         {
           "type": "attributes",
+          "named": true
+        },
+        {
+          "type": "do",
           "named": true
         },
         {
@@ -349,11 +387,11 @@
           "named": true
         },
         {
-          "type": "DoBlock",
+          "type": "atom",
           "named": true
         },
         {
-          "type": "atom",
+          "type": "do",
           "named": true
         },
         {
@@ -411,6 +449,37 @@
     }
   },
   {
+    "type": "let_in_do",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "data",
+          "named": true
+        },
+        {
+          "type": "data_signature",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "function",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "lhs",
     "named": true,
     "fields": {},
@@ -419,11 +488,11 @@
       "required": true,
       "types": [
         {
-          "type": "DoBlock",
+          "type": "atom",
           "named": true
         },
         {
-          "type": "atom",
+          "type": "do",
           "named": true
         },
         {
@@ -471,11 +540,11 @@
       "required": true,
       "types": [
         {
-          "type": "DoBlock",
+          "type": "atom",
           "named": true
         },
         {
-          "type": "atom",
+          "type": "do",
           "named": true
         },
         {
@@ -575,7 +644,7 @@
     }
   },
   {
-    "type": "typed_binding",
+    "type": "stmt",
     "named": true,
     "fields": {},
     "children": {
@@ -583,9 +652,56 @@
       "required": true,
       "types": [
         {
-          "type": "DoBlock",
+          "type": "atom",
           "named": true
         },
+        {
+          "type": "attributes",
+          "named": true
+        },
+        {
+          "type": "do",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "forall",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "lambda",
+          "named": true
+        },
+        {
+          "type": "let",
+          "named": true
+        },
+        {
+          "type": "let_in_do",
+          "named": true
+        },
+        {
+          "type": "typed_binding",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "typed_binding",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
         {
           "type": "Open",
           "named": true
@@ -604,6 +720,10 @@
         },
         {
           "type": "data_signature",
+          "named": true
+        },
+        {
+          "type": "do",
           "named": true
         },
         {
@@ -650,10 +770,6 @@
       "required": true,
       "types": [
         {
-          "type": "DoBlock",
-          "named": true
-        },
-        {
           "type": "atom",
           "named": true
         },
@@ -663,6 +779,10 @@
         },
         {
           "type": "bid",
+          "named": true
+        },
+        {
+          "type": "do",
           "named": true
         },
         {
@@ -843,10 +963,6 @@
     "named": false
   },
   {
-    "type": "do",
-    "named": false
-  },
-  {
     "type": "quoteGoal",
     "named": false
   },
@@ -911,6 +1027,10 @@
     "named": false
   },
   {
+    "type": "do",
+    "named": false
+  },
+  {
     "type": "RecordAssignments",
     "named": true
   },
@@ -932,10 +1052,6 @@
   },
   {
     "type": "Open",
-    "named": true
-  },
-  {
-    "type": "DoBlock",
     "named": true
   },
   {
