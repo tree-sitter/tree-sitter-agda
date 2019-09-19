@@ -1367,6 +1367,21 @@
     }
   },
   {
+    "type": "record_constructor_instance",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "record_constructor",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "record_declarations_block",
     "named": true,
     "fields": {},
@@ -1436,6 +1451,10 @@
         },
         {
           "type": "record_constructor",
+          "named": true
+        },
+        {
+          "type": "record_constructor_instance",
           "named": true
         },
         {
@@ -2279,6 +2298,10 @@
   {
     "type": "do",
     "named": false
+  },
+  {
+    "type": "comment",
+    "named": true
   },
   {
     "type": "SetN",

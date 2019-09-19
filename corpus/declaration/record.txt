@@ -82,7 +82,8 @@ record Pair (A B : Set) : Set where
         (expr (atom))
         (record_declarations_block
             (comment)
-            (record_constructor_instance (id))
+            (record_constructor_instance
+              (record_constructor (id)))
             (comment)
             (instance
                 (function

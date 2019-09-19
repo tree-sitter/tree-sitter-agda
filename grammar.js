@@ -21,6 +21,12 @@ module.exports = grammar({
 
   word: $ => $.id,
 
+    extras: $ => [
+        $.comment,
+        // $.pragma,
+        /\s|\\n/,
+    ],
+
   externals: $ => [
       $._newline,
       $._indent,
@@ -188,22 +194,28 @@ module.exports = grammar({
     // RecordDeclarations
     record_declarations_block: $ => seq(
       'where',
-      optional($._record_directive_block),
-      optional($._declaration_block),
+      indent($,
+        // RecordDirectives
+        repeat(seq($._record_directive, $._newline)),
+        repeat(seq($._declaration, $._newline)),
+      ),
     ),
-
-    // RecordDirectives
-    _record_directive_block: $ => block($, $._record_directive),
 
     // RecordDirective
     _record_directive: $ => choice(
         $.record_constructor,
+        $.record_constructor_instance,
         $.record_induction,
         $.record_eta
     ),
-
     // RecordConstructorName
     record_constructor: $ => seq('constructor', $.id),
+
+    // Declaration of record constructor name.
+    record_constructor_instance: $ => seq(
+        'instance',
+        block($, $.record_constructor),
+    ),
 
     // RecordInduction
     record_induction: $ => choice(
@@ -741,6 +753,25 @@ module.exports = grammar({
         integer,
         /\".*\"/,
     ),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Comment
+    ////////////////////////////////////////////////////////////////////////
+
+    comment: $ => token(choice(
+        prec(100, seq('--', /.*/)),
+        seq('{--}'),
+        seq(
+            '{-',
+            /[^#]/,
+            repeat(choice(
+                /[^-]/,     // anything but -
+                /-[^}]/,    // - not followed by }
+            )),
+            /-}/
+        )
+    )),
+
 
     ////////////////////////////////////////////////////////////////////////
     // Unimplemented
