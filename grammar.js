@@ -21,9 +21,6 @@ module.exports = grammar({
   ],
 
   conflicts: $ => [
-    [$._let_only],
-    // [$._let_only, $._let_only2],
-    [$._let_only, $._declaration_block]
   ],
 
   rules: {
@@ -284,26 +281,21 @@ module.exports = grammar({
     forall: $ => seq($._FORALL, $._typed_untyped_bindings, $._ARROW, $.expr),
 
     // LetBody
-    let: $ => choice(
-      $._let_only,
-      $._let_in,
-    ),
-
-    _let_only: $ => prec.right(seq(
+    let: $ => prec.right(seq(
       'let',
-      $._indent,
-      repeat1(seq($._declaration, $._newline)),
-      // $._dedent,
-      // block($, $._declaration),
-      optional($._let_body),
-    )),
-
-    _let_in: $ => (seq(
-      'let',
+      // declarations
       optional($._indent),
       repeat(seq($._declaration, $._newline)),
       $._declaration,
-      $._let_body,
+      //
+      choice(
+        // covers the part without $._let_body
+        $._newline,
+        // covers the newline between declarations and $._let_body
+        seq($._newline, $._let_body),
+        // covers the rest of the cases
+        $._let_body,
+      )
     )),
 
     _let_body: $ => seq(
