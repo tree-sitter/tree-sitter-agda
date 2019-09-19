@@ -20,7 +20,8 @@ module.exports = grammar({
       $._dedent
   ],
 
-  conflicts: $ => [],
+  conflicts: $ => [
+  ],
 
   rules: {
     source_file: $ => repeat(seq($._declaration, $._newline)),
@@ -235,7 +236,7 @@ module.exports = grammar({
       seq($._LAMBDA, $.LamBindings, $.expr),
       $.ExtendedOrAbsurdLam,
       $.forall,
-      seq('let', $._declaration_block, $.LetBody),
+      $.let,
       seq('do', $.DoBlock),
       prec(-1, $.atom),
       seq('quoteGoal', $.id, 'in', $.expr),
@@ -279,7 +280,26 @@ module.exports = grammar({
     // ForallBindings
     forall: $ => seq($._FORALL, $._typed_untyped_bindings, $._ARROW, $.expr),
 
+    let: $ => choice(
+      $._let_only,
+      $._let_in,
+    ),
 
+    _let_only: $ => (seq(
+      'let',
+      block($, $._declaration),
+      'in',
+      $.expr
+    )),
+
+    _let_in: $ => (seq(
+      'let',
+      optional($._indent),
+      repeat(seq($._declaration, $._newline)),
+      $._declaration,
+      'in',
+      $.expr
+    )),
 
     ////////////////////////////////////////////////////////////////////////
     // Bindings

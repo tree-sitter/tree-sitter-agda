@@ -180,10 +180,6 @@
           "named": true
         },
         {
-          "type": "LetBody",
-          "named": true
-        },
-        {
           "type": "atom",
           "named": true
         },
@@ -192,19 +188,7 @@
           "named": true
         },
         {
-          "type": "data",
-          "named": true
-        },
-        {
-          "type": "data_signature",
-          "named": true
-        },
-        {
           "type": "expr",
-          "named": true
-        },
-        {
-          "type": "fields",
           "named": true
         },
         {
@@ -212,11 +196,11 @@
           "named": true
         },
         {
-          "type": "function",
+          "type": "id",
           "named": true
         },
         {
-          "type": "id",
+          "type": "let",
           "named": true
         },
         {
@@ -307,6 +291,37 @@
     }
   },
   {
+    "type": "let",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "data",
+          "named": true
+        },
+        {
+          "type": "data_signature",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "function",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "lhs",
     "named": true,
     "fields": {},
@@ -327,19 +342,7 @@
           "named": true
         },
         {
-          "type": "LetBody",
-          "named": true
-        },
-        {
           "type": "atom",
-          "named": true
-        },
-        {
-          "type": "data",
-          "named": true
-        },
-        {
-          "type": "data_signature",
           "named": true
         },
         {
@@ -347,19 +350,15 @@
           "named": true
         },
         {
-          "type": "fields",
-          "named": true
-        },
-        {
           "type": "forall",
           "named": true
         },
         {
-          "type": "function",
+          "type": "id",
           "named": true
         },
         {
-          "type": "id",
+          "type": "let",
           "named": true
         },
         {
@@ -399,19 +398,7 @@
           "named": true
         },
         {
-          "type": "LetBody",
-          "named": true
-        },
-        {
           "type": "atom",
-          "named": true
-        },
-        {
-          "type": "data",
-          "named": true
-        },
-        {
-          "type": "data_signature",
           "named": true
         },
         {
@@ -419,19 +406,15 @@
           "named": true
         },
         {
-          "type": "fields",
-          "named": true
-        },
-        {
           "type": "forall",
           "named": true
         },
         {
-          "type": "function",
+          "type": "id",
           "named": true
         },
         {
-          "type": "id",
+          "type": "let",
           "named": true
         }
       ]
@@ -531,10 +514,6 @@
           "named": true
         },
         {
-          "type": "LetBody",
-          "named": true
-        },
-        {
           "type": "Open",
           "named": true
         },
@@ -575,6 +554,10 @@
           "named": true
         },
         {
+          "type": "let",
+          "named": true
+        },
+        {
           "type": "qid",
           "named": true
         }
@@ -602,10 +585,6 @@
           "named": true
         },
         {
-          "type": "LetBody",
-          "named": true
-        },
-        {
           "type": "atom",
           "named": true
         },
@@ -618,19 +597,7 @@
           "named": true
         },
         {
-          "type": "data",
-          "named": true
-        },
-        {
-          "type": "data_signature",
-          "named": true
-        },
-        {
           "type": "expr",
-          "named": true
-        },
-        {
-          "type": "fields",
           "named": true
         },
         {
@@ -638,11 +605,11 @@
           "named": true
         },
         {
-          "type": "function",
+          "type": "id",
           "named": true
         },
         {
-          "type": "id",
+          "type": "let",
           "named": true
         },
         {
@@ -803,10 +770,6 @@
     "named": false
   },
   {
-    "type": "let",
-    "named": false
-  },
-  {
     "type": "do",
     "named": false
   },
@@ -864,6 +827,10 @@
   },
   {
     "type": "record",
+    "named": false
+  },
+  {
+    "type": "let",
     "named": false
   },
   {
