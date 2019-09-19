@@ -172,14 +172,6 @@
           "named": true
         },
         {
-          "type": "ExtendedOrAbsurdLam",
-          "named": true
-        },
-        {
-          "type": "LamBindings",
-          "named": true
-        },
-        {
           "type": "atom",
           "named": true
         },
@@ -197,6 +189,10 @@
         },
         {
           "type": "id",
+          "named": true
+        },
+        {
+          "type": "lambda",
           "named": true
         },
         {
@@ -291,6 +287,99 @@
     }
   },
   {
+    "type": "lambda",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "lambda_clause",
+          "named": true
+        },
+        {
+          "type": "lambda_clause_absurd",
+          "named": true
+        },
+        {
+          "type": "typed_binding",
+          "named": true
+        },
+        {
+          "type": "untyped_binding",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "lambda_clause",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "CatchallPragma",
+          "named": true
+        },
+        {
+          "type": "atom",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "lambda_clause_absurd",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "CatchallPragma",
+          "named": true
+        },
+        {
+          "type": "DoBlock",
+          "named": true
+        },
+        {
+          "type": "atom",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "forall",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "lambda",
+          "named": true
+        },
+        {
+          "type": "let",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "let",
     "named": true,
     "fields": {},
@@ -334,14 +423,6 @@
           "named": true
         },
         {
-          "type": "ExtendedOrAbsurdLam",
-          "named": true
-        },
-        {
-          "type": "LamBindings",
-          "named": true
-        },
-        {
           "type": "atom",
           "named": true
         },
@@ -355,6 +436,10 @@
         },
         {
           "type": "id",
+          "named": true
+        },
+        {
+          "type": "lambda",
           "named": true
         },
         {
@@ -390,14 +475,6 @@
           "named": true
         },
         {
-          "type": "ExtendedOrAbsurdLam",
-          "named": true
-        },
-        {
-          "type": "LamBindings",
-          "named": true
-        },
-        {
           "type": "atom",
           "named": true
         },
@@ -411,6 +488,10 @@
         },
         {
           "type": "id",
+          "named": true
+        },
+        {
+          "type": "lambda",
           "named": true
         },
         {
@@ -506,14 +587,6 @@
           "named": true
         },
         {
-          "type": "ExtendedOrAbsurdLam",
-          "named": true
-        },
-        {
-          "type": "LamBindings",
-          "named": true
-        },
-        {
           "type": "Open",
           "named": true
         },
@@ -554,6 +627,10 @@
           "named": true
         },
         {
+          "type": "lambda",
+          "named": true
+        },
+        {
           "type": "let",
           "named": true
         },
@@ -574,14 +651,6 @@
       "types": [
         {
           "type": "DoBlock",
-          "named": true
-        },
-        {
-          "type": "ExtendedOrAbsurdLam",
-          "named": true
-        },
-        {
-          "type": "LamBindings",
           "named": true
         },
         {
@@ -606,6 +675,10 @@
         },
         {
           "type": "id",
+          "named": true
+        },
+        {
+          "type": "lambda",
           "named": true
         },
         {
@@ -834,6 +907,10 @@
     "named": false
   },
   {
+    "type": ";",
+    "named": false
+  },
+  {
     "type": "RecordAssignments",
     "named": true
   },
@@ -858,19 +935,11 @@
     "named": true
   },
   {
-    "type": "LamBindings",
-    "named": true
-  },
-  {
-    "type": "ExtendedOrAbsurdLam",
-    "named": true
-  },
-  {
-    "type": "LetBody",
-    "named": true
-  },
-  {
     "type": "DoBlock",
+    "named": true
+  },
+  {
+    "type": "CatchallPragma",
     "named": true
   }
 ]

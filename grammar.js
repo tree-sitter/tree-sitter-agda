@@ -233,8 +233,8 @@ module.exports = grammar({
 
     // Expr
     _expr2: $ => choice(
-      seq($._LAMBDA, $.LamBindings, $.expr),
-      $.ExtendedOrAbsurdLam,
+      $.lambda,
+      alias($.lambda_extended_or_absurd, $.lambda),
       $.forall,
       $.let,
       seq('do', $.DoBlock),
@@ -303,6 +303,68 @@ module.exports = grammar({
       $.expr
     ),
 
+    // LamBindings
+    lambda: $ => seq(
+      $._LAMBDA,
+      $._lambda_bindings,
+      $._ARROW,
+      $.expr
+    ),
+
+    // LamBinds
+    _lambda_bindings: $ => seq(
+      repeat($._typed_untyped_binding),
+      choice(
+        $._typed_untyped_binding,
+        seq('(', ')'),
+        seq('{', '}'),
+        seq('{{', '}}'),
+        seq('⦃', '⦄'),
+      ),
+    ),
+
+    // ExtendedOrAbsurdLam
+    lambda_extended_or_absurd: $ => seq(
+      $._LAMBDA,
+      choice(
+        // LamClauses (single non absurd lambda clause)
+        brace($.lambda_clause),
+        // LamClauses
+        brace($._lambda_clauses),
+        // LamWhereClauses
+        seq('where', $._lambda_clauses),
+        // AbsurdLamBindings
+        $._lambda_bindings,
+      )
+    ),
+
+    // bunch of `$._lambda_clause_maybe_absurd` sep by ';'
+    _lambda_clauses: $ => prec.left(seq(
+      repeat(seq($._lambda_clause_maybe_absurd, ';')),
+      $._lambda_clause_maybe_absurd
+    )),
+
+    // AbsurdLamBindings | AbsurdLamClause
+    _lambda_clause_maybe_absurd: $ => prec.left(choice(
+      $.lambda_clause_absurd,
+      $.lambda_clause,
+    )),
+
+    // AbsurdLamClause
+    lambda_clause_absurd: $ => seq(
+      optional($.CatchallPragma),
+      $._application,
+    ),
+
+    // NonAbsurdLamClause
+    lambda_clause: $ => seq(
+      optional($.CatchallPragma),
+      optional($._atoms),   // Application3PossiblyEmpty
+      $._ARROW,
+      $.expr,
+    ),
+
+
     ////////////////////////////////////////////////////////////////////////
     // Bindings
     ////////////////////////////////////////////////////////////////////////
@@ -364,17 +426,11 @@ module.exports = grammar({
     // Open
     Open: $ => 'Open',
 
-    // LamBindings
-    LamBindings: $ => 'LamBindings',
-
-    // ExtendedOrAbsurdLam
-    ExtendedOrAbsurdLam: $ => 'ExtendedOrAbsurdLam',
-
-    // LetBody
-    LetBody: $ => 'LetBody',
-
     // DoStmts
     DoBlock: $ => 'DoBlock',
+
+    // CatchallPragma
+    CatchallPragma: $ => 'CatchallPragma',
   }
 });
 
