@@ -4,7 +4,6 @@ Macro
 
 macro
   f : A g
-  f = f g
 
 ---
 

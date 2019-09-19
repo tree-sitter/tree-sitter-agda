@@ -48,6 +48,14 @@
           "named": true
         },
         {
+          "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "primitive",
+          "named": true
+        },
+        {
           "type": "private",
           "named": true
         },
@@ -202,6 +210,14 @@
         },
         {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "primitive",
           "named": true
         },
         {
@@ -439,21 +455,6 @@
     }
   },
   {
-    "type": "ids",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "id",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "infix",
     "named": true,
     "fields": {},
@@ -518,6 +519,14 @@
         },
         {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "primitive",
           "named": true
         },
         {
@@ -686,6 +695,14 @@
           "named": true
         },
         {
+          "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "primitive",
+          "named": true
+        },
+        {
           "type": "private",
           "named": true
         },
@@ -750,6 +767,14 @@
         },
         {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "primitive",
           "named": true
         },
         {
@@ -868,6 +893,14 @@
           "named": true
         },
         {
+          "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "primitive",
+          "named": true
+        },
+        {
           "type": "private",
           "named": true
         },
@@ -954,6 +987,14 @@
           "named": true
         },
         {
+          "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "primitive",
+          "named": true
+        },
+        {
           "type": "private",
           "named": true
         },
@@ -963,6 +1004,92 @@
         },
         {
           "type": "record_signature",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "postulate",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "abstract",
+          "named": true
+        },
+        {
+          "type": "data",
+          "named": true
+        },
+        {
+          "type": "data_signature",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "function",
+          "named": true
+        },
+        {
+          "type": "generalize",
+          "named": true
+        },
+        {
+          "type": "infix",
+          "named": true
+        },
+        {
+          "type": "instance",
+          "named": true
+        },
+        {
+          "type": "macro",
+          "named": true
+        },
+        {
+          "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "primitive",
+          "named": true
+        },
+        {
+          "type": "private",
+          "named": true
+        },
+        {
+          "type": "record",
+          "named": true
+        },
+        {
+          "type": "record_signature",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "primitive",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "type_signature",
           "named": true
         }
       ]
@@ -1014,6 +1141,14 @@
         },
         {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "primitive",
           "named": true
         },
         {
@@ -1202,6 +1337,14 @@
           "named": true
         },
         {
+          "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "primitive",
+          "named": true
+        },
+        {
           "type": "private",
           "named": true
         },
@@ -1364,10 +1507,6 @@
           "named": true
         },
         {
-          "type": "ids",
-          "named": true
-        },
-        {
           "type": "signature",
           "named": true
         }
@@ -1420,6 +1559,14 @@
         },
         {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "primitive",
           "named": true
         },
         {
@@ -1492,6 +1639,25 @@
     "type": "string",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "type_signature",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "typed_binding",
@@ -1575,6 +1741,14 @@
         },
         {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "primitive",
           "named": true
         },
         {
@@ -1697,6 +1871,14 @@
         },
         {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "primitive",
           "named": true
         },
         {
@@ -1831,6 +2013,14 @@
   },
   {
     "type": "macro",
+    "named": false
+  },
+  {
+    "type": "postulate",
+    "named": false
+  },
+  {
+    "type": "primitive",
     "named": false
   },
   {

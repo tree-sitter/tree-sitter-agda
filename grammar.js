@@ -72,6 +72,8 @@ module.exports = grammar({
         $.private,
         $.instance,
         $.macro,
+        $.postulate,
+        $.primitive,
     ),
 
     ////////////////////////////////////////////////////////////////////////
@@ -292,6 +294,34 @@ module.exports = grammar({
     ),
 
     ////////////////////////////////////////////////////////////////////////
+    // Declaration: Postulate
+    ////////////////////////////////////////////////////////////////////////
+
+    postulate: $ => seq(
+      'postulate',
+      optional($._declaration_block)
+    ),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Declaration: Primitive
+    ////////////////////////////////////////////////////////////////////////
+
+    primitive: $ => seq(
+      'primitive',
+      optional($._type_signature_block)
+    ),
+
+    // TypeSignatures
+    _type_signature_block: $ => block($, $.type_signature),
+
+    // TypeSigs
+    type_signature: $ => seq(
+      $._ids,
+      ':',
+      $.expr
+    ),
+
+    ////////////////////////////////////////////////////////////////////////
     // Names
     ////////////////////////////////////////////////////////////////////////
 
@@ -305,7 +335,7 @@ module.exports = grammar({
     bid: $ => alias(choice('_', $.id), 'bid'),
 
     // SpaceIds
-    ids: $ => repeat1($.id),
+    _ids: $ => repeat1($.id),
 
     // MaybeDottedId
     _maybe_dotted_id: $ => maybeDotted($.id),
@@ -319,11 +349,11 @@ module.exports = grammar({
       brace($._maybe_dotted_ids),
       brace_double($._maybe_dotted_ids),
 
-      seq('.', brace($.ids)),
-      seq('.', brace_double($.ids)),
+      seq('.', brace($._ids)),
+      seq('.', brace_double($._ids)),
 
-      seq('..', brace($.ids)),
-      seq('..', brace_double($.ids)),
+      seq('..', brace($._ids)),
+      seq('..', brace_double($._ids)),
     ),
 
     // CommaBIds / CommaBIdAndAbsurds
