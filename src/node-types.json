@@ -48,6 +48,10 @@
           "named": true
         },
         {
+          "type": "open",
+          "named": true
+        },
+        {
           "type": "postulate",
           "named": true
         },
@@ -210,6 +214,10 @@
         },
         {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "open",
           "named": true
         },
         {
@@ -455,6 +463,25 @@
     }
   },
   {
+    "type": "import_directive",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "renaming",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "infix",
     "named": true,
     "fields": {},
@@ -519,6 +546,10 @@
         },
         {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "open",
           "named": true
         },
         {
@@ -695,6 +726,10 @@
           "named": true
         },
         {
+          "type": "open",
+          "named": true
+        },
+        {
           "type": "postulate",
           "named": true
         },
@@ -767,6 +802,10 @@
         },
         {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "open",
           "named": true
         },
         {
@@ -893,6 +932,10 @@
           "named": true
         },
         {
+          "type": "open",
+          "named": true
+        },
+        {
           "type": "postulate",
           "named": true
         },
@@ -916,7 +959,7 @@
     }
   },
   {
-    "type": "module_ssignment",
+    "type": "module_assignment",
     "named": true,
     "fields": {},
     "children": {
@@ -924,15 +967,15 @@
       "required": true,
       "types": [
         {
-          "type": "ImportDirective",
+          "type": "atom",
           "named": true
         },
         {
-          "type": "ModuleName",
+          "type": "import_directive",
           "named": true
         },
         {
-          "type": "OpenArgs",
+          "type": "qid",
           "named": true
         }
       ]
@@ -987,6 +1030,10 @@
           "named": true
         },
         {
+          "type": "open",
+          "named": true
+        },
+        {
           "type": "postulate",
           "named": true
         },
@@ -1004,6 +1051,29 @@
         },
         {
           "type": "record_signature",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "open",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "atom",
+          "named": true
+        },
+        {
+          "type": "import_directive",
+          "named": true
+        },
+        {
+          "type": "qid",
           "named": true
         }
       ]
@@ -1055,6 +1125,10 @@
         },
         {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "open",
           "named": true
         },
         {
@@ -1141,6 +1215,10 @@
         },
         {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "open",
           "named": true
         },
         {
@@ -1337,6 +1415,10 @@
           "named": true
         },
         {
+          "type": "open",
+          "named": true
+        },
+        {
           "type": "postulate",
           "named": true
         },
@@ -1427,6 +1509,21 @@
         },
         {
           "type": "untyped_binding",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "renaming",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "id",
           "named": true
         }
       ]
@@ -1559,6 +1656,10 @@
         },
         {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "open",
           "named": true
         },
         {
@@ -1744,6 +1845,10 @@
           "named": true
         },
         {
+          "type": "open",
+          "named": true
+        },
+        {
           "type": "postulate",
           "named": true
         },
@@ -1871,6 +1976,10 @@
         },
         {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "open",
           "named": true
         },
         {
@@ -2024,6 +2133,46 @@
     "named": false
   },
   {
+    "type": "import",
+    "named": false
+  },
+  {
+    "type": "open",
+    "named": false
+  },
+  {
+    "type": "public",
+    "named": false
+  },
+  {
+    "type": "using",
+    "named": false
+  },
+  {
+    "type": "(",
+    "named": false
+  },
+  {
+    "type": ")",
+    "named": false
+  },
+  {
+    "type": "hiding",
+    "named": false
+  },
+  {
+    "type": "renaming",
+    "named": false
+  },
+  {
+    "type": ";",
+    "named": false
+  },
+  {
+    "type": "to",
+    "named": false
+  },
+  {
     "type": "id",
     "named": true
   },
@@ -2069,14 +2218,6 @@
   },
   {
     "type": "|",
-    "named": false
-  },
-  {
-    "type": "(",
-    "named": false
-  },
-  {
-    "type": ")",
     "named": false
   },
   {
@@ -2136,24 +2277,8 @@
     "named": false
   },
   {
-    "type": ";",
-    "named": false
-  },
-  {
     "type": "do",
     "named": false
-  },
-  {
-    "type": "ModuleName",
-    "named": true
-  },
-  {
-    "type": "OpenArgs",
-    "named": true
-  },
-  {
-    "type": "ImportDirective",
-    "named": true
   },
   {
     "type": "SetN",

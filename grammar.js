@@ -74,6 +74,7 @@ module.exports = grammar({
         $.macro,
         $.postulate,
         $.primitive,
+        $.open,
     ),
 
     ////////////////////////////////////////////////////////////////////////
@@ -320,6 +321,56 @@ module.exports = grammar({
       ':',
       $.expr
     ),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Declaration: Open
+    ////////////////////////////////////////////////////////////////////////
+
+    open: $ => seq(
+      choice(
+        seq(        'import'),
+        seq('open', 'import'),
+        seq('open'          ),
+      ),
+      $._module_name,
+      optional($._open_args),
+      optional($._import_directives),
+    ),
+
+    // ModuleName
+    _module_name: $ => $.qid,
+
+    // OpenArgs
+    _open_args: $ => repeat1($.atom),
+
+    // ImportDirectives and shit
+    _import_directives: $ => repeat1($.import_directive),
+    import_directive: $ => choice(
+      'public',
+      seq('using', '(', $._comma_import_names ,')'),
+      seq('hiding', '(', $._comma_import_names ,')'),
+      seq('renaming', '(', sepR(';', $.renaming) ,')'),
+      seq('using', '(' ,')'),
+      seq('hiding', '(' ,')'),
+      seq('renaming', '(' ,')')
+    ),
+
+    // CommaImportNames
+    _comma_import_names: $ => sepR(';', $._import_name),
+
+    // Renaming
+    renaming: $ => seq(
+        optional('module'),
+        $.id,
+        'to',
+        $.id
+    ),
+
+    // ImportName
+    _import_name: $ => seq(
+        optional('module'), $.id
+    ),
+
 
     ////////////////////////////////////////////////////////////////////////
     // Names
@@ -618,7 +669,7 @@ module.exports = grammar({
     // RecordAssignment
     _record_assignment: $ => choice(
       $.field_assignment,
-      $.module_ssignment,
+      $.module_assignment,
     ),
 
     // FieldAssignment
@@ -629,21 +680,12 @@ module.exports = grammar({
     ),
 
     // ModuleAssignment
-    module_ssignment: $ => seq(
-      $.ModuleName,
-      $.OpenArgs,
-      $.ImportDirective,
+    module_assignment: $ => seq(
+      $._module_name,
+      optional($._open_args),
+      optional($._import_directives),
     ),
 
-
-    // ModuleName
-    ModuleName: $ => 'ModuleName',
-
-    // OpenArgs
-    OpenArgs: $ => 'OpenArgs',
-
-    // ImportDirective
-    ImportDirective: $ => 'ImportDirective',
 
     ////////////////////////////////////////////////////////////////////////
     // Bindings

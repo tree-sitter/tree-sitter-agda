@@ -51,12 +51,12 @@ record Pair (A B : Set) : Set where
             (record_induction)
             (record_eta)
             (instance
-                (function_clause
-                    (lhs (function_name (qid)))
+                (function
+                    (lhs (atom (qid)))
                     (rhs (expr (atom (qid))))))
-            (field
-                (type_sig (field_name) (expr (atom (qid))))
-                (type_sig (field_name) (expr (atom (qid))))))))
+            (fields
+                (signature (id) (expr (atom (qid))))
+                (signature (id) (expr (atom (qid))))))))
 
 ==================
 Directives with declarations II
@@ -85,6 +85,6 @@ record Pair (A B : Set) : Set where
             (record_constructor_instance (id))
             (comment)
             (instance
-                (function_clause
+                (function
                     (lhs (atom (qid)))
                     (rhs (expr (atom (qid)))))))))
