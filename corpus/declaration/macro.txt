@@ -1,0 +1,19 @@
+==================
+Macro
+==================
+
+macro
+  f : A g
+  f = f g
+
+---
+
+(source_file
+  (macro
+    (function
+      (lhs
+        (atom (qid)))
+      (rhs
+        (expr (atom (qid)) (atom (qid)))))
+  )
+)

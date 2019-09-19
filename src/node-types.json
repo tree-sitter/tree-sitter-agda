@@ -36,7 +36,19 @@
           "named": true
         },
         {
+          "type": "instance",
+          "named": true
+        },
+        {
+          "type": "macro",
+          "named": true
+        },
+        {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "private",
           "named": true
         },
         {
@@ -181,7 +193,19 @@
           "named": true
         },
         {
+          "type": "instance",
+          "named": true
+        },
+        {
+          "type": "macro",
+          "named": true
+        },
+        {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "private",
           "named": true
         },
         {
@@ -449,6 +473,69 @@
     }
   },
   {
+    "type": "instance",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "abstract",
+          "named": true
+        },
+        {
+          "type": "data",
+          "named": true
+        },
+        {
+          "type": "data_signature",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "function",
+          "named": true
+        },
+        {
+          "type": "generalize",
+          "named": true
+        },
+        {
+          "type": "infix",
+          "named": true
+        },
+        {
+          "type": "instance",
+          "named": true
+        },
+        {
+          "type": "macro",
+          "named": true
+        },
+        {
+          "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "private",
+          "named": true
+        },
+        {
+          "type": "record",
+          "named": true
+        },
+        {
+          "type": "record_signature",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "integer",
     "named": true,
     "fields": {}
@@ -587,7 +674,19 @@
           "named": true
         },
         {
+          "type": "instance",
+          "named": true
+        },
+        {
+          "type": "macro",
+          "named": true
+        },
+        {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "private",
           "named": true
         },
         {
@@ -642,7 +741,19 @@
           "named": true
         },
         {
+          "type": "instance",
+          "named": true
+        },
+        {
+          "type": "macro",
+          "named": true
+        },
+        {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "private",
           "named": true
         },
         {
@@ -709,6 +820,69 @@
     "fields": {}
   },
   {
+    "type": "macro",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "abstract",
+          "named": true
+        },
+        {
+          "type": "data",
+          "named": true
+        },
+        {
+          "type": "data_signature",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "function",
+          "named": true
+        },
+        {
+          "type": "generalize",
+          "named": true
+        },
+        {
+          "type": "infix",
+          "named": true
+        },
+        {
+          "type": "instance",
+          "named": true
+        },
+        {
+          "type": "macro",
+          "named": true
+        },
+        {
+          "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "private",
+          "named": true
+        },
+        {
+          "type": "record",
+          "named": true
+        },
+        {
+          "type": "record_signature",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "module_ssignment",
     "named": true,
     "fields": {},
@@ -768,7 +942,82 @@
           "named": true
         },
         {
+          "type": "instance",
+          "named": true
+        },
+        {
+          "type": "macro",
+          "named": true
+        },
+        {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "private",
+          "named": true
+        },
+        {
+          "type": "record",
+          "named": true
+        },
+        {
+          "type": "record_signature",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "private",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "abstract",
+          "named": true
+        },
+        {
+          "type": "data",
+          "named": true
+        },
+        {
+          "type": "data_signature",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "function",
+          "named": true
+        },
+        {
+          "type": "generalize",
+          "named": true
+        },
+        {
+          "type": "infix",
+          "named": true
+        },
+        {
+          "type": "instance",
+          "named": true
+        },
+        {
+          "type": "macro",
+          "named": true
+        },
+        {
+          "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "private",
           "named": true
         },
         {
@@ -941,7 +1190,19 @@
           "named": true
         },
         {
+          "type": "instance",
+          "named": true
+        },
+        {
+          "type": "macro",
+          "named": true
+        },
+        {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "private",
           "named": true
         },
         {
@@ -1150,7 +1411,19 @@
           "named": true
         },
         {
+          "type": "instance",
+          "named": true
+        },
+        {
+          "type": "macro",
+          "named": true
+        },
+        {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "private",
           "named": true
         },
         {
@@ -1285,6 +1558,10 @@
           "named": true
         },
         {
+          "type": "instance",
+          "named": true
+        },
+        {
           "type": "lambda",
           "named": true
         },
@@ -1293,7 +1570,15 @@
           "named": true
         },
         {
+          "type": "macro",
+          "named": true
+        },
+        {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "private",
           "named": true
         },
         {
@@ -1403,7 +1688,19 @@
           "named": true
         },
         {
+          "type": "instance",
+          "named": true
+        },
+        {
+          "type": "macro",
+          "named": true
+        },
+        {
           "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "private",
           "named": true
         },
         {
@@ -1526,6 +1823,14 @@
   },
   {
     "type": "abstract",
+    "named": false
+  },
+  {
+    "type": "private",
+    "named": false
+  },
+  {
+    "type": "macro",
     "named": false
   },
   {
