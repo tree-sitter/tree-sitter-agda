@@ -339,3 +339,108 @@ f x = let y = x
                                 (rhs
                                     (expr (atom (qid)))))
                             (expr (atom (qid))))))))))
+==================
+Single line without body
+==================
+
+f x = let y = x
+
+---
+
+(source_file
+    (function
+        (lhs
+            (atom (qid))
+            (atom (qid)))
+        (rhs
+            (expr
+                (let
+                    (function
+                        (lhs
+                            (atom (qid)))
+                        (rhs
+                            (expr
+                                (atom (qid))))))))))
+
+==================
+Single line without body (indent)
+==================
+
+f x = let
+        y = x
+
+---
+
+(source_file
+    (function
+        (lhs
+            (atom (qid))
+            (atom (qid)))
+        (rhs
+            (expr
+                (let
+                    (function
+                        (lhs
+                            (atom (qid)))
+                        (rhs
+                            (expr
+                                (atom (qid))))))))))
+==================
+Multiline without body
+==================
+
+f x = let y = x
+          y = x
+
+---
+
+(source_file
+    (function
+        (lhs
+            (atom (qid))
+            (atom (qid)))
+        (rhs
+            (expr
+                (let
+                    (function
+                        (lhs
+                            (atom (qid)))
+                        (rhs
+                            (expr
+                                (atom (qid)))))
+                    (function
+                        (lhs
+                            (atom (qid)))
+                        (rhs
+                            (expr
+                                (atom (qid))))))))))
+==================
+Multiline without body (indent)
+==================
+
+f x = let
+          y = x
+          y = x
+
+---
+
+(source_file
+    (function
+        (lhs
+            (atom (qid))
+            (atom (qid)))
+        (rhs
+            (expr
+                (let
+                    (function
+                        (lhs
+                            (atom (qid)))
+                        (rhs
+                            (expr
+                                (atom (qid)))))
+                    (function
+                        (lhs
+                            (atom (qid)))
+                        (rhs
+                            (expr
+                                (atom (qid))))))))))
