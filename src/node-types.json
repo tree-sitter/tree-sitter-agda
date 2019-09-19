@@ -122,6 +122,10 @@
           "named": true
         },
         {
+          "type": "record_signature",
+          "named": true
+        },
+        {
           "type": "typed_binding",
           "named": true
         },
@@ -472,6 +476,10 @@
         {
           "type": "record",
           "named": true
+        },
+        {
+          "type": "record_signature",
+          "named": true
         }
       ]
     }
@@ -506,6 +514,10 @@
         },
         {
           "type": "record",
+          "named": true
+        },
+        {
+          "type": "record_signature",
           "named": true
         }
       ]
@@ -747,6 +759,10 @@
         {
           "type": "record_induction",
           "named": true
+        },
+        {
+          "type": "record_signature",
+          "named": true
         }
       ]
     }
@@ -760,6 +776,57 @@
     "type": "record_induction",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "record_signature",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "PropN",
+          "named": true
+        },
+        {
+          "type": "SetN",
+          "named": true
+        },
+        {
+          "type": "atom",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        },
+        {
+          "type": "qid",
+          "named": true
+        },
+        {
+          "type": "record_assignments",
+          "named": true
+        },
+        {
+          "type": "typed_binding",
+          "named": true
+        },
+        {
+          "type": "untyped_binding",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "rewrite_equations",
@@ -872,6 +939,10 @@
         },
         {
           "type": "record",
+          "named": true
+        },
+        {
+          "type": "record_signature",
           "named": true
         }
       ]
@@ -1000,6 +1071,10 @@
         {
           "type": "record",
           "named": true
+        },
+        {
+          "type": "record_signature",
+          "named": true
         }
       ]
     }
@@ -1085,6 +1160,10 @@
         },
         {
           "type": "record",
+          "named": true
+        },
+        {
+          "type": "record_signature",
           "named": true
         }
       ]

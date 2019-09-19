@@ -133,6 +133,10 @@
         {
           "type": "SYMBOL",
           "name": "record"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "record_signature"
         }
       ]
     },
@@ -696,6 +700,39 @@
         {
           "type": "STRING",
           "value": "no-eta-equality"
+        }
+      ]
+    },
+    "record_signature": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "record"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_atom_no_curly"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_typed_untyped_bindings"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": ":"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expr"
         }
       ]
     },

@@ -64,6 +64,7 @@ module.exports = grammar({
         $.data,
         $.data_signature,
         $.record,
+        $.record_signature,
     ),
 
     ////////////////////////////////////////////////////////////////////////
@@ -206,6 +207,18 @@ module.exports = grammar({
         'no-eta-equality'
     ),
 
+
+    ////////////////////////////////////////////////////////////////////////
+    // Declaration: Record Signature
+    ////////////////////////////////////////////////////////////////////////
+
+    record_signature: $ => seq(
+      'record',
+      $._atom_no_curly,
+      optional($._typed_untyped_bindings),
+      ':',
+      $.expr
+    ),
 
     ////////////////////////////////////////////////////////////////////////
     // Names

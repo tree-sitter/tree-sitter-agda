@@ -88,20 +88,3 @@ record Pair (A B : Set) : Set where
                 (function_clause
                     (lhs (atom (qid)))
                     (rhs (expr (atom (qid)))))))))
-
-==================
-Signature only (found in mutual blocks)
-==================
-
-record Pair (A B : Set) : Set
-
----
-
-(source_file
-    (record_signature_only
-        (qid)
-        (typed_binding
-            (atom (qid))
-            (atom (qid))
-            (expr (atom)))
-        (expr (atom))))
