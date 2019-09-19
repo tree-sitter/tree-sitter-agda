@@ -68,6 +68,7 @@ module.exports = grammar({
         $.infix,
         $.generalize,
         $.mutual,
+        $.abstract,
     ),
 
     ////////////////////////////////////////////////////////////////////////
@@ -248,6 +249,15 @@ module.exports = grammar({
 
     mutual: $ => seq(
       'mutual',
+      optional($._declaration_block)
+    ),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Declaration: Abstract
+    ////////////////////////////////////////////////////////////////////////
+
+    abstract: $ => seq(
+      'abstract',
       optional($._declaration_block)
     ),
 

@@ -149,6 +149,10 @@
         {
           "type": "SYMBOL",
           "name": "mutual"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "abstract"
         }
       ]
     },
@@ -808,6 +812,27 @@
         {
           "type": "STRING",
           "value": "mutual"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_declaration_block"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "abstract": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "abstract"
         },
         {
           "type": "CHOICE",

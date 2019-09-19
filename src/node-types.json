@@ -1,5 +1,56 @@
 [
   {
+    "type": "abstract",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "abstract",
+          "named": true
+        },
+        {
+          "type": "data",
+          "named": true
+        },
+        {
+          "type": "data_signature",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "function",
+          "named": true
+        },
+        {
+          "type": "generalize",
+          "named": true
+        },
+        {
+          "type": "infix",
+          "named": true
+        },
+        {
+          "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "record",
+          "named": true
+        },
+        {
+          "type": "record_signature",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "atom",
     "named": true,
     "fields": {},
@@ -93,6 +144,10 @@
       "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "abstract",
+          "named": true
+        },
         {
           "type": "data",
           "named": true
@@ -500,6 +555,10 @@
       "required": true,
       "types": [
         {
+          "type": "abstract",
+          "named": true
+        },
+        {
           "type": "data",
           "named": true
         },
@@ -550,6 +609,10 @@
       "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "abstract",
+          "named": true
+        },
         {
           "type": "data",
           "named": true
@@ -676,6 +739,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "abstract",
+          "named": true
+        },
         {
           "type": "data",
           "named": true
@@ -845,6 +912,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "abstract",
+          "named": true
+        },
         {
           "type": "data",
           "named": true
@@ -1051,6 +1122,10 @@
       "required": false,
       "types": [
         {
+          "type": "abstract",
+          "named": true
+        },
+        {
           "type": "data",
           "named": true
         },
@@ -1155,6 +1230,10 @@
       "types": [
         {
           "type": "Open",
+          "named": true
+        },
+        {
+          "type": "abstract",
           "named": true
         },
         {
@@ -1291,6 +1370,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "abstract",
+          "named": true
+        },
         {
           "type": "data",
           "named": true
@@ -1439,6 +1522,10 @@
   },
   {
     "type": "mutual",
+    "named": false
+  },
+  {
+    "type": "abstract",
     "named": false
   },
   {
