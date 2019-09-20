@@ -2333,8 +2333,13 @@
           "name": "_expr2_without_let"
         },
         {
-          "type": "SYMBOL",
-          "name": "let_in_do"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "let_in_do"
+          },
+          "named": true,
+          "value": "let"
         }
       ]
     },
@@ -2689,32 +2694,17 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "_newline"
-                  }
-                ]
-              },
-              {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "_newline"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "_let_body"
-                  }
-                ]
-              },
-              {
                 "type": "SYMBOL",
-                "name": "_let_body"
+                "name": "_newline"
+              },
+              {
+                "type": "BLANK"
               }
             ]
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_let_body"
           }
         ]
       }

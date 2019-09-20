@@ -769,89 +769,6 @@
     }
   },
   {
-    "type": "let_in_do",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "abstract",
-          "named": true
-        },
-        {
-          "type": "data",
-          "named": true
-        },
-        {
-          "type": "data_signature",
-          "named": true
-        },
-        {
-          "type": "expr",
-          "named": true
-        },
-        {
-          "type": "fields",
-          "named": true
-        },
-        {
-          "type": "function",
-          "named": true
-        },
-        {
-          "type": "generalize",
-          "named": true
-        },
-        {
-          "type": "infix",
-          "named": true
-        },
-        {
-          "type": "instance",
-          "named": true
-        },
-        {
-          "type": "macro",
-          "named": true
-        },
-        {
-          "type": "module_macro",
-          "named": true
-        },
-        {
-          "type": "mutual",
-          "named": true
-        },
-        {
-          "type": "open",
-          "named": true
-        },
-        {
-          "type": "postulate",
-          "named": true
-        },
-        {
-          "type": "primitive",
-          "named": true
-        },
-        {
-          "type": "private",
-          "named": true
-        },
-        {
-          "type": "record",
-          "named": true
-        },
-        {
-          "type": "record_signature",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "lhs",
     "named": true,
     "fields": {},
@@ -1827,10 +1744,6 @@
           "named": true
         },
         {
-          "type": "let_in_do",
-          "named": true
-        },
-        {
           "type": "typed_binding",
           "named": true
         }
@@ -2158,7 +2071,7 @@
     "named": false
   },
   {
-    "type": "module!",
+    "type": "module",
     "named": false
   },
   {
@@ -2274,11 +2187,11 @@
     "named": false
   },
   {
-    "type": "module",
+    "type": "to",
     "named": false
   },
   {
-    "type": "to",
+    "type": "module!",
     "named": false
   },
   {

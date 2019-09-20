@@ -100,7 +100,7 @@ f = do
         (rhs
             (expr
                 (do
-                    (stmt (let_in_do
+                    (stmt (let
                         (function
                             (lhs (atom (qid)))
                             (rhs (expr (atom (qid)))))))
@@ -123,7 +123,7 @@ f = do
         (rhs
             (expr
                 (do
-                    (stmt (let_in_do
+                    (stmt (let
                         (function
                             (lhs (atom (qid)))
                             (rhs (expr (atom (qid)))))

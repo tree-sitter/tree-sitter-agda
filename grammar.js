@@ -527,7 +527,7 @@ module.exports = grammar({
     ),
     _expr2_stmt: $ => choice(
       $._expr2_without_let,
-      $.let_in_do,
+      alias($.let_in_do, $.let),
     ),
 
     // Expr3
@@ -573,16 +573,10 @@ module.exports = grammar({
       optional($._indent),
       repeat(seq($._declaration, $._newline)),
       $._declaration,
-      //
-      choice(
-        // covers the part without $._let_body
-        seq($._newline),
-        // seq($._newline, $._dedent),
-        // covers the newline between declarations and $._let_body
-        seq($._newline, $._let_body),
-        // covers the rest of the cases
-        $._let_body,
-      )
+      // in case that there's a newline between declarations and $._let_body
+      optional($._newline),
+
+      $._let_body
     )),
 
     // special `let...in` in do statements
