@@ -64,6 +64,10 @@
           "named": true
         },
         {
+          "type": "pragma",
+          "named": true
+        },
+        {
           "type": "primitive",
           "named": true
         },
@@ -169,6 +173,40 @@
     "fields": {}
   },
   {
+    "type": "builtin_pragma",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "compile_pragma",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "foreign_code",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "data",
     "named": true,
     "fields": {},
@@ -182,6 +220,10 @@
         },
         {
           "type": "data",
+          "named": true
+        },
+        {
+          "type": "data_name",
           "named": true
         },
         {
@@ -202,10 +244,6 @@
         },
         {
           "type": "generalize",
-          "named": true
-        },
-        {
-          "type": "id",
           "named": true
         },
         {
@@ -241,6 +279,10 @@
           "named": true
         },
         {
+          "type": "pragma",
+          "named": true
+        },
+        {
           "type": "primitive",
           "named": true
         },
@@ -268,6 +310,11 @@
     }
   },
   {
+    "type": "data_name",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "data_signature",
     "named": true,
     "fields": {},
@@ -276,11 +323,11 @@
       "required": true,
       "types": [
         {
-          "type": "expr",
+          "type": "data_name",
           "named": true
         },
         {
-          "type": "id",
+          "type": "expr",
           "named": true
         },
         {
@@ -437,6 +484,40 @@
     }
   },
   {
+    "type": "foreign_code",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "foreign_code",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "foreign_pragma",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "foreign_code",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "function",
     "named": true,
     "fields": {},
@@ -578,6 +659,10 @@
         },
         {
           "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "pragma",
           "named": true
         },
         {
@@ -766,6 +851,10 @@
           "named": true
         },
         {
+          "type": "pragma",
+          "named": true
+        },
+        {
           "type": "primitive",
           "named": true
         },
@@ -901,6 +990,10 @@
           "named": true
         },
         {
+          "type": "pragma",
+          "named": true
+        },
+        {
           "type": "primitive",
           "named": true
         },
@@ -985,6 +1078,10 @@
         },
         {
           "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "pragma",
           "named": true
         },
         {
@@ -1157,6 +1254,10 @@
           "named": true
         },
         {
+          "type": "pragma",
+          "named": true
+        },
+        {
           "type": "primitive",
           "named": true
         },
@@ -1263,6 +1364,10 @@
           "named": true
         },
         {
+          "type": "pragma",
+          "named": true
+        },
+        {
           "type": "primitive",
           "named": true
         },
@@ -1358,6 +1463,10 @@
         },
         {
           "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "pragma",
           "named": true
         },
         {
@@ -1581,6 +1690,10 @@
           "named": true
         },
         {
+          "type": "pragma",
+          "named": true
+        },
+        {
           "type": "primitive",
           "named": true
         },
@@ -1731,6 +1844,21 @@
     }
   },
   {
+    "type": "rewrite_pragma",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "rhs",
     "named": true,
     "fields": {},
@@ -1834,6 +1962,10 @@
         },
         {
           "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "pragma",
           "named": true
         },
         {
@@ -2027,6 +2159,10 @@
           "named": true
         },
         {
+          "type": "pragma",
+          "named": true
+        },
+        {
           "type": "primitive",
           "named": true
         },
@@ -2166,6 +2302,10 @@
         },
         {
           "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "pragma",
           "named": true
         },
         {
@@ -2368,6 +2508,34 @@
   },
   {
     "type": "_",
+    "named": false
+  },
+  {
+    "type": "pragma",
+    "named": true
+  },
+  {
+    "type": "BUILTIN",
+    "named": false
+  },
+  {
+    "type": "REWRITE",
+    "named": false
+  },
+  {
+    "type": "{-#",
+    "named": false
+  },
+  {
+    "type": "#-}",
+    "named": false
+  },
+  {
+    "type": "FOREIGN",
+    "named": false
+  },
+  {
+    "type": "COMPILE",
     "named": false
   },
   {

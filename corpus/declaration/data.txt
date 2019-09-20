@@ -10,7 +10,7 @@ data Nat : Set where
 
 (source_file
     (data
-        (id) (expr (atom))
+        (data_name) (expr (atom))
         (function
             (lhs (atom (qid)))
             (rhs
@@ -34,6 +34,6 @@ data Nat : Set where
 
 (source_file
     (data
-      (id) (expr (atom)))
+      (data_name) (expr (atom)))
     (data
-      (id) (expr (atom))))
+      (data_name) (expr (atom))))

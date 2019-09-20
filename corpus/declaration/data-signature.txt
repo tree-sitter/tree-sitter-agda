@@ -7,4 +7,4 @@ data Nat : Set
 ---
 
 (source_file
-    (data_signature (id) (expr (atom))))
+    (data_signature (data_name) (expr (atom))))

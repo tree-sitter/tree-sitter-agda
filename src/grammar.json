@@ -185,6 +185,10 @@
         {
           "type": "SYMBOL",
           "name": "module"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pragma"
         }
       ]
     },
@@ -470,6 +474,15 @@
         }
       ]
     },
+    "data_name": {
+      "type": "ALIAS",
+      "content": {
+        "type": "SYMBOL",
+        "name": "id"
+      },
+      "named": false,
+      "value": "data_name"
+    },
     "data": {
       "type": "SEQ",
       "members": [
@@ -488,7 +501,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "id"
+          "name": "data_name"
         },
         {
           "type": "CHOICE",
@@ -550,7 +563,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "id"
+          "name": "data_name"
         },
         {
           "type": "CHOICE",
@@ -1572,6 +1585,160 @@
               "type": "BLANK"
             }
           ]
+        }
+      ]
+    },
+    "pragma": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "{-#"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[^#]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "#[^-]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "#\\-[^}]"
+                }
+              ]
+            }
+          },
+          {
+            "type": "STRING",
+            "value": "#-}"
+          }
+        ]
+      }
+    },
+    "builtin_pragma": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "BUILTIN"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "string"
+            },
+            {
+              "type": "STRING",
+              "value": "REWRITE"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string"
+        }
+      ]
+    },
+    "rewrite_pragma": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "REWRITE"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "string"
+          }
+        }
+      ]
+    },
+    "foreign_code": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "string"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "{-#"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "foreign_code"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": "#-}"
+            }
+          ]
+        }
+      ]
+    },
+    "foreign_pragma": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "FOREIGN"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "foreign_code"
+          }
+        }
+      ]
+    },
+    "compile_pragma": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "COMPILE"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "string"
+          }
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "foreign_code"
+          }
         }
       ]
     },
@@ -4811,6 +4978,10 @@
     {
       "type": "SYMBOL",
       "name": "comment"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "pragma"
     },
     {
       "type": "PATTERN",

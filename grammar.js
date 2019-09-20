@@ -23,7 +23,7 @@ module.exports = grammar({
 
     extras: $ => [
         $.comment,
-        // $.pragma,
+        $.pragma,
         /\s|\\n/,
     ],
 
@@ -83,6 +83,8 @@ module.exports = grammar({
         $.open,
         $.module_macro,
         $.module,
+        $.pragma,
+
     ),
 
     ////////////////////////////////////////////////////////////////////////
@@ -160,9 +162,11 @@ module.exports = grammar({
     // Declaration: Data
     ////////////////////////////////////////////////////////////////////////
 
+    data_name: $ => alias($.id, 'data_name'),
+
     data: $ => seq(
       choice('data', 'codata'),
-      $.id,
+      $.data_name,
       optional($._typed_untyped_bindings),
       optional(seq(':', $.expr)),
       'where',
@@ -175,7 +179,7 @@ module.exports = grammar({
 
     data_signature: $ => seq(
       'data',
-      $.id,
+      $.data_name,
       optional($._typed_untyped_bindings),
       ':',
       $.expr,
@@ -420,6 +424,21 @@ module.exports = grammar({
         'where',
         optional($._declaration_block)
     ),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Declaration: Pragma
+    ////////////////////////////////////////////////////////////////////////
+
+    // Pragma / DeclarationPragma
+    pragma: $ => token(seq(
+        '{-#',
+        repeat(choice(
+            /[^#]/,
+            /#[^-]/,
+            /#\-[^}]/,
+        )),
+        '#-}',
+    )),
 
     ////////////////////////////////////////////////////////////////////////
     // Names
