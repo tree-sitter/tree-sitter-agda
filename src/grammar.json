@@ -1379,7 +1379,7 @@
                 },
                 {
                   "type": "STRING",
-                  "value": "module!"
+                  "value": "module"
                 },
                 {
                   "type": "SYMBOL",

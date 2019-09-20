@@ -390,7 +390,7 @@ module.exports = grammar({
     module_macro: $ => seq(
       choice(
         seq('module', $.qid),
-        seq('open', 'module!', $.id),
+        seq('open', 'module', $.id),
       ),
       // optional($._typed_untyped_bindings),
       // '=',

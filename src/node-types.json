@@ -2191,10 +2191,6 @@
     "named": false
   },
   {
-    "type": "module!",
-    "named": false
-  },
-  {
     "type": "{{",
     "named": false
   },

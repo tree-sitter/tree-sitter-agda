@@ -38,6 +38,28 @@ id A a = a
             (expr (atom (qid))))))
 
 ==================
+Body with where clause
+==================
+
+id = a
+  where a = b
+
+---
+
+(source_file
+    (function
+        (lhs
+            (atom (qid)))
+        (rhs
+            (expr (atom (qid))))
+        (where
+          (function
+              (lhs
+                  (atom (qid)))
+              (rhs
+                  (expr (atom (qid))))))))
+
+==================
 Typed bindings
 ==================
 
