@@ -81,7 +81,8 @@ module.exports = grammar({
         $.postulate,
         $.primitive,
         $.open,
-        $.module_macro
+        $.module_macro,
+        $.module,
     ),
 
     ////////////////////////////////////////////////////////////////////////
@@ -345,13 +346,13 @@ module.exports = grammar({
         seq('open', 'import'),
         seq('open'          ),
       ),
-      $._module_name,
+      $.module_name,
       optional($._atoms),
       optional($._import_directives),
     ),
 
     // ModuleName
-    _module_name: $ => $.qid,
+    module_name: $ => prec.left(alias($.qid, 'module_name')),
 
     // ImportDirectives and shit
     _import_directives: $ => repeat1($.import_directive),
@@ -389,8 +390,8 @@ module.exports = grammar({
     // ModuleMacro
     module_macro: $ => seq(
       choice(
-        seq('module', $.qid),
-        seq('open', 'module', $.id),
+        seq('module', alias($.qid, $.module_name)),
+        seq('open', 'module', alias($.qid, $.module_name)),
       ),
       optional($._typed_untyped_bindings),
       '=',
@@ -400,11 +401,24 @@ module.exports = grammar({
 
     // ModuleApplication
     module_application: $ => seq(
-      $._module_name,
+      $.module_name,
       choice(
         prec(1, brace_double($._ELLIPSIS)),
         optional($._atoms),
       ),
+    ),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Declaration: Module
+    ////////////////////////////////////////////////////////////////////////
+
+    // Module
+    module: $ => seq(
+        'module',
+        alias(choice($.qid, '_'), $.module_name),
+        optional($._typed_untyped_bindings),
+        'where',
+        optional($._declaration_block)
     ),
 
     ////////////////////////////////////////////////////////////////////////
@@ -709,7 +723,7 @@ module.exports = grammar({
 
     // ModuleAssignment
     module_assignment: $ => seq(
-      $._module_name,
+      $.module_name,
       optional($._atoms),
       optional($._import_directives),
     ),

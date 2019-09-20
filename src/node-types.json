@@ -44,6 +44,10 @@
           "named": true
         },
         {
+          "type": "module",
+          "named": true
+        },
+        {
           "type": "module_macro",
           "named": true
         },
@@ -214,6 +218,10 @@
         },
         {
           "type": "macro",
+          "named": true
+        },
+        {
+          "type": "module",
           "named": true
         },
         {
@@ -553,6 +561,10 @@
           "named": true
         },
         {
+          "type": "module",
+          "named": true
+        },
+        {
           "type": "module_macro",
           "named": true
         },
@@ -734,6 +746,10 @@
           "named": true
         },
         {
+          "type": "module",
+          "named": true
+        },
+        {
           "type": "module_macro",
           "named": true
         },
@@ -865,6 +881,10 @@
           "named": true
         },
         {
+          "type": "module",
+          "named": true
+        },
+        {
           "type": "module_macro",
           "named": true
         },
@@ -900,6 +920,101 @@
     }
   },
   {
+    "type": "module",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "abstract",
+          "named": true
+        },
+        {
+          "type": "data",
+          "named": true
+        },
+        {
+          "type": "data_signature",
+          "named": true
+        },
+        {
+          "type": "fields",
+          "named": true
+        },
+        {
+          "type": "function",
+          "named": true
+        },
+        {
+          "type": "generalize",
+          "named": true
+        },
+        {
+          "type": "infix",
+          "named": true
+        },
+        {
+          "type": "instance",
+          "named": true
+        },
+        {
+          "type": "macro",
+          "named": true
+        },
+        {
+          "type": "module",
+          "named": true
+        },
+        {
+          "type": "module_macro",
+          "named": true
+        },
+        {
+          "type": "module_name",
+          "named": true
+        },
+        {
+          "type": "mutual",
+          "named": true
+        },
+        {
+          "type": "open",
+          "named": true
+        },
+        {
+          "type": "postulate",
+          "named": true
+        },
+        {
+          "type": "primitive",
+          "named": true
+        },
+        {
+          "type": "private",
+          "named": true
+        },
+        {
+          "type": "record",
+          "named": true
+        },
+        {
+          "type": "record_signature",
+          "named": true
+        },
+        {
+          "type": "typed_binding",
+          "named": true
+        },
+        {
+          "type": "untyped_binding",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "module_application",
     "named": true,
     "fields": {},
@@ -912,7 +1027,7 @@
           "named": true
         },
         {
-          "type": "qid",
+          "type": "module_name",
           "named": true
         }
       ]
@@ -935,7 +1050,7 @@
           "named": true
         },
         {
-          "type": "qid",
+          "type": "module_name",
           "named": true
         }
       ]
@@ -950,10 +1065,6 @@
       "required": true,
       "types": [
         {
-          "type": "id",
-          "named": true
-        },
-        {
           "type": "import_directive",
           "named": true
         },
@@ -962,7 +1073,7 @@
           "named": true
         },
         {
-          "type": "qid",
+          "type": "module_name",
           "named": true
         },
         {
@@ -975,6 +1086,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "module_name",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "mutual",
@@ -1018,6 +1134,10 @@
         },
         {
           "type": "macro",
+          "named": true
+        },
+        {
+          "type": "module",
           "named": true
         },
         {
@@ -1072,7 +1192,7 @@
           "named": true
         },
         {
-          "type": "qid",
+          "type": "module_name",
           "named": true
         }
       ]
@@ -1120,6 +1240,10 @@
         },
         {
           "type": "macro",
+          "named": true
+        },
+        {
+          "type": "module",
           "named": true
         },
         {
@@ -1214,6 +1338,10 @@
         },
         {
           "type": "macro",
+          "named": true
+        },
+        {
+          "type": "module",
           "named": true
         },
         {
@@ -1430,6 +1558,10 @@
         },
         {
           "type": "macro",
+          "named": true
+        },
+        {
+          "type": "module",
           "named": true
         },
         {
@@ -1685,6 +1817,10 @@
           "named": true
         },
         {
+          "type": "module",
+          "named": true
+        },
+        {
           "type": "module_macro",
           "named": true
         },
@@ -1871,6 +2007,10 @@
           "named": true
         },
         {
+          "type": "module",
+          "named": true
+        },
+        {
           "type": "module_macro",
           "named": true
         },
@@ -2006,6 +2146,10 @@
         },
         {
           "type": "macro",
+          "named": true
+        },
+        {
+          "type": "module",
           "named": true
         },
         {
@@ -2223,12 +2367,12 @@
     "named": false
   },
   {
-    "type": "id",
-    "named": true
-  },
-  {
     "type": "_",
     "named": false
+  },
+  {
+    "type": "id",
+    "named": true
   },
   {
     "type": ".",
