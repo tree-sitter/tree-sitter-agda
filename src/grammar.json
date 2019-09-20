@@ -607,8 +607,13 @@
           "value": "record"
         },
         {
-          "type": "SYMBOL",
-          "name": "_atom_no_curly"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_atom_no_curly"
+          },
+          "named": true,
+          "value": "record_name"
         },
         {
           "type": "CHOICE",
@@ -809,8 +814,13 @@
           "value": "record"
         },
         {
-          "type": "SYMBOL",
-          "name": "_atom_no_curly"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_atom_no_curly"
+          },
+          "named": true,
+          "value": "record_name"
         },
         {
           "type": "CHOICE",

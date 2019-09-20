@@ -11,7 +11,7 @@ record Pair (A B : Set) : Set where
 
 (source_file
     (record
-        (qid)
+        (record_name (qid))
         (typed_binding
             (atom (qid))
             (atom (qid))
@@ -40,7 +40,7 @@ record Pair (A B : Set) : Set where
 
 (source_file
     (record
-        (qid)
+        (record_name (qid))
         (typed_binding
             (atom (qid))
             (atom (qid))
@@ -74,7 +74,7 @@ record Pair (A B : Set) : Set where
 
 (source_file
     (record
-        (qid)
+        (record_name (qid))
         (typed_binding
             (atom (qid))
             (atom (qid))

@@ -31,7 +31,7 @@ open Lift public
             (renaming (id) (id))
             (renaming (id) (id))))
     (comment)
-    (record (qid)
+    (record (record_name (qid))
         (untyped_binding
             (atom (qid))
             (atom (qid)))

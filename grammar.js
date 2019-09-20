@@ -189,9 +189,10 @@ module.exports = grammar({
     // Declaration: Record
     ////////////////////////////////////////////////////////////////////////
 
+    // Record
     record: $ => seq(
       'record',
-      $._atom_no_curly,
+      alias($._atom_no_curly, $.record_name),
       optional($._typed_untyped_bindings),
       optional(seq(':', $.expr)),
       $.record_declarations_block,
@@ -242,7 +243,7 @@ module.exports = grammar({
 
     record_signature: $ => seq(
       'record',
-      $._atom_no_curly,
+      alias($._atom_no_curly, $.record_name),
       optional($._typed_untyped_bindings),
       ':',
       $.expr

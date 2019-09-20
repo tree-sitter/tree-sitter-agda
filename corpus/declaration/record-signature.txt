@@ -8,7 +8,7 @@ record Pair (A B : Set) : Set
 
 (source_file
     (record_signature
-        (qid)
+        (record_name (qid))
         (typed_binding
             (atom (qid))
             (atom (qid))

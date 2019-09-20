@@ -41,7 +41,7 @@ record Semigroup c ℓ : Set (suc (c ⊔ ℓ)) where
 (source_file
     (comment)
     (record
-        (qid)
+        (record_name (qid))
             (untyped_binding (bid))
             (untyped_binding (bid))
             (expr (atom) (atom (expr
