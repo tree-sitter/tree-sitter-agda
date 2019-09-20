@@ -10,9 +10,9 @@ field
 
 (source_file
     (fields
-        (signature (id)
+        (signature (field_name)
             (expr (atom (qid))))
-        (signature (id)
+        (signature (field_name)
             (expr (atom (qid))))))
 
 ==================
@@ -25,7 +25,7 @@ field a : A
 
 (source_file
     (fields
-        (signature (id)
+        (signature (field_name)
             (expr (atom (qid))))))
 
 ==================
@@ -39,7 +39,7 @@ field a : A
 
 (source_file
     (fields
-        (signature (id)
+        (signature (field_name)
             (expr (atom (qid))))
-        (signature (id)
+        (signature (field_name)
             (expr (atom (qid))))))

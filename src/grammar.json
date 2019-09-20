@@ -1186,7 +1186,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_ids"
+          "name": "_field_names"
         },
         {
           "type": "STRING",
@@ -2219,12 +2219,28 @@
         "name": "id"
       }
     },
+    "_field_name": {
+      "type": "ALIAS",
+      "content": {
+        "type": "SYMBOL",
+        "name": "id"
+      },
+      "named": true,
+      "value": "field_name"
+    },
+    "_field_names": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "SYMBOL",
+        "name": "_field_name"
+      }
+    },
     "_maybe_dotted_id": {
       "type": "CHOICE",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "id"
+          "name": "_field_name"
         },
         {
           "type": "SEQ",
@@ -2235,7 +2251,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "id"
+              "name": "_field_name"
             }
           ]
         },
@@ -2248,7 +2264,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "id"
+              "name": "_field_name"
             }
           ]
         }
@@ -2373,7 +2389,7 @@
                       "members": [
                         {
                           "type": "SYMBOL",
-                          "name": "_ids"
+                          "name": "_field_names"
                         }
                       ]
                     },
@@ -2409,7 +2425,7 @@
                       "members": [
                         {
                           "type": "SYMBOL",
-                          "name": "_ids"
+                          "name": "_field_names"
                         }
                       ]
                     },
@@ -2431,7 +2447,7 @@
                       "members": [
                         {
                           "type": "SYMBOL",
-                          "name": "_ids"
+                          "name": "_field_names"
                         }
                       ]
                     },
@@ -2467,7 +2483,7 @@
                       "members": [
                         {
                           "type": "SYMBOL",
-                          "name": "_ids"
+                          "name": "_field_names"
                         }
                       ]
                     },
@@ -2503,7 +2519,7 @@
                       "members": [
                         {
                           "type": "SYMBOL",
-                          "name": "_ids"
+                          "name": "_field_names"
                         }
                       ]
                     },
@@ -2525,7 +2541,7 @@
                       "members": [
                         {
                           "type": "SYMBOL",
-                          "name": "_ids"
+                          "name": "_field_names"
                         }
                       ]
                     },
@@ -4019,8 +4035,13 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "id"
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "id"
+          },
+          "named": true,
+          "value": "field_name"
         },
         {
           "type": "STRING",

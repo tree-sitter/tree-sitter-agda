@@ -49,6 +49,6 @@ open Lift public
         (record_declarations_block
             (record_constructor (id))
             (fields
-                (signature (id) (expr (atom (qid)))))))
+                (signature (field_name) (expr (atom (qid)))))))
     (open (module_name)
         (import_directive)))

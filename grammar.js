@@ -352,7 +352,7 @@ module.exports = grammar({
 
     // TypeSigs
     type_signature: $ => seq(
-      $._ids,
+      $._field_names,
       ':',
       $.expr
     ),
@@ -534,8 +534,11 @@ module.exports = grammar({
     // SpaceIds
     _ids: $ => repeat1($.id),
 
+    _field_name: $ => alias($.id, $.field_name),
+    _field_names: $ => repeat1($._field_name),
+
     // MaybeDottedId
-    _maybe_dotted_id: $ => maybeDotted($.id),
+    _maybe_dotted_id: $ => maybeDotted($._field_name),
     _maybe_dotted_ids: $ => repeat1($._maybe_dotted_id),
 
     // ArgIds
@@ -546,11 +549,11 @@ module.exports = grammar({
       brace($._maybe_dotted_ids),
       brace_double($._maybe_dotted_ids),
 
-      seq('.', brace($._ids)),
-      seq('.', brace_double($._ids)),
+      seq('.', brace($._field_names)),
+      seq('.', brace_double($._field_names)),
 
-      seq('..', brace($._ids)),
-      seq('..', brace_double($._ids)),
+      seq('..', brace($._field_names)),
+      seq('..', brace_double($._field_names)),
     ),
 
     // CommaBIds / CommaBIdAndAbsurds
@@ -813,7 +816,7 @@ module.exports = grammar({
 
     // FieldAssignment
     field_assignment: $ => seq(
-      $.id,
+      alias($.id, $.field_name),
       '=',
       $.expr
     ),

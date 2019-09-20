@@ -9,4 +9,6 @@ variable
 
 (source_file
     (generalize
-      (signature (id) (id) (id) (expr (atom (qid)) (atom (qid)) (atom (qid))))))
+      (signature
+        (field_name) (field_name) (field_name)
+        (expr (atom (qid)) (atom (qid)) (atom (qid))))))

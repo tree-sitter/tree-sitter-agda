@@ -11,8 +11,8 @@ f = record { fst = 2; snd = 3 }
         (lhs (atom (qid)))
         (rhs (expr (atom
             (record_assignments
-                (field_assignment (id) (expr (atom (qid))))
-                (field_assignment (id) (expr (atom (qid))))))))))
+                (field_assignment (field_name) (expr (atom (qid))))
+                (field_assignment (field_name) (expr (atom (qid))))))))))
 
 ==================
 Building records from modules
@@ -45,8 +45,8 @@ a = record old { a = 0; c = 5 }
         (rhs (expr (atom
             (record_assignments
                 (qid)
-                (field_assignment (id) (expr (atom (qid))))
-                (field_assignment (id) (expr (atom (qid))))))))))
+                (field_assignment (field_name) (expr (atom (qid))))
+                (field_assignment (field_name) (expr (atom (qid))))))))))
 
 ==================
 Record update in fields
@@ -62,5 +62,5 @@ a = record { MyRecord old; a = 0; c = 5}
         (rhs (expr (atom
             (record_assignments
                 (module_assignment (module_name) (atom (qid)))
-                (field_assignment (id) (expr (atom (qid))))
-                (field_assignment (id) (expr (atom (qid))))))))))
+                (field_assignment (field_name) (expr (atom (qid))))
+                (field_assignment (field_name) (expr (atom (qid))))))))))

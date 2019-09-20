@@ -53,8 +53,8 @@ record Semigroup c ℓ : Set (suc (c ⊔ ℓ)) where
             (infix (integer) (bid))
             (infix (integer) (bid))
             (fields
-                (signature (id) (expr (atom) (atom (qid))))
-                (signature (id) (expr        (atom (qid)) (atom (qid)) (atom (qid))))
-                (signature (id) (expr        (atom (qid)) (atom (qid))))
-                (signature (id) (expr        (atom (qid)) (atom (qid)) (atom (qid)))))
+                (signature (field_name) (expr (atom) (atom (qid))))
+                (signature (field_name) (expr        (atom (qid)) (atom (qid)) (atom (qid))))
+                (signature (field_name) (expr        (atom (qid)) (atom (qid))))
+                (signature (field_name) (expr        (atom (qid)) (atom (qid)) (atom (qid)))))
             (open (module_name) (atom (qid)) (import_directive)))))

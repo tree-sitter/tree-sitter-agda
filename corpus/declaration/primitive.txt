@@ -9,6 +9,8 @@ primitive
 
 (source_file
   (primitive
-    (type_signature (id) (expr (atom (qid)) (expr (atom (qid)))))
+    (type_signature
+      (field_name)
+      (expr (atom (qid)) (expr (atom (qid)))))
   )
 )
