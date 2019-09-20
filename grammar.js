@@ -85,6 +85,7 @@ module.exports = grammar({
         $.module,
         $.pragma,
         $.syntax,
+        $.pattern,
 
     ),
 
@@ -473,6 +474,19 @@ module.exports = grammar({
     _simple_hole: $ => choice(
       $.id,
       seq($._LAMBDA, $.bid, $._ARROW, $.id),
+    ),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Declaration: Pattern Synonym
+    ////////////////////////////////////////////////////////////////////////
+
+    // PatternSyn
+    pattern: $ => seq(
+        'pattern',
+        $.id,
+        optional($._lambda_bindings),  // PatternSynArgs
+        '=',
+        $.expr
     ),
 
     ////////////////////////////////////////////////////////////////////////

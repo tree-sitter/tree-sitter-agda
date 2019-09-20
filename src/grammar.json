@@ -193,6 +193,10 @@
         {
           "type": "SYMBOL",
           "name": "syntax"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pattern"
         }
       ]
     },
@@ -1923,6 +1927,39 @@
               "name": "id"
             }
           ]
+        }
+      ]
+    },
+    "pattern": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "pattern"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "id"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_lambda_bindings"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expr"
         }
       ]
     },
