@@ -34,7 +34,7 @@ module.exports = grammar({
   ],
 
   conflicts: $ => [
-    [$.qid, $.field_assignment],
+    // [$.qid, $.field_assignment],
     // [$.let],
   ],
 
@@ -425,7 +425,7 @@ module.exports = grammar({
     id: $ => token(ID),
 
     // QId
-    qid: $ => alias(choice(QID, $.id), 'qid'),
+    qid: $ => prec.left(alias(choice(QID, $.id), 'qid')),
 
     // BId
     bid: $ => alias(choice('_', $.id), 'bid'),
