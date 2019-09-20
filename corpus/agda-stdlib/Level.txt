@@ -26,29 +26,29 @@ open Lift public
     (comment)
     (open (module_name)
         (import_directive)
-        (import_directive (name) (name))
+        (import_directive (id) (id))
         (import_directive
-            (renaming (name) (name))
-            (renaming (name) (name))))
+            (renaming (id) (id))
+            (renaming (id) (id))))
     (comment)
-    (record (record_name (qualified_name))
+    (record (qid)
         (untyped_binding
-            (atom (qualified_name))
-            (atom (qualified_name)))
+            (atom (qid))
+            (atom (qid)))
         (typed_binding
-            (atom (qualified_name))
+            (atom (qid))
             (expr
                 (atom)
-                (atom (qualified_name))))
+                (atom (qid))))
         (expr
             (atom)
             (atom (expr
-                (atom (qualified_name))
-                (atom (qualified_name))
-                (atom (qualified_name)))))
+                (atom (qid))
+                (atom (qid))
+                (atom (qid)))))
         (record_declarations_block
-            (record_constructor (name))
-            (field
-                (type_sig (field_name) (expr (atom (qualified_name)))))))
+            (record_constructor (id))
+            (fields
+                (signature (id) (expr (atom (qid)))))))
     (open (module_name)
         (import_directive)))
