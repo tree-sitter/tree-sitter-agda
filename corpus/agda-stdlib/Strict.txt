@@ -43,74 +43,74 @@ module _ {ℓ ℓ′ : Level} {A : Set ℓ} {B : Set ℓ′} where
         (typed_binding (atom (qid)) (atom (qid)) (expr (atom (qid))))
         (typed_binding (atom (qid))                         (expr (atom) (atom (qid))))
         (typed_binding (atom (qid))                         (expr (atom) (atom (qid))))
-    (function
-        (lhs (atom (qid)))
-        (rhs (expr
-                (atom (qid))
-                (expr
-                    (atom (expr
+        (function
+            (lhs (function_name (atom (qid))))
+            (rhs (expr
+                    (atom (qid))
+                    (expr
+                        (atom (expr
+                            (atom (qid))
+                            (expr (atom (qid)))))
+                        (expr (atom (qid)))))))
+        (function
+            (lhs (atom (qid)))
+            (rhs (expr (atom (qid)))))
+        (function
+            (lhs (function_name (atom (qid))))
+            (rhs (expr
+                (typed_binding
+                    (atom (qid))
+                    (expr (atom (qid))))
+                (typed_binding
+                    (atom (qid))
+                    (expr
                         (atom (qid))
                         (expr (atom (qid)))))
-                    (expr (atom (qid)))))))
-    (function
-        (lhs (atom (qid)))
-        (rhs (expr (atom (qid)))))
-    (function
-        (lhs (atom (qid)))
-        (rhs (expr
-            (typed_binding
-                (atom (qid))
-                (expr (atom (qid))))
-            (typed_binding
-                (atom (qid))
                 (expr
                     (atom (qid))
-                    (expr (atom (qid)))))
-            (expr
+                    (atom (qid))
+                    (atom (qid))
+                    (atom (qid))
+                    (atom (qid))
+                    (atom (qid))))))
+        (function
+            (lhs (atom (qid)))
+            (rhs (expr (atom (qid)))))
+        (function
+            (lhs (function_name (atom (qid))))
+            (rhs (expr
+                (atom (qid)) (expr
+                    (atom (qid))
+                    (expr (atom (qid)))))))
+        (function
+            (lhs (atom (qid)) (atom (qid)) (atom (qid)))
+            (rhs (expr
                 (atom (qid))
                 (atom (qid))
-                (atom (qid))
-                (atom (qid))
-                (atom (qid))
-                (atom (qid))))))
-    (function
-        (lhs (atom (qid)))
-        (rhs (expr (atom (qid)))))
-    (function
-        (lhs (atom (qid)))
-        (rhs (expr
-            (atom (qid)) (expr
-                (atom (qid))
-                (expr (atom (qid)))))))
-    (function
-        (lhs (atom (qid)) (atom (qid)) (atom (qid)))
-        (rhs (expr
+                (atom (expr (lambda
+                    (untyped_binding (bid))
+                    (expr (atom (qid)))))))))
+        (function
+            (lhs (function_name (atom (qid))))
+            (rhs (expr
+                (typed_binding
+                    (atom (qid))
+                    (expr (atom (qid))))
+                (typed_binding
+                    (atom (qid))
+                    (expr
+                        (atom (qid))))
+                (expr
+                    (atom (qid))
+                    (atom (qid))
+                    (atom (qid))
+                    (atom (qid))
+                    (atom (qid))))))
+        (function
+            (lhs (atom (qid)) (atom (qid)) (atom (qid)))
+            (rhs (expr
             (atom (qid))
             (atom (qid))
             (atom (expr (lambda
-                (untyped_binding (bid))
-                (expr (atom (qid)))))))))
-    (function
-        (lhs (atom (qid)))
-        (rhs (expr
-            (typed_binding
-                (atom (qid))
-                (expr (atom (qid))))
-            (typed_binding
-                (atom (qid))
-                (expr
-                    (atom (qid))))
-            (expr
-                (atom (qid))
-                (atom (qid))
-                (atom (qid))
-                (atom (qid))
-                (atom (qid))))))
-    (function
-        (lhs (atom (qid)) (atom (qid)) (atom (qid)))
-        (rhs (expr
-        (atom (qid))
-        (atom (qid))
-        (atom (expr (lambda
-        (untyped_binding (bid))
-        (expr (atom (qid)))))))))))
+            (untyped_binding (bid))
+            (expr (atom (qid)))))))))))

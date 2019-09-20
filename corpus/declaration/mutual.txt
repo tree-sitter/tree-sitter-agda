@@ -15,8 +15,7 @@ mutual
 (source_file
   (mutual
     (function
-      (lhs
-        (atom (qid)))
+      (lhs (function_name (atom (qid))))
       (rhs
         (expr (atom (qid)) (atom (qid)))))
     (function
@@ -25,8 +24,7 @@ mutual
       (rhs
         (expr (atom (qid)) (atom (qid)))))
     (function
-      (lhs
-        (atom (qid)))
+      (lhs (function_name (atom (qid))))
       (rhs
         (expr (atom (qid)) (atom (qid)))))
     (function

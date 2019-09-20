@@ -12,11 +12,11 @@ data Nat : Set where
     (data
         (data_name) (expr (atom))
         (function
-            (lhs (atom (qid)))
+            (lhs (function_name (atom (qid))))
             (rhs
                 (expr (atom (qid)))))
         (function
-            (lhs (atom (qid)))
+            (lhs (function_name (atom (qid))))
             (rhs
                 (expr
                     (atom (qid))

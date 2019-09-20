@@ -11,8 +11,7 @@ abstract
 (source_file
   (abstract
     (function
-      (lhs
-        (atom (qid)))
+      (lhs (function_name (atom (qid))))
       (rhs
         (expr (atom (qid)) (atom (qid)))))
     (function

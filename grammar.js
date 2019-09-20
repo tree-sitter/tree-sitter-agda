@@ -121,26 +121,42 @@ module.exports = grammar({
     // Declaration: Functions
     ////////////////////////////////////////////////////////////////////////
 
-    // FunClause = LHS + RHS
-    function: $ => seq(
-      optional($.attributes),
-      $.lhs,
-      optional($.rhs),
-      optional($.where)
+    // We are splitting FunClause into 2 cases:
+    //  *. function declaration (':')
+    //  *. function definitions ('=')
+    // Doing so we can mark the LHS of a function declaration as 'function_name'
+
+    // FunClause
+    function: $ => choice(
+      seq(
+        optional($.attributes),
+        alias($.lhs_decl, $.lhs),
+        alias(optional($.rhs_decl), $.rhs),
+        optional($.where),
+      ),
+      seq(
+        optional($.attributes),
+        alias($.lhs_defn, $.lhs),
+        alias(optional($.rhs_defn), $.rhs),
+        optional($.where),
+      ),
     ),
 
     // LHS
-    lhs: $ => seq(
-      $._with_exprs,
+    lhs_decl: $ => seq(
+      alias($._with_exprs, $.function_name),
       optional($.rewrite_equations),
       optional($.with_expressions)
     ),
+    lhs_defn: $ => prec(1, seq(
+      $._with_exprs,
+      optional($.rewrite_equations),
+      optional($.with_expressions)
+    )),
 
     // RHS
-    rhs: $ => choice(
-      seq('=', $.expr),
-      seq(':', $.expr),
-    ),
+    rhs_decl: $ => seq(':', $.expr),
+    rhs_defn: $ => seq('=', $.expr),
 
     // WithExpressions
     with_expressions: $ => seq('with', $.expr),

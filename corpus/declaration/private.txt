@@ -11,8 +11,7 @@ private
 (source_file
   (private
     (function
-      (lhs
-        (atom (qid)))
+      (lhs (function_name (atom (qid))))
       (rhs
         (expr (atom (qid)) (atom (qid)))))
     (function

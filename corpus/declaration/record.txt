@@ -52,7 +52,7 @@ record Pair (A B : Set) : Set where
             (record_eta)
             (instance
                 (function
-                    (lhs (atom (qid)))
+                    (lhs (function_name (atom (qid))))
                     (rhs (expr (atom (qid))))))
             (fields
                 (signature (id) (expr (atom (qid))))

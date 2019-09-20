@@ -24,7 +24,7 @@ id A a = a
 
 (source_file
     (function
-        (lhs (atom (qid)))
+        (lhs (function_name (atom (qid))))
         (rhs
             (expr (atom (qid))
             (expr (atom (qid))
@@ -70,7 +70,7 @@ g : (A B _ ? : Set) -> A
 
 (source_file
     (function
-        (lhs (atom (qid)))
+        (lhs (function_name (atom (qid))))
         (rhs
             (expr
             (typed_binding (atom (qid)) (expr (atom)))
@@ -78,7 +78,7 @@ g : (A B _ ? : Set) -> A
             (typed_binding (atom (qid)) (expr (atom)))
             (expr (atom (qid))))))
     (function
-        (lhs (atom (qid)))
+        (lhs (function_name (atom (qid))))
         (rhs
             (expr
             (typed_binding
@@ -100,7 +100,7 @@ g : {A : Set} -> A
 
 (source_file
     (function
-        (lhs (atom (qid)))
+        (lhs (function_name (atom (qid))))
         (rhs
             (expr (forall
                 (untyped_binding
@@ -110,7 +110,7 @@ g : {A : Set} -> A
                 (expr (atom (qid))
                 (expr (atom (qid))))))))
     (function
-        (lhs (atom (qid)))
+        (lhs (function_name (atom (qid))))
         (rhs
             (expr (typed_binding (atom (qid)) (expr (atom)))
             (expr (atom (qid)))))))
@@ -150,7 +150,7 @@ x = (| if a then b else c |)
 
 (source_file
     (function
-        (lhs (atom (qid)))
+        (lhs (function_name (atom (qid))))
         (rhs (expr (atom))))
     (function
         (lhs (atom (qid)))
@@ -175,7 +175,7 @@ x = ⦇ if a then b else c ⦈
 
 (source_file
     (function
-        (lhs (atom (qid)))
+        (lhs (function_name (atom (qid))))
         (rhs (expr (atom))))
     (function
         (lhs (atom (qid)))

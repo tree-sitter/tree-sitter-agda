@@ -25,7 +25,7 @@ postulate
     (infix (integer) (bid))
     (postulate
         (function
-            (lhs (atom (qid)))
+            (lhs (function_name (atom (qid))))
             (rhs (expr
                 (forall
                     (untyped_binding (atom (qid)))
@@ -38,7 +38,7 @@ postulate
                             (atom (qid))
                             (atom (qid))))))))
         (function
-            (lhs (atom (qid)))
+            (lhs (function_name (atom (qid))))
             (rhs (expr
                 (forall
                     (untyped_binding
