@@ -197,6 +197,10 @@
         {
           "type": "SYMBOL",
           "name": "pattern"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "unquote_decl"
         }
       ]
     },
@@ -1960,6 +1964,70 @@
         {
           "type": "SYMBOL",
           "name": "expr"
+        }
+      ]
+    },
+    "unquote_decl": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "unquoteDecl"
+            },
+            {
+              "type": "STRING",
+              "value": "="
+            },
+            {
+              "type": "SYMBOL",
+              "name": "expr"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "unquoteDecl"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_ids"
+            },
+            {
+              "type": "STRING",
+              "value": "="
+            },
+            {
+              "type": "SYMBOL",
+              "name": "expr"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "unquoteDef"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_ids"
+            },
+            {
+              "type": "STRING",
+              "value": "="
+            },
+            {
+              "type": "SYMBOL",
+              "name": "expr"
+            }
+          ]
         }
       ]
     },

@@ -86,7 +86,7 @@ module.exports = grammar({
         $.pragma,
         $.syntax,
         $.pattern,
-
+        $.unquote_decl,
     ),
 
     ////////////////////////////////////////////////////////////////////////
@@ -487,6 +487,17 @@ module.exports = grammar({
         optional($._lambda_bindings),  // PatternSynArgs
         '=',
         $.expr
+    ),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Declaration: Unquoting declarations
+    ////////////////////////////////////////////////////////////////////////
+
+    // UnquoteDecl
+    unquote_decl: $ => choice(
+      seq('unquoteDecl',         '=', $.expr),
+      seq('unquoteDecl', $._ids, '=', $.expr),
+      seq('unquoteDef' , $._ids, '=', $.expr),
     ),
 
     ////////////////////////////////////////////////////////////////////////

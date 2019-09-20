@@ -90,6 +90,10 @@
         {
           "type": "syntax",
           "named": true
+        },
+        {
+          "type": "unquote_decl",
+          "named": true
         }
       ]
     }
@@ -282,6 +286,10 @@
         },
         {
           "type": "typed_binding",
+          "named": true
+        },
+        {
+          "type": "unquote_decl",
           "named": true
         },
         {
@@ -670,6 +678,10 @@
         {
           "type": "syntax",
           "named": true
+        },
+        {
+          "type": "unquote_decl",
+          "named": true
         }
       ]
     }
@@ -867,6 +879,10 @@
         {
           "type": "syntax",
           "named": true
+        },
+        {
+          "type": "unquote_decl",
+          "named": true
         }
       ]
     }
@@ -1014,6 +1030,10 @@
         {
           "type": "syntax",
           "named": true
+        },
+        {
+          "type": "unquote_decl",
+          "named": true
         }
       ]
     }
@@ -1116,6 +1136,10 @@
         },
         {
           "type": "typed_binding",
+          "named": true
+        },
+        {
+          "type": "unquote_decl",
           "named": true
         },
         {
@@ -1294,6 +1318,10 @@
         {
           "type": "syntax",
           "named": true
+        },
+        {
+          "type": "unquote_decl",
+          "named": true
         }
       ]
     }
@@ -1439,6 +1467,10 @@
         {
           "type": "syntax",
           "named": true
+        },
+        {
+          "type": "unquote_decl",
+          "named": true
         }
       ]
     }
@@ -1548,6 +1580,10 @@
         },
         {
           "type": "syntax",
+          "named": true
+        },
+        {
+          "type": "unquote_decl",
           "named": true
         }
       ]
@@ -1796,6 +1832,10 @@
         },
         {
           "type": "syntax",
+          "named": true
+        },
+        {
+          "type": "unquote_decl",
           "named": true
         }
       ]
@@ -2049,6 +2089,10 @@
         {
           "type": "syntax",
           "named": true
+        },
+        {
+          "type": "unquote_decl",
+          "named": true
         }
       ]
     }
@@ -2274,6 +2318,29 @@
         {
           "type": "syntax",
           "named": true
+        },
+        {
+          "type": "unquote_decl",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "unquote_decl",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
         }
       ]
     }
@@ -2423,6 +2490,10 @@
         },
         {
           "type": "syntax",
+          "named": true
+        },
+        {
+          "type": "unquote_decl",
           "named": true
         }
       ]
@@ -2629,6 +2700,14 @@
   },
   {
     "type": "pattern",
+    "named": false
+  },
+  {
+    "type": "unquoteDecl",
+    "named": false
+  },
+  {
+    "type": "unquoteDef",
     "named": false
   },
   {
