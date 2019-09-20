@@ -185,6 +185,11 @@
     "fields": {}
   },
   {
+    "type": "catchall_pragma",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "data",
     "named": true,
     "fields": {},
@@ -727,11 +732,11 @@
       "required": true,
       "types": [
         {
-          "type": "CatchallPragma",
+          "type": "atom",
           "named": true
         },
         {
-          "type": "atom",
+          "type": "catchall_pragma",
           "named": true
         },
         {
@@ -750,11 +755,11 @@
       "required": true,
       "types": [
         {
-          "type": "CatchallPragma",
+          "type": "atom",
           "named": true
         },
         {
-          "type": "atom",
+          "type": "catchall_pragma",
           "named": true
         },
         {
@@ -2196,10 +2201,6 @@
       "required": true,
       "types": [
         {
-          "type": "Open",
-          "named": true
-        },
-        {
           "type": "abstract",
           "named": true
         },
@@ -2687,6 +2688,18 @@
     "named": true
   },
   {
+    "type": "{-#",
+    "named": false
+  },
+  {
+    "type": "CATCHALL",
+    "named": false
+  },
+  {
+    "type": "#-}",
+    "named": false
+  },
+  {
     "type": "syntax",
     "named": false
   },
@@ -2804,18 +2817,6 @@
   },
   {
     "type": "PropN",
-    "named": true
-  },
-  {
-    "type": "Literal",
-    "named": true
-  },
-  {
-    "type": "Open",
-    "named": true
-  },
-  {
-    "type": "CatchallPragma",
     "named": true
   }
 ]

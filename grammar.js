@@ -440,6 +440,9 @@ module.exports = grammar({
       '#-}',
     )),
 
+    // CatchallPragma
+    catchall_pragma: $ => seq('{-#', 'CATCHALL', '#-}'),
+
     ////////////////////////////////////////////////////////////////////////
     // Declaration: Syntax
     ////////////////////////////////////////////////////////////////////////
@@ -731,13 +734,13 @@ module.exports = grammar({
 
     // AbsurdLamClause
     lambda_clause_absurd: $ => seq(
-      optional($.CatchallPragma),
+      optional($.catchall_pragma),
       $._application,
     ),
 
     // NonAbsurdLamClause
     lambda_clause: $ => seq(
-      optional($.CatchallPragma),
+      optional($.catchall_pragma),
       optional($._atoms),   // Application3PossiblyEmpty
       $._ARROW,
       $.expr,
@@ -821,7 +824,7 @@ module.exports = grammar({
       paren(       $.attributes, $._application            , ':', $.expr),
       brace(       $.attributes, $._binding_ids_and_absurds, ':', $.expr),
       brace_double($.attributes, $._binding_ids_and_absurds, ':', $.expr),
-      paren($.Open),
+      paren($.open),
       paren('let', $._declaration_block),
     ),
 
@@ -890,13 +893,6 @@ module.exports = grammar({
     // propN
     PropN: $ => 'propN',
 
-    // Literal
-    Literal: $ => 'Literal',
-
-    // Open
-    Open: $ => 'Open',
-    // CatchallPragma
-    CatchallPragma: $ => 'CatchallPragma',
   }
 });
 

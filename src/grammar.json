@@ -1636,6 +1636,23 @@
         ]
       }
     },
+    "catchall_pragma": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "{-#"
+        },
+        {
+          "type": "STRING",
+          "value": "CATCHALL"
+        },
+        {
+          "type": "STRING",
+          "value": "#-}"
+        }
+      ]
+    },
     "syntax": {
       "type": "SEQ",
       "members": [
@@ -3604,7 +3621,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "CatchallPragma"
+              "name": "catchall_pragma"
             },
             {
               "type": "BLANK"
@@ -3625,7 +3642,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "CatchallPragma"
+              "name": "catchall_pragma"
             },
             {
               "type": "BLANK"
@@ -4550,7 +4567,7 @@
                   "members": [
                     {
                       "type": "SYMBOL",
-                      "name": "Open"
+                      "name": "open"
                     }
                   ]
                 },
@@ -5139,18 +5156,6 @@
     "PropN": {
       "type": "STRING",
       "value": "propN"
-    },
-    "Literal": {
-      "type": "STRING",
-      "value": "Literal"
-    },
-    "Open": {
-      "type": "STRING",
-      "value": "Open"
-    },
-    "CatchallPragma": {
-      "type": "STRING",
-      "value": "CatchallPragma"
     }
   },
   "extras": [
