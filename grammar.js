@@ -34,8 +34,6 @@ module.exports = grammar({
   ],
 
   conflicts: $ => [
-    // [$.qid, $.field_assignment],
-    // [$.let],
   ],
 
   rules: {
