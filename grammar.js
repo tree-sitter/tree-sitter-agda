@@ -392,27 +392,17 @@ module.exports = grammar({
         seq('module', $.qid),
         seq('open', 'module', $.id),
       ),
-      // optional($._typed_untyped_bindings),
-      // '=',
-      // $.module_application,
-      // repeat($.import_directive),
+      optional($._typed_untyped_bindings),
+      '=',
+      $.module_application,
+      repeat($.import_directive),
     ),
 
     // ModuleApplication
-    // module_application: $ => choice(
-    //   seq(
-    //     $._module_name,
-    //     brace_double($._ELLIPSIS),
-    //   ),
-    //   seq(
-    //     $._module_name,
-    //     optional($._atoms),
-    //   )
-    // ),
     module_application: $ => seq(
       $._module_name,
       choice(
-        brace_double($._ELLIPSIS),
+        prec(1, brace_double($._ELLIPSIS)),
         optional($._atoms),
       ),
     ),
