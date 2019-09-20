@@ -277,7 +277,7 @@ Telescope single line II
 ==================
 
 f x = let y = x in
-      let y = x in y
+        let y = x in y
 
 ---
 

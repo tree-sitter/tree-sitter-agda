@@ -81,6 +81,7 @@ module.exports = grammar({
         $.postulate,
         $.primitive,
         $.open,
+        $.module_macro
     ),
 
     ////////////////////////////////////////////////////////////////////////
@@ -148,7 +149,7 @@ module.exports = grammar({
     where: $ => seq(
       optional(seq(
         'module',
-        choice($.id, '_')
+        $.bid
       )),
       'where',
       optional($._declaration_block)
@@ -345,15 +346,12 @@ module.exports = grammar({
         seq('open'          ),
       ),
       $._module_name,
-      optional($._open_args),
+      optional($._atoms),
       optional($._import_directives),
     ),
 
     // ModuleName
     _module_name: $ => $.qid,
-
-    // OpenArgs
-    _open_args: $ => repeat1($.atom),
 
     // ImportDirectives and shit
     _import_directives: $ => repeat1($.import_directive),
@@ -383,6 +381,41 @@ module.exports = grammar({
         optional('module'), $.id
     ),
 
+
+    ////////////////////////////////////////////////////////////////////////
+    // Declaration: Module Macro
+    ////////////////////////////////////////////////////////////////////////
+
+    // ModuleMacro
+    module_macro: $ => seq(
+      choice(
+        seq('module', $.qid),
+        seq('open', 'module!', $.id),
+      ),
+      // optional($._typed_untyped_bindings),
+      // '=',
+      // $.module_application,
+      // repeat($.import_directive),
+    ),
+
+    // ModuleApplication
+    // module_application: $ => choice(
+    //   seq(
+    //     $._module_name,
+    //     brace_double($._ELLIPSIS),
+    //   ),
+    //   seq(
+    //     $._module_name,
+    //     optional($._atoms),
+    //   )
+    // ),
+    module_application: $ => seq(
+      $._module_name,
+      choice(
+        brace_double($._ELLIPSIS),
+        optional($._atoms),
+      ),
+    ),
 
     ////////////////////////////////////////////////////////////////////////
     // Names
@@ -502,7 +535,7 @@ module.exports = grammar({
       $._atom_curly,
       $._atom_no_curly,
     ),
-    // Application3
+    // Application3 / OpenArgs
     _atoms: $ => repeat1($.atom),
 
     _atom_curly: $ => brace(optional($.expr)),
@@ -568,7 +601,6 @@ module.exports = grammar({
         $._let_body,
       )
     )),
-
 
     _let_body: $ => seq(
       'in',
@@ -694,7 +726,7 @@ module.exports = grammar({
     // ModuleAssignment
     module_assignment: $ => seq(
       $._module_name,
-      optional($._open_args),
+      optional($._atoms),
       optional($._import_directives),
     ),
 

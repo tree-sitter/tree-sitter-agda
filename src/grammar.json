@@ -177,6 +177,10 @@
         {
           "type": "SYMBOL",
           "name": "open"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "module_macro"
         }
       ]
     },
@@ -434,17 +438,8 @@
                   "value": "module"
                 },
                 {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "id"
-                    },
-                    {
-                      "type": "STRING",
-                      "value": "_"
-                    }
-                  ]
+                  "type": "SYMBOL",
+                  "name": "bid"
                 }
               ]
             },
@@ -1105,7 +1100,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "_open_args"
+              "name": "_atoms"
             },
             {
               "type": "BLANK"
@@ -1129,13 +1124,6 @@
     "_module_name": {
       "type": "SYMBOL",
       "name": "qid"
-    },
-    "_open_args": {
-      "type": "REPEAT1",
-      "content": {
-        "type": "SYMBOL",
-        "name": "atom"
-      }
     },
     "_import_directives": {
       "type": "REPEAT1",
@@ -1360,6 +1348,121 @@
         {
           "type": "SYMBOL",
           "name": "id"
+        }
+      ]
+    },
+    "module_macro": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "module"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "qid"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "open"
+                },
+                {
+                  "type": "STRING",
+                  "value": "module!"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "id"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "module_application": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_module_name"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "{{"
+                    },
+                    {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "_ELLIPSIS"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "}}"
+                    }
+                  ]
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "⦃"
+                    },
+                    {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "_ELLIPSIS"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "⦄"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_atoms"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -3248,7 +3351,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "_open_args"
+              "name": "_atoms"
             },
             {
               "type": "BLANK"
