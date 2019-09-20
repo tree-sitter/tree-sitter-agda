@@ -189,6 +189,10 @@
         {
           "type": "SYMBOL",
           "name": "pragma"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "syntax"
         }
       ]
     },
@@ -1624,121 +1628,301 @@
         ]
       }
     },
-    "builtin_pragma": {
+    "syntax": {
       "type": "SEQ",
       "members": [
         {
           "type": "STRING",
-          "value": "BUILTIN"
+          "value": "syntax"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "id"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "hole_names"
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "REPEAT1",
+          "content": {
+            "type": "SYMBOL",
+            "name": "id"
+          }
+        }
+      ]
+    },
+    "hole_names": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "SYMBOL",
+        "name": "hole_name"
+      }
+    },
+    "hole_name": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_simple_top_hole"
         },
         {
           "type": "CHOICE",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "string"
-            },
-            {
-              "type": "STRING",
-              "value": "REWRITE"
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "{"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_simple_hole"
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": "}"
+                }
+              ]
             }
           ]
         },
         {
-          "type": "SYMBOL",
-          "name": "string"
-        }
-      ]
-    },
-    "rewrite_pragma": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "REWRITE"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "{{"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_simple_hole"
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": "}}"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "⦃"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_simple_hole"
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": "⦄"
+                }
+              ]
+            }
+          ]
         },
         {
-          "type": "REPEAT",
-          "content": {
-            "type": "SYMBOL",
-            "name": "string"
-          }
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "{"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "id"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "="
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_simple_hole"
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": "}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "{{"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "id"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "="
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_simple_hole"
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": "}}"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "⦃"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "id"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "="
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_simple_hole"
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": "⦄"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
-    "foreign_code": {
+    "_simple_top_hole": {
       "type": "CHOICE",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "string"
+          "name": "id"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "("
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "_LAMBDA"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "bid"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_ARROW"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "id"
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": ")"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "_simple_hole": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "id"
         },
         {
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "{-#"
+              "type": "SYMBOL",
+              "name": "_LAMBDA"
             },
             {
-              "type": "REPEAT",
-              "content": {
-                "type": "SYMBOL",
-                "name": "foreign_code"
-              }
+              "type": "SYMBOL",
+              "name": "bid"
             },
             {
-              "type": "STRING",
-              "value": "#-}"
+              "type": "SYMBOL",
+              "name": "_ARROW"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "id"
             }
           ]
-        }
-      ]
-    },
-    "foreign_pragma": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "FOREIGN"
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SYMBOL",
-            "name": "foreign_code"
-          }
-        }
-      ]
-    },
-    "compile_pragma": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "COMPILE"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "string"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "string"
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SYMBOL",
-            "name": "string"
-          }
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SYMBOL",
-            "name": "foreign_code"
-          }
         }
       ]
     },
@@ -3672,21 +3856,16 @@
                           "type": "SEQ",
                           "members": [
                             {
-                              "type": "SEQ",
-                              "members": [
-                                {
-                                  "type": "SYMBOL",
-                                  "name": "_application"
-                                },
-                                {
-                                  "type": "STRING",
-                                  "value": ":"
-                                },
-                                {
-                                  "type": "SYMBOL",
-                                  "name": "expr"
-                                }
-                              ]
+                              "type": "SYMBOL",
+                              "name": "_application"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": ":"
+                            },
+                            {
+                              "type": "SYMBOL",
+                              "name": "expr"
                             }
                           ]
                         },
@@ -3712,21 +3891,16 @@
                           "type": "SEQ",
                           "members": [
                             {
-                              "type": "SEQ",
-                              "members": [
-                                {
-                                  "type": "SYMBOL",
-                                  "name": "_binding_ids_and_absurds"
-                                },
-                                {
-                                  "type": "STRING",
-                                  "value": ":"
-                                },
-                                {
-                                  "type": "SYMBOL",
-                                  "name": "expr"
-                                }
-                              ]
+                              "type": "SYMBOL",
+                              "name": "_binding_ids_and_absurds"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": ":"
+                            },
+                            {
+                              "type": "SYMBOL",
+                              "name": "expr"
                             }
                           ]
                         },
@@ -3752,21 +3926,16 @@
                           "type": "SEQ",
                           "members": [
                             {
-                              "type": "SEQ",
-                              "members": [
-                                {
-                                  "type": "SYMBOL",
-                                  "name": "_binding_ids_and_absurds"
-                                },
-                                {
-                                  "type": "STRING",
-                                  "value": ":"
-                                },
-                                {
-                                  "type": "SYMBOL",
-                                  "name": "expr"
-                                }
-                              ]
+                              "type": "SYMBOL",
+                              "name": "_binding_ids_and_absurds"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": ":"
+                            },
+                            {
+                              "type": "SYMBOL",
+                              "name": "expr"
                             }
                           ]
                         },
@@ -3787,21 +3956,16 @@
                           "type": "SEQ",
                           "members": [
                             {
-                              "type": "SEQ",
-                              "members": [
-                                {
-                                  "type": "SYMBOL",
-                                  "name": "_binding_ids_and_absurds"
-                                },
-                                {
-                                  "type": "STRING",
-                                  "value": ":"
-                                },
-                                {
-                                  "type": "SYMBOL",
-                                  "name": "expr"
-                                }
-                              ]
+                              "type": "SYMBOL",
+                              "name": "_binding_ids_and_absurds"
+                            },
+                            {
+                              "type": "STRING",
+                              "value": ":"
+                            },
+                            {
+                              "type": "SYMBOL",
+                              "name": "expr"
                             }
                           ]
                         },
@@ -3839,21 +4003,16 @@
                               "type": "SEQ",
                               "members": [
                                 {
-                                  "type": "SEQ",
-                                  "members": [
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "_application"
-                                    },
-                                    {
-                                      "type": "STRING",
-                                      "value": ":"
-                                    },
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "expr"
-                                    }
-                                  ]
+                                  "type": "SYMBOL",
+                                  "name": "_application"
+                                },
+                                {
+                                  "type": "STRING",
+                                  "value": ":"
+                                },
+                                {
+                                  "type": "SYMBOL",
+                                  "name": "expr"
                                 }
                               ]
                             },
@@ -3879,21 +4038,16 @@
                               "type": "SEQ",
                               "members": [
                                 {
-                                  "type": "SEQ",
-                                  "members": [
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "_binding_ids_and_absurds"
-                                    },
-                                    {
-                                      "type": "STRING",
-                                      "value": ":"
-                                    },
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "expr"
-                                    }
-                                  ]
+                                  "type": "SYMBOL",
+                                  "name": "_binding_ids_and_absurds"
+                                },
+                                {
+                                  "type": "STRING",
+                                  "value": ":"
+                                },
+                                {
+                                  "type": "SYMBOL",
+                                  "name": "expr"
                                 }
                               ]
                             },
@@ -3919,21 +4073,16 @@
                               "type": "SEQ",
                               "members": [
                                 {
-                                  "type": "SEQ",
-                                  "members": [
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "_binding_ids_and_absurds"
-                                    },
-                                    {
-                                      "type": "STRING",
-                                      "value": ":"
-                                    },
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "expr"
-                                    }
-                                  ]
+                                  "type": "SYMBOL",
+                                  "name": "_binding_ids_and_absurds"
+                                },
+                                {
+                                  "type": "STRING",
+                                  "value": ":"
+                                },
+                                {
+                                  "type": "SYMBOL",
+                                  "name": "expr"
                                 }
                               ]
                             },
@@ -3954,21 +4103,16 @@
                               "type": "SEQ",
                               "members": [
                                 {
-                                  "type": "SEQ",
-                                  "members": [
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "_binding_ids_and_absurds"
-                                    },
-                                    {
-                                      "type": "STRING",
-                                      "value": ":"
-                                    },
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "expr"
-                                    }
-                                  ]
+                                  "type": "SYMBOL",
+                                  "name": "_binding_ids_and_absurds"
+                                },
+                                {
+                                  "type": "STRING",
+                                  "value": ":"
+                                },
+                                {
+                                  "type": "SYMBOL",
+                                  "name": "expr"
                                 }
                               ]
                             },
@@ -4008,21 +4152,16 @@
                               "type": "SEQ",
                               "members": [
                                 {
-                                  "type": "SEQ",
-                                  "members": [
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "_application"
-                                    },
-                                    {
-                                      "type": "STRING",
-                                      "value": ":"
-                                    },
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "expr"
-                                    }
-                                  ]
+                                  "type": "SYMBOL",
+                                  "name": "_application"
+                                },
+                                {
+                                  "type": "STRING",
+                                  "value": ":"
+                                },
+                                {
+                                  "type": "SYMBOL",
+                                  "name": "expr"
                                 }
                               ]
                             },
@@ -4048,21 +4187,16 @@
                               "type": "SEQ",
                               "members": [
                                 {
-                                  "type": "SEQ",
-                                  "members": [
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "_binding_ids_and_absurds"
-                                    },
-                                    {
-                                      "type": "STRING",
-                                      "value": ":"
-                                    },
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "expr"
-                                    }
-                                  ]
+                                  "type": "SYMBOL",
+                                  "name": "_binding_ids_and_absurds"
+                                },
+                                {
+                                  "type": "STRING",
+                                  "value": ":"
+                                },
+                                {
+                                  "type": "SYMBOL",
+                                  "name": "expr"
                                 }
                               ]
                             },
@@ -4088,21 +4222,16 @@
                               "type": "SEQ",
                               "members": [
                                 {
-                                  "type": "SEQ",
-                                  "members": [
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "_binding_ids_and_absurds"
-                                    },
-                                    {
-                                      "type": "STRING",
-                                      "value": ":"
-                                    },
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "expr"
-                                    }
-                                  ]
+                                  "type": "SYMBOL",
+                                  "name": "_binding_ids_and_absurds"
+                                },
+                                {
+                                  "type": "STRING",
+                                  "value": ":"
+                                },
+                                {
+                                  "type": "SYMBOL",
+                                  "name": "expr"
                                 }
                               ]
                             },
@@ -4123,21 +4252,16 @@
                               "type": "SEQ",
                               "members": [
                                 {
-                                  "type": "SEQ",
-                                  "members": [
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "_binding_ids_and_absurds"
-                                    },
-                                    {
-                                      "type": "STRING",
-                                      "value": ":"
-                                    },
-                                    {
-                                      "type": "SYMBOL",
-                                      "name": "expr"
-                                    }
-                                  ]
+                                  "type": "SYMBOL",
+                                  "name": "_binding_ids_and_absurds"
+                                },
+                                {
+                                  "type": "STRING",
+                                  "value": ":"
+                                },
+                                {
+                                  "type": "SYMBOL",
+                                  "name": "expr"
                                 }
                               ]
                             },
@@ -4169,25 +4293,20 @@
                   "type": "SEQ",
                   "members": [
                     {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "SYMBOL",
-                          "name": "attributes"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "_application"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": ":"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "expr"
-                        }
-                      ]
+                      "type": "SYMBOL",
+                      "name": "attributes"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_application"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ":"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "expr"
                     }
                   ]
                 },
@@ -4213,25 +4332,20 @@
                   "type": "SEQ",
                   "members": [
                     {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "SYMBOL",
-                          "name": "attributes"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "_binding_ids_and_absurds"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": ":"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "expr"
-                        }
-                      ]
+                      "type": "SYMBOL",
+                      "name": "attributes"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_binding_ids_and_absurds"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ":"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "expr"
                     }
                   ]
                 },
@@ -4257,25 +4371,20 @@
                   "type": "SEQ",
                   "members": [
                     {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "SYMBOL",
-                          "name": "attributes"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "_binding_ids_and_absurds"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": ":"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "expr"
-                        }
-                      ]
+                      "type": "SYMBOL",
+                      "name": "attributes"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_binding_ids_and_absurds"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ":"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "expr"
                     }
                   ]
                 },
@@ -4296,25 +4405,20 @@
                   "type": "SEQ",
                   "members": [
                     {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "SYMBOL",
-                          "name": "attributes"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "_binding_ids_and_absurds"
-                        },
-                        {
-                          "type": "STRING",
-                          "value": ":"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "expr"
-                        }
-                      ]
+                      "type": "SYMBOL",
+                      "name": "attributes"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_binding_ids_and_absurds"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ":"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "expr"
                     }
                   ]
                 },
@@ -4367,17 +4471,12 @@
                   "type": "SEQ",
                   "members": [
                     {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "STRING",
-                          "value": "let"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "_declaration_block"
-                        }
-                      ]
+                      "type": "STRING",
+                      "value": "let"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_declaration_block"
                     }
                   ]
                 },
@@ -4706,13 +4805,8 @@
                   "type": "SEQ",
                   "members": [
                     {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "SYMBOL",
-                          "name": "_binding_ids_and_absurds"
-                        }
-                      ]
+                      "type": "SYMBOL",
+                      "name": "_binding_ids_and_absurds"
                     }
                   ]
                 },
@@ -4738,17 +4832,12 @@
                   "type": "SEQ",
                   "members": [
                     {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "SYMBOL",
-                          "name": "attributes"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "_binding_ids_and_absurds"
-                        }
-                      ]
+                      "type": "SYMBOL",
+                      "name": "attributes"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_binding_ids_and_absurds"
                     }
                   ]
                 },
@@ -4774,17 +4863,12 @@
                   "type": "SEQ",
                   "members": [
                     {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "SYMBOL",
-                          "name": "attributes"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "_binding_ids_and_absurds"
-                        }
-                      ]
+                      "type": "SYMBOL",
+                      "name": "attributes"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_binding_ids_and_absurds"
                     }
                   ]
                 },
@@ -4810,17 +4894,12 @@
                   "type": "SEQ",
                   "members": [
                     {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "SYMBOL",
-                          "name": "attributes"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "_binding_ids_and_absurds"
-                        }
-                      ]
+                      "type": "SYMBOL",
+                      "name": "attributes"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_binding_ids_and_absurds"
                     }
                   ]
                 },
@@ -4841,17 +4920,12 @@
                   "type": "SEQ",
                   "members": [
                     {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "SYMBOL",
-                          "name": "attributes"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "_binding_ids_and_absurds"
-                        }
-                      ]
+                      "type": "SYMBOL",
+                      "name": "attributes"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_binding_ids_and_absurds"
                     }
                   ]
                 },

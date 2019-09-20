@@ -84,6 +84,7 @@ module.exports = grammar({
         $.module_macro,
         $.module,
         $.pragma,
+        $.syntax,
 
     ),
 
@@ -431,14 +432,48 @@ module.exports = grammar({
 
     // Pragma / DeclarationPragma
     pragma: $ => token(seq(
-        '{-#',
-        repeat(choice(
-            /[^#]/,
-            /#[^-]/,
-            /#\-[^}]/,
-        )),
-        '#-}',
+      '{-#',
+      repeat(choice(
+        /[^#]/,
+        /#[^-]/,
+        /#\-[^}]/,
+      )),
+      '#-}',
     )),
+
+    ////////////////////////////////////////////////////////////////////////
+    // Declaration: Syntax
+    ////////////////////////////////////////////////////////////////////////
+
+    syntax: $ => seq(
+      'syntax',
+      $.id,
+      $.hole_names,
+      '=',
+      repeat1($.id)
+    ),
+
+    // HoleNames
+    hole_names: $ => repeat1($.hole_name),
+    hole_name: $ => choice(
+      $._simple_top_hole,
+      brace(       $._simple_hole),
+      brace_double($._simple_hole),
+      brace(       $.id, '=', $._simple_hole),
+      brace_double($.id, '=', $._simple_hole),
+    ),
+
+    // SimpleTopHole
+    _simple_top_hole: $ => choice(
+      $.id,
+      paren($._LAMBDA, $.bid, $._ARROW, $.id),
+    ),
+
+    // SimpleHole
+    _simple_hole: $ => choice(
+      $.id,
+      seq($._LAMBDA, $.bid, $._ARROW, $.id),
+    ),
 
     ////////////////////////////////////////////////////////////////////////
     // Names
@@ -756,15 +791,15 @@ module.exports = grammar({
     _typed_bindings: $ => repeat1($.typed_binding),
     typed_binding: $ => choice(
       maybeDotted(choice(
-        paren(       seq($._application            , ':', $.expr)),
-        brace(       seq($._binding_ids_and_absurds, ':', $.expr)),
-        brace_double(seq($._binding_ids_and_absurds, ':', $.expr)),
+        paren(       $._application            , ':', $.expr),
+        brace(       $._binding_ids_and_absurds, ':', $.expr),
+        brace_double($._binding_ids_and_absurds, ':', $.expr),
       )),
-      paren(       seq($.attributes, $._application            , ':', $.expr)),
-      brace(       seq($.attributes, $._binding_ids_and_absurds, ':', $.expr)),
-      brace_double(seq($.attributes, $._binding_ids_and_absurds, ':', $.expr)),
+      paren(       $.attributes, $._application            , ':', $.expr),
+      brace(       $.attributes, $._binding_ids_and_absurds, ':', $.expr),
+      brace_double($.attributes, $._binding_ids_and_absurds, ':', $.expr),
       paren($.Open),
-      paren(seq('let', $._declaration_block)),
+      paren('let', $._declaration_block),
     ),
 
     // TypedUntypedBindings1
@@ -781,10 +816,10 @@ module.exports = grammar({
         brace($._binding_ids_and_absurds),
         brace_double($._binding_ids_and_absurds),
       )),
-      paren(seq(              $._binding_ids_and_absurds)),
-      paren(seq($.attributes, $._binding_ids_and_absurds)),
-      brace(seq($.attributes, $._binding_ids_and_absurds)),
-      brace_double(seq($.attributes, $._binding_ids_and_absurds)),
+      paren(              $._binding_ids_and_absurds),
+      paren($.attributes, $._binding_ids_and_absurds),
+      brace($.attributes, $._binding_ids_and_absurds),
+      brace_double($.attributes, $._binding_ids_and_absurds),
     ),
 
     ////////////////////////////////////////////////////////////////////////

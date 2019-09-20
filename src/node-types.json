@@ -82,6 +82,10 @@
         {
           "type": "record_signature",
           "named": true
+        },
+        {
+          "type": "syntax",
+          "named": true
         }
       ]
     }
@@ -173,40 +177,6 @@
     "fields": {}
   },
   {
-    "type": "builtin_pragma",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "string",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "compile_pragma",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "foreign_code",
-          "named": true
-        },
-        {
-          "type": "string",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "data",
     "named": true,
     "fields": {},
@@ -296,6 +266,10 @@
         },
         {
           "type": "record_signature",
+          "named": true
+        },
+        {
+          "type": "syntax",
           "named": true
         },
         {
@@ -484,40 +458,6 @@
     }
   },
   {
-    "type": "foreign_code",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "foreign_code",
-          "named": true
-        },
-        {
-          "type": "string",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "foreign_pragma",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "foreign_code",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "function",
     "named": true,
     "fields": {},
@@ -554,6 +494,40 @@
       "types": [
         {
           "type": "signature",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "hole_name",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "bid",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "hole_names",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "hole_name",
           "named": true
         }
       ]
@@ -679,6 +653,10 @@
         },
         {
           "type": "record_signature",
+          "named": true
+        },
+        {
+          "type": "syntax",
           "named": true
         }
       ]
@@ -869,6 +847,10 @@
         {
           "type": "record_signature",
           "named": true
+        },
+        {
+          "type": "syntax",
+          "named": true
         }
       ]
     }
@@ -1008,6 +990,10 @@
         {
           "type": "record_signature",
           "named": true
+        },
+        {
+          "type": "syntax",
+          "named": true
         }
       ]
     }
@@ -1098,6 +1084,10 @@
         },
         {
           "type": "record_signature",
+          "named": true
+        },
+        {
+          "type": "syntax",
           "named": true
         },
         {
@@ -1272,6 +1262,10 @@
         {
           "type": "record_signature",
           "named": true
+        },
+        {
+          "type": "syntax",
+          "named": true
         }
       ]
     }
@@ -1382,6 +1376,10 @@
         {
           "type": "record_signature",
           "named": true
+        },
+        {
+          "type": "syntax",
+          "named": true
         }
       ]
     }
@@ -1483,6 +1481,10 @@
         },
         {
           "type": "record_signature",
+          "named": true
+        },
+        {
+          "type": "syntax",
           "named": true
         }
       ]
@@ -1724,6 +1726,10 @@
         {
           "type": "record_signature",
           "named": true
+        },
+        {
+          "type": "syntax",
+          "named": true
         }
       ]
     }
@@ -1838,21 +1844,6 @@
         },
         {
           "type": "let",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "rewrite_pragma",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "string",
           "named": true
         }
       ]
@@ -1983,6 +1974,10 @@
         {
           "type": "record_signature",
           "named": true
+        },
+        {
+          "type": "syntax",
+          "named": true
         }
       ]
     }
@@ -2038,6 +2033,25 @@
     "type": "string",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "syntax",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "hole_names",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "type_signature",
@@ -2181,6 +2195,10 @@
         {
           "type": "record_signature",
           "named": true
+        },
+        {
+          "type": "syntax",
+          "named": true
         }
       ]
     }
@@ -2322,6 +2340,10 @@
         },
         {
           "type": "record_signature",
+          "named": true
+        },
+        {
+          "type": "syntax",
           "named": true
         }
       ]
@@ -2515,27 +2537,15 @@
     "named": true
   },
   {
-    "type": "BUILTIN",
+    "type": "syntax",
     "named": false
   },
   {
-    "type": "REWRITE",
+    "type": "{",
     "named": false
   },
   {
-    "type": "{-#",
-    "named": false
-  },
-  {
-    "type": "#-}",
-    "named": false
-  },
-  {
-    "type": "FOREIGN",
-    "named": false
-  },
-  {
-    "type": "COMPILE",
+    "type": "}",
     "named": false
   },
   {
@@ -2548,14 +2558,6 @@
   },
   {
     "type": "..",
-    "named": false
-  },
-  {
-    "type": "{",
-    "named": false
-  },
-  {
-    "type": "}",
     "named": false
   },
   {
