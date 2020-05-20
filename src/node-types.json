@@ -104,7 +104,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "PropN",
@@ -380,7 +380,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "atom",
@@ -500,6 +500,45 @@
         },
         {
           "type": "where",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "function_name",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "atom",
+          "named": true
+        },
+        {
+          "type": "do",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "forall",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "lambda",
+          "named": true
+        },
+        {
+          "type": "let",
           "named": true
         }
       ]
@@ -702,8 +741,12 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
+        {
+          "type": "expr",
+          "named": true
+        },
         {
           "type": "lambda_clause",
           "named": true
@@ -752,7 +795,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "atom",
@@ -898,7 +941,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "atom",
@@ -914,6 +957,10 @@
         },
         {
           "type": "forall",
+          "named": true
+        },
+        {
+          "type": "function_name",
           "named": true
         },
         {
@@ -1636,7 +1683,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "PropN",
@@ -1664,6 +1711,10 @@
         },
         {
           "type": "literal",
+          "named": true
+        },
+        {
+          "type": "module_assignment",
           "named": true
         },
         {
@@ -1833,6 +1884,49 @@
     "fields": {}
   },
   {
+    "type": "record_name",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "PropN",
+          "named": true
+        },
+        {
+          "type": "SetN",
+          "named": true
+        },
+        {
+          "type": "atom",
+          "named": true
+        },
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "id",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        },
+        {
+          "type": "qid",
+          "named": true
+        },
+        {
+          "type": "record_assignments",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "record_signature",
     "named": true,
     "fields": {},
@@ -1880,7 +1974,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "atom",
@@ -2060,7 +2154,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "atom",
@@ -2100,11 +2194,6 @@
         }
       ]
     }
-  },
-  {
-    "type": "string",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "syntax",
@@ -2150,7 +2239,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "abstract",
@@ -2304,7 +2393,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "atom",
@@ -2468,11 +2557,31 @@
     }
   },
   {
-    "type": "field",
+    "type": "#-}",
     "named": false
   },
   {
-    "type": "overlap",
+    "type": "(",
+    "named": false
+  },
+  {
+    "type": "(|",
+    "named": false
+  },
+  {
+    "type": ")",
+    "named": false
+  },
+  {
+    "type": "-",
+    "named": false
+  },
+  {
+    "type": ".",
+    "named": false
+  },
+  {
+    "type": "..",
     "named": false
   },
   {
@@ -2480,7 +2589,7 @@
     "named": false
   },
   {
-    "type": "instance",
+    "type": ";",
     "named": false
   },
   {
@@ -2488,23 +2597,39 @@
     "named": false
   },
   {
-    "type": "with",
+    "type": "@",
     "named": false
   },
   {
-    "type": "rewrite",
+    "type": "CATCHALL",
     "named": false
   },
   {
-    "type": "module",
+    "type": "Prop",
     "named": false
   },
   {
-    "type": "where",
+    "type": "PropN",
+    "named": true
+  },
+  {
+    "type": "Set",
     "named": false
   },
   {
-    "type": "data",
+    "type": "SetN",
+    "named": true
+  },
+  {
+    "type": "_",
+    "named": false
+  },
+  {
+    "type": "abstract",
+    "named": false
+  },
+  {
+    "type": "bid",
     "named": false
   },
   {
@@ -2512,7 +2637,7 @@
     "named": false
   },
   {
-    "type": "record",
+    "type": "coinductive",
     "named": false
   },
   {
@@ -2520,11 +2645,15 @@
     "named": false
   },
   {
-    "type": "inductive",
+    "type": "data",
     "named": false
   },
   {
-    "type": "coinductive",
+    "type": "data_name",
+    "named": false
+  },
+  {
+    "type": "do",
     "named": false
   },
   {
@@ -2532,7 +2661,31 @@
     "named": false
   },
   {
-    "type": "no-eta-equality",
+    "type": "field",
+    "named": false
+  },
+  {
+    "type": "field_name",
+    "named": true
+  },
+  {
+    "type": "hiding",
+    "named": false
+  },
+  {
+    "type": "id",
+    "named": true
+  },
+  {
+    "type": "import",
+    "named": false
+  },
+  {
+    "type": "in",
+    "named": false
+  },
+  {
+    "type": "inductive",
     "named": false
   },
   {
@@ -2548,19 +2701,11 @@
     "named": false
   },
   {
-    "type": "variable",
+    "type": "instance",
     "named": false
   },
   {
-    "type": "mutual",
-    "named": false
-  },
-  {
-    "type": "abstract",
-    "named": false
-  },
-  {
-    "type": "private",
+    "type": "let",
     "named": false
   },
   {
@@ -2568,15 +2713,15 @@
     "named": false
   },
   {
-    "type": "postulate",
+    "type": "module",
     "named": false
   },
   {
-    "type": "primitive",
+    "type": "mutual",
     "named": false
   },
   {
-    "type": "import",
+    "type": "no-eta-equality",
     "named": false
   },
   {
@@ -2584,23 +2729,55 @@
     "named": false
   },
   {
+    "type": "overlap",
+    "named": false
+  },
+  {
+    "type": "pattern",
+    "named": false
+  },
+  {
+    "type": "postulate",
+    "named": false
+  },
+  {
+    "type": "pragma",
+    "named": true
+  },
+  {
+    "type": "primitive",
+    "named": false
+  },
+  {
+    "type": "private",
+    "named": false
+  },
+  {
     "type": "public",
     "named": false
   },
   {
-    "type": "using",
+    "type": "qid",
     "named": false
   },
   {
-    "type": "(",
+    "type": "quote",
     "named": false
   },
   {
-    "type": ")",
+    "type": "quoteContext",
     "named": false
   },
   {
-    "type": "hiding",
+    "type": "quoteGoal",
+    "named": false
+  },
+  {
+    "type": "quoteTerm",
+    "named": false
+  },
+  {
+    "type": "record",
     "named": false
   },
   {
@@ -2608,7 +2785,15 @@
     "named": false
   },
   {
-    "type": ";",
+    "type": "rewrite",
+    "named": false
+  },
+  {
+    "type": "syntax",
+    "named": false
+  },
+  {
+    "type": "tactic",
     "named": false
   },
   {
@@ -2616,7 +2801,55 @@
     "named": false
   },
   {
+    "type": "unquote",
+    "named": false
+  },
+  {
+    "type": "unquoteDecl",
+    "named": false
+  },
+  {
+    "type": "unquoteDef",
+    "named": false
+  },
+  {
+    "type": "using",
+    "named": false
+  },
+  {
+    "type": "variable",
+    "named": false
+  },
+  {
+    "type": "where",
+    "named": false
+  },
+  {
+    "type": "with",
+    "named": false
+  },
+  {
+    "type": "{",
+    "named": false
+  },
+  {
+    "type": "{-#",
+    "named": false
+  },
+  {
     "type": "{{",
+    "named": false
+  },
+  {
+    "type": "|",
+    "named": false
+  },
+  {
+    "type": "|)",
+    "named": false
+  },
+  {
+    "type": "}",
     "named": false
   },
   {
@@ -2632,143 +2865,11 @@
     "named": false
   },
   {
-    "type": "_",
-    "named": false
-  },
-  {
-    "type": "pragma",
-    "named": true
-  },
-  {
-    "type": "{-#",
-    "named": false
-  },
-  {
-    "type": "CATCHALL",
-    "named": false
-  },
-  {
-    "type": "#-}",
-    "named": false
-  },
-  {
-    "type": "syntax",
-    "named": false
-  },
-  {
-    "type": "{",
-    "named": false
-  },
-  {
-    "type": "}",
-    "named": false
-  },
-  {
-    "type": "pattern",
-    "named": false
-  },
-  {
-    "type": "unquoteDecl",
-    "named": false
-  },
-  {
-    "type": "unquoteDef",
-    "named": false
-  },
-  {
-    "type": "id",
-    "named": true
-  },
-  {
-    "type": ".",
-    "named": false
-  },
-  {
-    "type": "..",
-    "named": false
-  },
-  {
-    "type": "-",
-    "named": false
-  },
-  {
-    "type": "@",
-    "named": false
-  },
-  {
-    "type": "|",
-    "named": false
-  },
-  {
-    "type": "quoteGoal",
-    "named": false
-  },
-  {
-    "type": "in",
-    "named": false
-  },
-  {
-    "type": "tactic",
-    "named": false
-  },
-  {
-    "type": "Prop",
-    "named": false
-  },
-  {
-    "type": "Set",
-    "named": false
-  },
-  {
-    "type": "quote",
-    "named": false
-  },
-  {
-    "type": "quoteTerm",
-    "named": false
-  },
-  {
-    "type": "quoteContext",
-    "named": false
-  },
-  {
-    "type": "unquote",
-    "named": false
-  },
-  {
-    "type": "(|",
-    "named": false
-  },
-  {
-    "type": "|)",
-    "named": false
-  },
-  {
     "type": "⦇",
     "named": false
   },
   {
     "type": "⦈",
     "named": false
-  },
-  {
-    "type": "let",
-    "named": false
-  },
-  {
-    "type": "do",
-    "named": false
-  },
-  {
-    "type": "comment",
-    "named": true
-  },
-  {
-    "type": "SetN",
-    "named": true
-  },
-  {
-    "type": "PropN",
-    "named": true
   }
 ]
