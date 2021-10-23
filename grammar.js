@@ -1,7 +1,8 @@
-// identifier: http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.Names
-const ID = /([^\s\\.\"\(\)\{\}@\'\\_]|\\[^\sa-zA-Z]|_[^\s;\.\"\(\)\{\}@])[^\s;\.\"\(\)\{\}@]*/;
-// qualified identifier: http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.Names
-const QID = /(([^\s;\.\"\(\)\{\}@\'\\_]|\\[^\sa-zA-Z]|_[^\s;\.\"\(\)\{\}@])[^\s;\.\"\(\)\{\}@]*\.)*([^\s;\.\"\(\)\{\}@\'\\_]|\\[^\sa-zA-Z]|_[^\s;\.\"\(\)\{\}@])[^\s;\.\"\(\)\{\}@]*/;
+/* eslint-disable arrow-parens */
+/* eslint-disable camelcase */
+/* eslint-disable-next-line spaced-comment */
+/// <reference types="tree-sitter-cli/dsl" />
+// @ts-check
 
 const BRACE1 = [['{', '}']];
 const BRACE2 = [['{{', '}}'], ['⦃', '⦄']];
@@ -10,49 +11,41 @@ const IDIOM = [['(|', '|)'], ['⦇', '⦈']];
 const PAREN = [['(', ')']];
 
 // numbers and literals
-const number = /0x[0-9a-fA-F]+|[0-9]+/;
 const integer = /\-?(0x[0-9a-fA-F]+|[0-9]+)/;
-const exponent = /[eE][-+]?(0x[0-9a-fA-F]+|[0-9]+)/;
-const float = /(\-?(0x[0-9a-fA-F]+|[0-9]+)\.(0x[0-9a-fA-F]+|[0-9]+)([eE][-+]?(0x[0-9a-fA-F]+|[0-9]+))?)|((0x[0-9a-fA-F]+|[0-9]+)[eE][-+]?(0x[0-9a-fA-F]+|[0-9]+))/;
-
 
 module.exports = grammar({
   name: 'agda',
 
   word: $ => $.id,
 
-    extras: $ => [
-        $.comment,
-        $.pragma,
-        /\s|\\n/,
-    ],
-
-  externals: $ => [
-      $._newline,
-      $._indent,
-      $._dedent
+  extras: $ => [
+    $.comment,
+    $.pragma,
+    /\s|\\n/,
   ],
 
-  conflicts: $ => [
+  externals: $ => [
+    $._newline,
+    $._indent,
+    $._dedent,
   ],
 
   rules: {
     source_file: $ => repeat(seq($._declaration, $._newline)),
 
 
-
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Constants
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
-    _FORALL: $ => token(choice('forall', '∀')),
-    _ARROW: $ => token(choice('->','→')),
-    _LAMBDA: $ => token(choice('\\','λ')),
-    _ELLIPSIS: $ => token(choice('...','…')),
+    _FORALL: _ => choice('forall', '∀'),
+    _ARROW: _ => choice('->', '→'),
+    _LAMBDA: _ => choice('\\', 'λ'),
+    _ELLIPSIS: _ => choice('...', '…'),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Top-level Declarations
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     // Declarations
     // indented, 1 or more declarations
@@ -63,38 +56,39 @@ module.exports = grammar({
 
     // Declaration
     _declaration: $ => choice(
-        $.fields,
-        $.function,
-        $.data,
-        $.data_signature,
-        $.record,
-        $.record_signature,
-        $.infix,
-        $.generalize,
-        $.mutual,
-        $.abstract,
-        $.private,
-        $.instance,
-        $.macro,
-        $.postulate,
-        $.primitive,
-        $.open,
-        $.module_macro,
-        $.module,
-        $.pragma,
-        $.syntax,
-        $.pattern,
-        $.unquote_decl,
+      $.fields,
+      $.function,
+      $.data,
+      $.data_signature,
+      $.record,
+      $.record_signature,
+      $.infix,
+      $.generalize,
+      $.mutual,
+      $.abstract,
+      $.private,
+      $.instance,
+      $.macro,
+      $.postulate,
+      $.primitive,
+      $.open,
+      $.import,
+      $.module_macro,
+      $.module,
+      $.pragma,
+      $.syntax,
+      $.pattern,
+      $.unquote_decl,
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Field
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     // Fields
     fields: $ => seq(
-        'field',
-        $._signature_block,
+      'field',
+      $._signature_block,
     ),
 
     // ArgTypeSignatures
@@ -103,23 +97,23 @@ module.exports = grammar({
     // ArgTypeSigs
     signature: $ => choice(
       seq(
-          optional('overlap'),
-          $._modal_arg_ids,
-          ':',
-          $.expr,
+        optional('overlap'),
+        $._modal_arg_ids,
+        ':',
+        $.expr,
       ),
       seq(
-          'instance',
-          $._signature_block
+        'instance',
+        $._signature_block,
       ),
     ),
 
     // ModalArgIds
     _modal_arg_ids: $ => seq(repeat($.attribute), $._arg_ids),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Functions
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     // We are splitting FunClause into 2 cases:
     //  *. function declaration (':')
@@ -146,12 +140,12 @@ module.exports = grammar({
     lhs_decl: $ => seq(
       alias($._with_exprs, $.function_name),
       optional($.rewrite_equations),
-      optional($.with_expressions)
+      optional($.with_expressions),
     ),
     lhs_defn: $ => prec(1, seq(
       $._with_exprs,
       optional($.rewrite_equations),
-      optional($.with_expressions)
+      optional($.with_expressions),
     )),
 
     // RHS
@@ -168,15 +162,15 @@ module.exports = grammar({
     where: $ => seq(
       optional(seq(
         'module',
-        $.bid
+        $.bid,
       )),
       'where',
-      optional($._declaration_block)
+      optional($._declaration_block),
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Data
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     data_name: $ => alias($.id, 'data_name'),
 
@@ -186,12 +180,12 @@ module.exports = grammar({
       optional($._typed_untyped_bindings),
       optional(seq(':', $.expr)),
       'where',
-      optional($._declaration_block)
+      optional($._declaration_block),
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Data Signature
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     data_signature: $ => seq(
       'data',
@@ -201,9 +195,9 @@ module.exports = grammar({
       $.expr,
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Record
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     // Record
     record: $ => seq(
@@ -226,48 +220,48 @@ module.exports = grammar({
 
     // RecordDirective
     _record_directive: $ => choice(
-        $.record_constructor,
-        $.record_constructor_instance,
-        $.record_induction,
-        $.record_eta
+      $.record_constructor,
+      $.record_constructor_instance,
+      $.record_induction,
+      $.record_eta,
     ),
     // RecordConstructorName
     record_constructor: $ => seq('constructor', $.id),
 
     // Declaration of record constructor name.
     record_constructor_instance: $ => seq(
-        'instance',
-        block($, $.record_constructor),
+      'instance',
+      block($, $.record_constructor),
     ),
 
     // RecordInduction
-    record_induction: $ => choice(
-        'inductive',
-        'coinductive'
+    record_induction: _ => choice(
+      'inductive',
+      'coinductive',
     ),
 
     // RecordEta
-    record_eta: $ => choice(
-        'eta-equality',
-        'no-eta-equality'
+    record_eta: _ => choice(
+      'eta-equality',
+      'no-eta-equality',
     ),
 
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Record Signature
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     record_signature: $ => seq(
       'record',
       alias($._atom_no_curly, $.record_name),
       optional($._typed_untyped_bindings),
       ':',
-      $.expr
+      $.expr,
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Infix
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     infix: $ => seq(
       choice('infix', 'infixl', 'infixr'),
@@ -275,76 +269,76 @@ module.exports = grammar({
       repeat1($.bid),
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Generalize
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     generalize: $ => seq(
       'variable',
-      optional($._signature_block)
+      optional($._signature_block),
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Mutual
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     mutual: $ => seq(
       'mutual',
-      optional($._declaration_block)
+      optional($._declaration_block),
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Abstract
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     abstract: $ => seq(
       'abstract',
-      optional($._declaration_block)
+      optional($._declaration_block),
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Private
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     private: $ => seq(
       'private',
-      optional($._declaration_block)
+      optional($._declaration_block),
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Instance
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     instance: $ => seq(
       'instance',
-      optional($._declaration_block)
+      optional($._declaration_block),
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Macro
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     macro: $ => seq(
       'macro',
-      optional($._declaration_block)
+      optional($._declaration_block),
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Postulate
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     postulate: $ => seq(
       'postulate',
-      optional($._declaration_block)
+      optional($._declaration_block),
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Primitive
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     primitive: $ => seq(
       'primitive',
-      optional($._type_signature_block)
+      optional($._type_signature_block),
     ),
 
     // TypeSignatures
@@ -354,37 +348,36 @@ module.exports = grammar({
     type_signature: $ => seq(
       $._field_names,
       ':',
-      $.expr
+      $.expr,
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Open
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
+
 
     open: $ => seq(
-      choice(
-        seq(        'import'),
-        seq('open', 'import'),
-        seq('open'          ),
-      ),
-      $.module_name,
+      'open',
+      choice($.import, $.module_name),
       optional($._atoms),
       optional($._import_directives),
     ),
+    import: $ => seq('import', $.module_name),
+
 
     // ModuleName
-    module_name: $ => prec.left(alias($.qid, 'module_name')),
+    module_name: $ => $._qid,
 
     // ImportDirectives and shit
     _import_directives: $ => repeat1($.import_directive),
     import_directive: $ => choice(
       'public',
-      seq('using', '(', $._comma_import_names ,')'),
-      seq('hiding', '(', $._comma_import_names ,')'),
-      seq('renaming', '(', sepR(';', $.renaming) ,')'),
-      seq('using', '(' ,')'),
-      seq('hiding', '(' ,')'),
-      seq('renaming', '(' ,')')
+      seq('using', '(', $._comma_import_names, ')'),
+      seq('hiding', '(', $._comma_import_names, ')'),
+      seq('renaming', '(', sepR(';', $.renaming), ')'),
+      seq('using', '(', ')'),
+      seq('hiding', '(', ')'),
+      seq('renaming', '(', ')'),
     ),
 
     // CommaImportNames
@@ -392,27 +385,27 @@ module.exports = grammar({
 
     // Renaming
     renaming: $ => seq(
-        optional('module'),
-        $.id,
-        'to',
-        $.id
+      optional('module'),
+      $.id,
+      'to',
+      $.id,
     ),
 
     // ImportName
     _import_name: $ => seq(
-        optional('module'), $.id
+      optional('module'), $.id,
     ),
 
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Module Macro
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     // ModuleMacro
     module_macro: $ => seq(
       choice(
-        seq('module', alias($.qid, $.module_name)),
-        seq('open', 'module', alias($.qid, $.module_name)),
+        seq('module', alias($._qid, $.module_name)),
+        seq('open', 'module', alias($._qid, $.module_name)),
       ),
       optional($._typed_untyped_bindings),
       '=',
@@ -429,25 +422,25 @@ module.exports = grammar({
       ),
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Module
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     // Module
     module: $ => seq(
-        'module',
-        alias(choice($.qid, '_'), $.module_name),
-        optional($._typed_untyped_bindings),
-        'where',
-        optional($._declaration_block)
+      'module',
+      alias(choice($._qid, '_'), $.module_name),
+      optional($._typed_untyped_bindings),
+      'where',
+      optional($._declaration_block),
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Pragma
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     // Pragma / DeclarationPragma
-    pragma: $ => token(seq(
+    pragma: _ => token(seq(
       '{-#',
       repeat(choice(
         /[^#]/,
@@ -458,27 +451,27 @@ module.exports = grammar({
     )),
 
     // CatchallPragma
-    catchall_pragma: $ => seq('{-#', 'CATCHALL', '#-}'),
+    catchall_pragma: _ => seq('{-#', 'CATCHALL', '#-}'),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Syntax
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     syntax: $ => seq(
       'syntax',
       $.id,
       $.hole_names,
       '=',
-      repeat1($.id)
+      repeat1($.id),
     ),
 
     // HoleNames
     hole_names: $ => repeat1($.hole_name),
     hole_name: $ => choice(
       $._simple_top_hole,
-      brace(       $._simple_hole),
+      brace($._simple_hole),
       brace_double($._simple_hole),
-      brace(       $.id, '=', $._simple_hole),
+      brace($.id, '=', $._simple_hole),
       brace_double($.id, '=', $._simple_hole),
     ),
 
@@ -494,39 +487,44 @@ module.exports = grammar({
       seq($._LAMBDA, $.bid, $._ARROW, $.id),
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Pattern Synonym
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     // PatternSyn
     pattern: $ => seq(
-        'pattern',
-        $.id,
-        optional($._lambda_bindings),  // PatternSynArgs
-        '=',
-        $.expr
+      'pattern',
+      $.id,
+      optional($._lambda_bindings), // PatternSynArgs
+      '=',
+      $.expr,
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Declaration: Unquoting declarations
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     // UnquoteDecl
     unquote_decl: $ => choice(
-      seq('unquoteDecl',         '=', $.expr),
+      seq('unquoteDecl', '=', $.expr),
       seq('unquoteDecl', $._ids, '=', $.expr),
-      seq('unquoteDef' , $._ids, '=', $.expr),
+      seq('unquoteDef', $._ids, '=', $.expr),
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Names
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
-    // Id
-    id: $ => token(ID),
+    // identifier: http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.Names
+    id: _ => /([^\s\\.\"\(\)\{\}@\'\\_]|\\[^\sa-zA-Z]|_[^\s;\.\"\(\)\{\}@])[^\s;\.\"\(\)\{\}@]*/,
 
-    // QId
-    qid: $ => prec.left(alias(choice(QID, $.id), 'qid')),
+    // qualified identifier: http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.Names
+    _qid: $ => prec.left(
+      choice(
+        alias(/(([^\s;\.\"\(\)\{\}@\'\\_]|\\[^\sa-zA-Z]|_[^\s;\.\"\(\)\{\}@])[^\s;\.\"\(\)\{\}@]*\.)*([^\s;\.\"\(\)\{\}@\'\\_]|\\[^\sa-zA-Z]|_[^\s;\.\"\(\)\{\}@])[^\s;\.\"\(\)\{\}@]*/, $.qid),
+        alias($.id, $.qid),
+      ),
+    ),
 
     // BId
     bid: $ => alias(choice('_', $.id), 'bid'),
@@ -559,19 +557,19 @@ module.exports = grammar({
     // CommaBIds / CommaBIdAndAbsurds
     _binding_ids_and_absurds: $ => prec(-1, choice(
       $._application,
-      seq($.qid, '=', $.qid),
-      seq($.qid, '=', '_'  ),
-      seq('-'  , '=', $.qid),
-      seq('-'  , '=', '_'  ),
+      seq($._qid, '=', $._qid),
+      seq($._qid, '=', '_'),
+      seq('-', '=', $._qid),
+      seq('-', '=', '_'),
     )),
 
     // Attribute
     attribute: $ => seq('@', $._expr_or_attr),
     attributes: $ => repeat1($.attribute),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Expressions (terms and types)
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     // Expr
     expr: $ => choice(
@@ -600,7 +598,7 @@ module.exports = grammar({
     // ExprOrAttr
     _expr_or_attr: $ => choice(
       $.literal,
-      $.qid,
+      $._qid,
       paren($.expr),
     ),
 
@@ -647,12 +645,11 @@ module.exports = grammar({
     _atom_no_curly: $ => choice(
       '_',
       'Prop',
-      'Set',
+      $.SetN,
       'quote',
       'quoteTerm',
       'quoteContext',
       'unquote',
-      $.SetN,
       $.PropN,
       brace_double($.expr),
       idiom($.expr),
@@ -664,7 +661,7 @@ module.exports = grammar({
       $.record_assignments,
       alias($.field_assignments, $.record_assignments),
       $._ELLIPSIS,
-      $._expr_or_attr
+      $._expr_or_attr,
     ),
 
     // ForallBindings
@@ -680,7 +677,7 @@ module.exports = grammar({
       // in case that there's a newline between declarations and $._let_body
       optional($._newline),
 
-      $._let_body
+      $._let_body,
     )),
 
     // special `let...in` in do statements
@@ -697,12 +694,12 @@ module.exports = grammar({
         seq($._newline, $._let_body),
         // covers the rest of the cases
         $._let_body,
-      )
+      ),
     )),
 
     _let_body: $ => seq(
       'in',
-      $.expr
+      $.expr,
     ),
 
     // LamBindings
@@ -710,7 +707,7 @@ module.exports = grammar({
       $._LAMBDA,
       $._lambda_bindings,
       $._ARROW,
-      $.expr
+      $.expr,
     ),
 
     // LamBinds
@@ -737,13 +734,13 @@ module.exports = grammar({
         seq('where', $._lambda_clauses),
         // AbsurdLamBindings
         $._lambda_bindings,
-      )
+      ),
     ),
 
     // bunch of `$._lambda_clause_maybe_absurd` sep by ';'
     _lambda_clauses: $ => prec.left(seq(
       repeat(seq($._lambda_clause_maybe_absurd, ';')),
-      $._lambda_clause_maybe_absurd
+      $._lambda_clause_maybe_absurd,
     )),
 
     // AbsurdLamBindings | AbsurdLamClause
@@ -761,20 +758,20 @@ module.exports = grammar({
     // NonAbsurdLamClause
     lambda_clause: $ => seq(
       optional($.catchall_pragma),
-      optional($._atoms),   // Application3PossiblyEmpty
+      optional($._atoms), // Application3PossiblyEmpty
       $._ARROW,
       $.expr,
     ),
 
     // DoStmts
     do: $ => seq('do',
-      block($, $._do_stmt)
+      block($, $._do_stmt),
     ),
 
     // DoStmt
     _do_stmt: $ => seq(
       $.stmt,
-      optional($.do_where)
+      optional($.do_where),
     ),
 
     // DoWhere
@@ -818,7 +815,7 @@ module.exports = grammar({
     field_assignment: $ => seq(
       alias($.id, $.field_name),
       '=',
-      $.expr
+      $.expr,
     ),
 
     // ModuleAssignment
@@ -829,20 +826,20 @@ module.exports = grammar({
     ),
 
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Bindings
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     // TypedBinding
     _typed_bindings: $ => repeat1($.typed_binding),
     typed_binding: $ => choice(
       maybeDotted(choice(
-        paren(       $._application            , ':', $.expr),
-        brace(       $._binding_ids_and_absurds, ':', $.expr),
+        paren($._application, ':', $.expr),
+        brace($._binding_ids_and_absurds, ':', $.expr),
         brace_double($._binding_ids_and_absurds, ':', $.expr),
       )),
-      paren(       $.attributes, $._application            , ':', $.expr),
-      brace(       $.attributes, $._binding_ids_and_absurds, ':', $.expr),
+      paren($.attributes, $._application, ':', $.expr),
+      brace($.attributes, $._binding_ids_and_absurds, ':', $.expr),
       brace_double($.attributes, $._binding_ids_and_absurds, ':', $.expr),
       paren($.open),
       paren('let', $._declaration_block),
@@ -852,7 +849,7 @@ module.exports = grammar({
     _typed_untyped_bindings: $ => repeat1($._typed_untyped_binding),
     _typed_untyped_binding: $ => choice(
       $.untyped_binding,
-      $.typed_binding
+      $.typed_binding,
     ),
 
     // DomainFreeBinding / DomainFreeBindingAbsurd
@@ -862,96 +859,93 @@ module.exports = grammar({
         brace($._binding_ids_and_absurds),
         brace_double($._binding_ids_and_absurds),
       )),
-      paren(              $._binding_ids_and_absurds),
+      paren($._binding_ids_and_absurds),
       paren($.attributes, $._binding_ids_and_absurds),
       brace($.attributes, $._binding_ids_and_absurds),
       brace_double($.attributes, $._binding_ids_and_absurds),
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Literals
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
     // -- Literals
     // <0,code> \'             { litChar }
     // <0,code,pragma_> \"     { litString }
     // <0,code> @integer       { literal LitNat }
     // <0,code> @float         { literal LitFloat }
-    integer: $ => integer,
-    string: $ => /\".*\"/,
-    literal: $ => choice(
-        integer,
-        /\".*\"/,
+    integer: _ => integer,
+    string: _ => /\".*\"/,
+    literal: _ => choice(
+      integer,
+      /\".*\"/,
     ),
 
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
     // Comment
-    ////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////
 
-    comment: $ => token(choice(
-        prec(100, seq('--', /.*/)),
-        seq('{--}'),
-        seq(
-            '{-',
-            /[^#]/,
-            repeat(choice(
-                /[^-]/,     // anything but -
-                /-[^}]/,    // - not followed by }
-            )),
-            /-}/
-        )
+    comment: _ => token(choice(
+      prec(100, seq('--', /.*/)),
+      seq('{--}'),
+      seq(
+        '{-',
+        /[^#]/,
+        repeat(choice(
+          /[^-]/, // anything but -
+          /-[^}]/, // - not followed by }
+        )),
+        /-}/,
+      ),
     )),
 
-
-    ////////////////////////////////////////////////////////////////////////
-    // Unimplemented
-    ////////////////////////////////////////////////////////////////////////
-
     // setN
-    SetN: $ => 'setN',
+    SetN: $ => prec.right(2, seq('Set', optional($.atom))),
+
+
+    // //////////////////////////////////////////////////////////////////////
+    // Unimplemented
+    // //////////////////////////////////////////////////////////////////////
+
 
     // propN
-    PropN: $ => 'propN',
+    PropN: _ => 'propN',
 
-  }
+  },
 });
 
 
-////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////
 // Generic combinators
-////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////
 
 function sepR(sep, rule) {
-    return seq(rule, repeat(seq(sep, rule)))
-}
-
-function sepL(sep, rule) {
-    return seq(repeat(seq(rule, sep)), rule)
+  return seq(rule, repeat(seq(sep, rule)));
 }
 
 function indent($, ...rule) {
-    return seq(
-        $._indent,
-        ...rule,
-        $._dedent
-    );
+  return seq(
+    $._indent,
+    ...rule,
+    $._dedent,
+  );
 }
 
 // 1 or more $RULE ending with a NEWLINE
 function block($, rules) {
-    return indent($, repeat1(seq(rules, $._newline)));
+  return indent($, repeat1(seq(rules, $._newline)));
 }
 
-////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////
 // Language-specific combinators
-////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////
 
 function maybeDotted(rule) {
-    return choice(
-        rule,               // Relevant
-        seq('.', rule),     // Irrelevant
-        seq('..', rule),    // NonStrict
-    );
+  return choice(
+    rule, // Relevant
+    seq('.', rule), // Irrelevant
+    seq('..', rule), // NonStrict
+  );
 }
 
 function flatten(arrOfArrs) {
