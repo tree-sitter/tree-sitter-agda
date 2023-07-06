@@ -63,3 +63,6 @@ typings/
 
 # gyp intermediate files
 *.gypi
+
+# Xcode-generated
+.build/
