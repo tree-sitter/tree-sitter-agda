@@ -19,9 +19,9 @@ postulate
 ---
 
 (source_file
-    (open (module_name)
-        (import_directive)
-        (import_directive (id)))
+    (open (import (module_name (qid)))
+      (import_directive)
+      (import_directive (id)))
     (infix (integer) (bid))
     (postulate
         (function
@@ -31,7 +31,7 @@ postulate
                     (untyped_binding (atom (qid)))
                     (typed_binding
                         (atom (qid))
-                        (expr (atom) (atom (qid))))
+                        (expr (atom (SetN (atom (qid))))))
                     (expr
                         (atom (qid))
                         (expr
@@ -46,10 +46,10 @@ postulate
                         (atom (qid)))
                     (typed_binding
                         (atom (qid))
-                        (expr (atom) (atom (qid))))
+                        (expr (atom (SetN (atom (qid))))))
                     (typed_binding
                         (atom (qid))
-                        (expr (atom) (atom (qid))))
+                        (expr (atom (SetN (atom (qid))))))
                     (expr (atom (qid))
                         (atom (qid))
                         (expr

@@ -15,8 +15,8 @@ record Pair (A B : Set) : Set where
         (typed_binding
             (atom (qid))
             (atom (qid))
-            (expr (atom)))
-        (expr (atom))
+            (expr (atom (SetN))))
+        (expr (atom (SetN)))
         (record_declarations_block
             (record_constructor (id))
             (record_induction)
@@ -44,8 +44,8 @@ record Pair (A B : Set) : Set where
         (typed_binding
             (atom (qid))
             (atom (qid))
-            (expr (atom)))
-        (expr (atom))
+            (expr (atom (SetN))))
+        (expr (atom (SetN)))
         (record_declarations_block
             (record_constructor (id))
             (record_induction)
@@ -78,8 +78,8 @@ record Pair (A B : Set) : Set where
         (typed_binding
             (atom (qid))
             (atom (qid))
-            (expr (atom)))
-        (expr (atom))
+            (expr (atom (SetN))))
+        (expr (atom (SetN)))
         (record_declarations_block
             (comment)
             (record_constructor_instance

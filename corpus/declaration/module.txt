@@ -8,7 +8,7 @@ module Test.Simple where
 ---
 
 (source_file
-    (module (module_name)
+    (module (module_name (qid))
         (module (module_name))))
 
 ==================
@@ -20,8 +20,8 @@ module Test.Simple (A : Set) {B : _} where
 ---
 
 (source_file
-    (module (module_name)
-        (typed_binding (atom (qid)) (expr (atom)))
+    (module (module_name (qid))
+        (typed_binding (atom (qid)) (expr (atom (SetN))))
         (typed_binding (atom (qid)) (expr (atom)))))
 
 ==================
@@ -33,7 +33,7 @@ open A as B
 ---
 
 (source_file
-    (open (module_name) (atom (qid)) (atom (qid))))
+    (open (module_name (qid)) (atom (qid)) (atom (qid))))
 
 ==================
 Open with directives
@@ -46,7 +46,8 @@ open import A b c public using (a; module C) hiding (xs) renaming (module ys to 
 
 (source_file
     (open
-        (module_name) (atom (qid)) (atom (qid))
+        (import (module_name (qid)))
+        (atom (qid)) (atom (qid))
         (import_directive)
         (import_directive (id) (id))
         (import_directive (id))
@@ -69,11 +70,11 @@ open module Nat (A : Set) = Sort {{ ... }}
 
 (source_file
     (module_macro
-        (module_name) (typed_binding (atom (qid)) (expr (atom)))
-        (module_application (module_name) (atom (qid))))
+        (module_name (qid)) (typed_binding (atom (qid)) (expr (atom (SetN))))
+        (module_application (module_name (qid)) (atom (qid))))
     (module_macro
-        (module_name) (typed_binding (atom (qid)) (expr (atom)))
-        (module_application (module_name))))
+        (module_name (qid)) (typed_binding (atom (qid)) (expr (atom (SetN))))
+        (module_application (module_name (qid)))))
 
 ==================
 Module macros (Unicode)
@@ -87,8 +88,8 @@ open module Nat (A : Set) = Sort ⦃ … ⦄
 
 (source_file
     (module_macro
-        (module_name) (typed_binding (atom (qid)) (expr (atom)))
-        (module_application (module_name) (atom (qid))))
+        (module_name (qid)) (typed_binding (atom (qid)) (expr (atom (SetN))))
+        (module_application (module_name (qid)) (atom (qid))))
     (module_macro
-        (module_name) (typed_binding (atom (qid)) (expr (atom)))
-        (module_application (module_name))))
+        (module_name (qid)) (typed_binding (atom (qid)) (expr (atom (SetN))))
+        (module_application (module_name (qid)))))

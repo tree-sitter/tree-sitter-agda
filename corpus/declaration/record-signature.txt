@@ -12,5 +12,5 @@ record Pair (A B : Set) : Set
         (typed_binding
             (atom (qid))
             (atom (qid))
-            (expr (atom)))
-        (expr (atom))))
+            (expr (atom (SetN))))
+        (expr (atom (SetN)))))

@@ -29,10 +29,10 @@ module _ {ℓ ℓ′ : Level} {A : Set ℓ} {B : Set ℓ′} where
 ---
 
 (source_file
-    (module (module_name))
-    (open (module_name))
-    (open (module_name))
-    (open (module_name)
+    (module (module_name (qid)))
+    (open (import (module_name (qid))))
+    (open (import (module_name (qid))))
+    (open (import (module_name (qid)))
         (import_directive
             (renaming (id) (id))
             (renaming (id) (id)))
@@ -41,8 +41,8 @@ module _ {ℓ ℓ′ : Level} {A : Set ℓ} {B : Set ℓ′} where
     (module
         (module_name)
         (typed_binding (atom (qid)) (atom (qid)) (expr (atom (qid))))
-        (typed_binding (atom (qid))                         (expr (atom) (atom (qid))))
-        (typed_binding (atom (qid))                         (expr (atom) (atom (qid))))
+        (typed_binding (atom (qid))                         (expr (atom (SetN (atom (qid))))))
+        (typed_binding (atom (qid))                         (expr (atom (SetN (atom (qid))))))
         (function
             (lhs (function_name (atom (qid))))
             (rhs (expr

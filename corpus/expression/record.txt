@@ -27,8 +27,8 @@ r = record { M hiding (y); M2 a renaming (w to y) }
         (lhs (atom (qid)))
         (rhs (expr (atom
             (record_assignments
-                (module_assignment (module_name) (import_directive (id)))
-                (module_assignment (module_name) (atom (qid))
+                (module_assignment (module_name (qid)) (import_directive (id)))
+                (module_assignment (module_name (qid)) (atom (qid))
                     (import_directive (renaming (id) (id))))))))))
 
 ==================
@@ -61,6 +61,6 @@ a = record { MyRecord old; a = 0; c = 5}
         (lhs (atom (qid)))
         (rhs (expr (atom
             (record_assignments
-                (module_assignment (module_name) (atom (qid)))
+                (module_assignment (module_name (qid)) (atom (qid)))
                 (field_assignment (field_name) (expr (atom (qid))))
                 (field_assignment (field_name) (expr (atom (qid))))))))))
