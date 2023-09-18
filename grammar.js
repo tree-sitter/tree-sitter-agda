@@ -521,6 +521,7 @@ module.exports = grammar({
     // qualified identifier: http://wiki.portal.chalmers.se/agda/pmwiki.php?n=ReferenceManual.Names
     _qid: $ => prec.left(
       choice(
+        // eslint-disable-next-line max-len
         alias(/(([^\s;\.\"\(\)\{\}@\'\\_]|\\[^\sa-zA-Z]|_[^\s;\.\"\(\)\{\}@])[^\s;\.\"\(\)\{\}@]*\.)*([^\s;\.\"\(\)\{\}@\'\\_]|\\[^\sa-zA-Z]|_[^\s;\.\"\(\)\{\}@])[^\s;\.\"\(\)\{\}@]*/, $.qid),
         alias($.id, $.qid),
       ),
@@ -919,10 +920,30 @@ module.exports = grammar({
 // Generic combinators
 // //////////////////////////////////////////////////////////////////////
 
+/**
+ * Creates a rule to match one or more of the rules separated by `sep`.
+ *
+ * @param {RuleOrLiteral} sep
+ *
+ * @param {RuleOrLiteral} rule
+ *
+ * @return {SeqRule}
+ *
+ */
 function sepR(sep, rule) {
   return seq(rule, repeat(seq(sep, rule)));
 }
 
+/**
+  * Creates a rule that requires indentation before and dedentation after.
+  *
+  * @param {GrammarSymbols<any>} $
+  *
+  * @param {RuleOrLiteral[]} rule
+  *
+  * @return {SeqRule}
+  *
+  */
 function indent($, ...rule) {
   return seq(
     $._indent,
@@ -932,6 +953,16 @@ function indent($, ...rule) {
 }
 
 // 1 or more $RULE ending with a NEWLINE
+/**
+  * Creates a rule that uses an indentation block, where each line is a rule.
+  * The indentation is required before and dedentation is required after.
+  *
+  * @param {GrammarSymbols<any>} $
+  *
+  * @param {RuleOrLiteral} rules
+  *
+  * @return {SeqRule}
+  */
 function block($, rules) {
   return indent($, repeat1(seq(rules, $._newline)));
 }
@@ -940,6 +971,13 @@ function block($, rules) {
 // Language-specific combinators
 // //////////////////////////////////////////////////////////////////////
 
+/**
+  * Creates a rule that matches a rule with a dot or two dots in front.
+  *
+  * @param {RuleOrLiteral} rule
+  *
+  * @return {ChoiceRule}
+  */
 function maybeDotted(rule) {
   return choice(
     rule, // Relevant
@@ -948,30 +986,99 @@ function maybeDotted(rule) {
   );
 }
 
+/**
+  * Flattens an array of arrays.
+  *
+  * @param {Array<Array<Array<string>>>} arrOfArrs
+  *
+  * @return {Array<Array<string>>}
+  *
+  */
 function flatten(arrOfArrs) {
   return arrOfArrs.reduce((res, arr) => [...res, ...arr], []);
 }
 
+/**
+  * A callback function that takes a left and right string and returns a rule.
+  * @callback encloseWithCallback
+  * @param {string} left
+  * @param {string} right
+  * @return {RuleOrLiteral}
+  * @see encloseWith
+  * @see enclose
+  */
+
+/**
+  * Creates a rule that matches a sequence of rules enclosed by a pair of strings.
+  *
+  * @param {encloseWithCallback} fn
+  *
+  * @param {Array<Array<Array<string>>>} pairs
+  *
+  * @return {ChoiceRule}
+  *
+  */
 function encloseWith(fn, ...pairs) {
   return choice(...flatten(pairs).map(([left, right]) => fn(left, right)));
 }
 
+/**
+  *
+  * @param {RuleOrLiteral} expr
+  *
+  * @param {Array<Array<Array<string>>>} pairs
+  *
+  * @return {ChoiceRule}
+  *
+  */
 function enclose(expr, ...pairs) {
   return encloseWith((left, right) => seq(left, expr, right), ...pairs);
 }
 
+/**
+  * Creates a rule that matches a sequence of rules enclosed by `(` and `)`.
+  *
+  * @param {RuleOrLiteral[]} rules
+  *
+  * @return {ChoiceRule}
+  *
+  */
 function paren(...rules) {
   return enclose(seq(...rules), PAREN);
 }
 
+/**
+  * Creates a rule that matches a sequence of rules enclosed by `{` and `}`.
+  *
+  * @param {RuleOrLiteral[]} rules
+  *
+  * @return {ChoiceRule}
+  *
+  */
 function brace(...rules) {
   return enclose(seq(...rules), BRACE1);
 }
 
+/**
+  * Creates a rule that matches a sequence of rules enclosed by `{{` and `}}`.
+  *
+  * @param {RuleOrLiteral[]} rules
+  *
+  * @return {ChoiceRule}
+  *
+  */
 function brace_double(...rules) {
   return enclose(seq(...rules), BRACE2);
 }
 
+/**
+  * Creates a rule that matches a sequence of rules enclosed by `(|` and `|)`.
+  *
+  * @param {RuleOrLiteral[]} rules
+  *
+  * @return {ChoiceRule}
+  *
+  */
 function idiom(...rules) {
   return enclose(seq(...rules), IDIOM);
 }
