@@ -1,31 +1,36 @@
 {
   "name": "tree-sitter-agda",
   "version": "1.3.1",
-  "description": "tree sitter for Agda",
+  "description": "Agda grammar for tree-sitter",
   "main": "bindings/node",
-  "scripts": {
-    "rebuild": "npx tree-sitter generate && npx node-gyp rebuild",
-    "test": "npx tree-sitter test",
-    "iterate": "npx tree-sitter generate && npx tree-sitter test",
-    "test-scanner": "npx tree-sitter generate && npx tree-sitter parse test/example.txt"
-  },
+  "keywords": [
+    "parser",
+    "lexer",
+    "agda"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tree-sitter/tree-sitter-agda.git"
   },
-  "author": "LUA Ting-Gian",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/tree-sitter/tree-sitter-agda/issues"
   },
   "homepage": "https://github.com/tree-sitter/tree-sitter-agda#readme",
+  "author": "Lua Ting-Gian",
+  "license": "MIT",
   "dependencies": {
-    "nan": "^2.14.0"
+    "nan": "^2.18.0"
   },
   "devDependencies": {
-    "eslint": ">=5.16.0",
+    "eslint": "^8.49.0",
     "eslint-config-google": "^0.14.0",
-    "tree-sitter-cli": "^0.16.9"
+    "tree-sitter-cli": "^0.20.8"
+  },
+  "scripts": {
+    "build": "tree-sitter generate && node-gyp build",
+    "lint": "eslint grammar.js",
+    "test": "tree-sitter test && tree-sitter parse examples/* --quiet --time",
+    "test-windows": "tree-sitter test"
   },
   "tree-sitter": [
     {
@@ -33,10 +38,10 @@
       "file-types": [
         "agda"
       ],
+      "injection-regex": "^agda$",
       "highlights": [
         "queries/highlights.scm"
-      ],
-      "injection-regex": "^agda$"
+      ]
     }
   ]
 }
