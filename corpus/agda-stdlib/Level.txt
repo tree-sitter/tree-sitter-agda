@@ -22,9 +22,9 @@ open Lift public
 ---
 
 (source_file
-    (module (module_name))
+    (module (module_name (qid)))
     (comment)
-    (open (module_name)
+    (open (import (module_name (qid)))
         (import_directive)
         (import_directive (id) (id))
         (import_directive
@@ -38,17 +38,17 @@ open Lift public
         (typed_binding
             (atom (qid))
             (expr
-                (atom)
-                (atom (qid))))
+                (atom (SetN (atom (qid))))))
         (expr
-            (atom)
-            (atom (expr
-                (atom (qid))
-                (atom (qid))
-                (atom (qid)))))
+            (atom (SetN
+                (atom
+                  (expr
+                    (atom (qid))
+                    (atom (qid))
+                    (atom (qid)))))))
         (record_declarations_block
             (record_constructor (id))
             (fields
                 (signature (field_name) (expr (atom (qid)))))))
-    (open (module_name)
+    (open (module_name (qid))
         (import_directive)))

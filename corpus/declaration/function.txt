@@ -73,9 +73,9 @@ g : (A B _ ? : Set) -> A
         (lhs (function_name (atom (qid))))
         (rhs
             (expr
-            (typed_binding (atom (qid)) (expr (atom)))
-            (typed_binding (atom (qid)) (expr (atom)))
-            (typed_binding (atom (qid)) (expr (atom)))
+            (typed_binding (atom (qid)) (expr (atom (SetN))))
+            (typed_binding (atom (qid)) (expr (atom (SetN))))
+            (typed_binding (atom (qid)) (expr (atom (SetN))))
             (expr (atom (qid))))))
     (function
         (lhs (function_name (atom (qid))))
@@ -86,7 +86,7 @@ g : (A B _ ? : Set) -> A
                 (atom (qid))
                 (atom)
                 (atom (qid))
-                (expr (atom)))
+                (expr (atom (SetN))))
             (expr (atom (qid)))))))
 
 ==================
@@ -112,7 +112,7 @@ g : {A : Set} -> A
     (function
         (lhs (function_name (atom (qid))))
         (rhs
-            (expr (typed_binding (atom (qid)) (expr (atom)))
+            (expr (typed_binding (atom (qid)) (expr (atom (SetN))))
             (expr (atom (qid)))))))
 
 ==================

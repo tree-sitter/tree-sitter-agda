@@ -12,7 +12,7 @@ f = λ (a : Set) b () -> a
             (atom (qid)))
         (rhs
             (expr (lambda
-                (typed_binding (atom (qid)) (expr (atom)))
+                (typed_binding (atom (qid)) (expr (atom (SetN))))
                 (untyped_binding (bid))
                 (expr (atom (qid))))))))
 
@@ -107,5 +107,5 @@ f = \ (A : Set) b ()
             (atom (qid)))
         (rhs
             (expr (lambda
-                (typed_binding (atom (qid)) (expr (atom)))
+                (typed_binding (atom (qid)) (expr (atom (SetN))))
                 (untyped_binding (bid)))))))
