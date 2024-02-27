@@ -1,0 +1,14 @@
+model = genai.GenerativeModel(model_name='gemini-pro-vision')
+response = model.generate_content(
+    ['Do these look store-bought or homemade?', img],
+    safety_settings=[
+        {
+            "category": "HARM_CATEGORY_HARASSMENT",
+            "threshold": "BLOCK_LOW_AND_ABOVE",
+        },
+        {
+            "category": "HARM_CATEGORY_HATE_SPEECH",
+            "threshold": "BLOCK_LOW_AND_ABOVE",
+        },
+    ]
+    )
