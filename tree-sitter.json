@@ -1,0 +1,40 @@
+{
+  "grammars": [
+    {
+      "name": "agda",
+      "camelcase": "Agda",
+      "scope": "source.agda",
+      "path": ".",
+      "file-types": [
+        "agda"
+      ],
+      "injection-regex": "^agda$",
+      "queries": {
+        "highlights": [
+          "queries/highlights.scm"
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "version": "1.3.1",
+    "license": "MIT",
+    "description": "Agda grammar for tree-sitter",
+    "authors": [
+      {
+        "name": "Lua Ting-Gian"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/tree-sitter/tree-sitter-agda"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true
+  }
+}
