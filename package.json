@@ -2,46 +2,49 @@
   "name": "tree-sitter-agda",
   "version": "1.3.1",
   "description": "Agda grammar for tree-sitter",
-  "main": "bindings/node",
-  "keywords": [
-    "parser",
-    "lexer",
-    "agda"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tree-sitter/tree-sitter-agda.git"
-  },
-  "bugs": {
-    "url": "https://github.com/tree-sitter/tree-sitter-agda/issues"
-  },
-  "homepage": "https://github.com/tree-sitter/tree-sitter-agda#readme",
-  "author": "Lua Ting-Gian",
+  "repository": "github:tree-sitter/tree-sitter-agda",
   "license": "MIT",
+  "author": "Lua Ting-Gian",
+  "main": "bindings/node",
+  "types": "bindings/node",
+  "keywords": [
+    "incremental",
+    "parsing",
+    "tree-sitter",
+    "json"
+  ],
+  "files": [
+    "grammar.js",
+    "binding.gyp",
+    "prebuilds/**",
+    "bindings/node/*",
+    "queries/*",
+    "src/**",
+    "*.wasm"
+  ],
   "dependencies": {
-    "nan": "^2.18.0"
+    "node-addon-api": "^8.2.1",
+    "node-gyp-build": "^4.8.2"
+  },
+  "peerDependencies": {
+    "tree-sitter": "^0.21.0"
+  },
+  "peerDependenciesMeta": {
+    "tree-sitter": {
+      "optional": true
+    }
   },
   "devDependencies": {
-    "eslint": "^8.49.0",
-    "eslint-config-google": "^0.14.0",
-    "tree-sitter-cli": "^0.20.8"
+    "eslint": "^9.12.0",
+    "eslint-config-treesitter": "^1.0.2",
+    "prebuildify": "^6.0.1",
+    "tree-sitter-cli": "^0.24.3"
   },
   "scripts": {
-    "build": "tree-sitter generate && node-gyp build",
+    "install": "node-gyp-build",
     "lint": "eslint grammar.js",
-    "test": "tree-sitter test && tree-sitter parse examples/* --quiet --time",
-    "test-windows": "tree-sitter test"
-  },
-  "tree-sitter": [
-    {
-      "scope": "source.agda",
-      "file-types": [
-        "agda"
-      ],
-      "injection-regex": "^agda$",
-      "highlights": [
-        "queries/highlights.scm"
-      ]
-    }
-  ]
+    "prestart": "tree-sitter build --wasm",
+    "start": "tree-sitter playground",
+    "test": "node --test bindings/node/*_test.js"
+  }
 }

@@ -1,6 +1,3 @@
-/* eslint-disable arrow-parens */
-/* eslint-disable camelcase */
-/* eslint-disable-next-line spaced-comment */
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
@@ -927,23 +924,21 @@ module.exports = grammar({
  *
  * @param {RuleOrLiteral} rule
  *
- * @return {SeqRule}
- *
+ * @returns {SeqRule}
  */
 function sepR(sep, rule) {
   return seq(rule, repeat(seq(sep, rule)));
 }
 
 /**
-  * Creates a rule that requires indentation before and dedentation after.
-  *
-  * @param {GrammarSymbols<any>} $
-  *
-  * @param {RuleOrLiteral[]} rule
-  *
-  * @return {SeqRule}
-  *
-  */
+ * Creates a rule that requires indentation before and dedentation after.
+ *
+ * @param {GrammarSymbols<any>} $
+ *
+ * @param {RuleOrLiteral[]} rule
+ *
+ * @returns {SeqRule}
+ */
 function indent($, ...rule) {
   return seq(
     $._indent,
@@ -954,15 +949,15 @@ function indent($, ...rule) {
 
 // 1 or more $RULE ending with a NEWLINE
 /**
-  * Creates a rule that uses an indentation block, where each line is a rule.
-  * The indentation is required before and dedentation is required after.
-  *
-  * @param {GrammarSymbols<any>} $
-  *
-  * @param {RuleOrLiteral} rules
-  *
-  * @return {SeqRule}
-  */
+ * Creates a rule that uses an indentation block, where each line is a rule.
+ * The indentation is required before and dedentation is required after.
+ *
+ * @param {GrammarSymbols<any>} $
+ *
+ * @param {RuleOrLiteral} rules
+ *
+ * @returns {SeqRule}
+ */
 function block($, rules) {
   return indent($, repeat1(seq(rules, $._newline)));
 }
@@ -972,12 +967,12 @@ function block($, rules) {
 // //////////////////////////////////////////////////////////////////////
 
 /**
-  * Creates a rule that matches a rule with a dot or two dots in front.
-  *
-  * @param {RuleOrLiteral} rule
-  *
-  * @return {ChoiceRule}
-  */
+ * Creates a rule that matches a rule with a dot or two dots in front.
+ *
+ * @param {RuleOrLiteral} rule
+ *
+ * @returns {ChoiceRule}
+ */
 function maybeDotted(rule) {
   return choice(
     rule, // Relevant
@@ -987,98 +982,92 @@ function maybeDotted(rule) {
 }
 
 /**
-  * Flattens an array of arrays.
-  *
-  * @param {Array<Array<Array<string>>>} arrOfArrs
-  *
-  * @return {Array<Array<string>>}
-  *
-  */
+ * Flattens an array of arrays.
+ *
+ * @param {Array<Array<Array<string>>>} arrOfArrs
+ *
+ * @returns {Array<Array<string>>}
+ */
 function flatten(arrOfArrs) {
   return arrOfArrs.reduce((res, arr) => [...res, ...arr], []);
 }
 
 /**
-  * A callback function that takes a left and right string and returns a rule.
-  * @callback encloseWithCallback
-  * @param {string} left
-  * @param {string} right
-  * @return {RuleOrLiteral}
-  * @see encloseWith
-  * @see enclose
-  */
+ * A callback function that takes a left and right string and returns a rule.
+ *
+ * @callback encloseWithCallback
+ * @param {string} left
+ * @param {string} right
+ * @returns {RuleOrLiteral}
+ * @see encloseWith
+ * @see enclose
+ */
 
 /**
-  * Creates a rule that matches a sequence of rules enclosed by a pair of strings.
-  *
-  * @param {encloseWithCallback} fn
-  *
-  * @param {Array<Array<Array<string>>>} pairs
-  *
-  * @return {ChoiceRule}
-  *
-  */
+ * Creates a rule that matches a sequence of rules enclosed by a pair of strings.
+ *
+ * @param {encloseWithCallback} fn
+ *
+ * @param {Array<Array<Array<string>>>} pairs
+ *
+ * @returns {ChoiceRule}
+ */
 function encloseWith(fn, ...pairs) {
   return choice(...flatten(pairs).map(([left, right]) => fn(left, right)));
 }
 
 /**
-  *
-  * @param {RuleOrLiteral} expr
-  *
-  * @param {Array<Array<Array<string>>>} pairs
-  *
-  * @return {ChoiceRule}
-  *
-  */
+ *
+ * @param {RuleOrLiteral} expr
+ *
+ * @param {Array<Array<Array<string>>>} pairs
+ *
+ * @returns {ChoiceRule}
+ */
 function enclose(expr, ...pairs) {
   return encloseWith((left, right) => seq(left, expr, right), ...pairs);
 }
 
 /**
-  * Creates a rule that matches a sequence of rules enclosed by `(` and `)`.
-  *
-  * @param {RuleOrLiteral[]} rules
-  *
-  * @return {ChoiceRule}
-  *
-  */
+ * Creates a rule that matches a sequence of rules enclosed by `(` and `)`.
+ *
+ * @param {RuleOrLiteral[]} rules
+ *
+ * @returns {ChoiceRule}
+ */
 function paren(...rules) {
   return enclose(seq(...rules), PAREN);
 }
 
 /**
-  * Creates a rule that matches a sequence of rules enclosed by `{` and `}`.
-  *
-  * @param {RuleOrLiteral[]} rules
-  *
-  * @return {ChoiceRule}
-  *
-  */
+ * Creates a rule that matches a sequence of rules enclosed by `{` and `}`.
+ *
+ * @param {RuleOrLiteral[]} rules
+ *
+ * @returns {ChoiceRule}
+ */
 function brace(...rules) {
   return enclose(seq(...rules), BRACE1);
 }
 
 /**
-  * Creates a rule that matches a sequence of rules enclosed by `{{` and `}}`.
-  *
-  * @param {RuleOrLiteral[]} rules
-  *
-  * @return {ChoiceRule}
-  *
-  */
+ * Creates a rule that matches a sequence of rules enclosed by `{{` and `}}`.
+ *
+ * @param {RuleOrLiteral[]} rules
+ *
+ * @returns {ChoiceRule}
+ */
 function brace_double(...rules) {
   return enclose(seq(...rules), BRACE2);
 }
 
 /**
-  * Creates a rule that matches a sequence of rules enclosed by `(|` and `|)`.
-  *
-  * @param {RuleOrLiteral[]} rules
-  *
-  * @return {ChoiceRule}
-  *
-  */
+ * Creates a rule that matches a sequence of rules enclosed by `(|` and `|)`.
+ *
+ * @param {RuleOrLiteral[]} rules
+ *
+ * @returns {ChoiceRule}
+ */
 function idiom(...rules) {
   return enclose(seq(...rules), IDIOM);
 }
