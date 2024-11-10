@@ -4,7 +4,7 @@ endif
 
 LANGUAGE_NAME := tree-sitter-agda
 HOMEPAGE_URL := https://github.com/tree-sitter/tree-sitter-agda
-VERSION := 1.3.2
+VERSION := 1.3.3
 
 # repository
 SRC_DIR := src

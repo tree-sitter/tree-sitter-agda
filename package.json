@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-agda",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Agda grammar for tree-sitter",
   "repository": "https://github.com/tree-sitter/tree-sitter-agda",
   "license": "MIT",

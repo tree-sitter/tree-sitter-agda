@@ -1,7 +1,7 @@
 [package]
 name = "tree-sitter-agda"
 description = "Agda grammar for tree-sitter"
-version = "1.3.2"
+version = "1.3.3"
 authors = ["Lua Ting-Gian"]
 license = "MIT"
 readme = "README.md"
