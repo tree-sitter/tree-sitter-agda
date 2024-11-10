@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(tree-sitter-agda
-        VERSION "1.3.1"
+        VERSION "1.3.2"
         DESCRIPTION "Agda grammar for tree-sitter"
         HOMEPAGE_URL "https://github.com/tree-sitter/tree-sitter-agda"
         LANGUAGES C)
