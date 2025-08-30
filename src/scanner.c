@@ -5,87 +5,97 @@
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
-#define VEC_RESIZE(vec, _cap)                                                  \
-    void *tmp = realloc((vec).data, (_cap) * sizeof((vec).data[0]));           \
-    assert(tmp != NULL);                                                       \
-    (vec).data = tmp;                                                          \
-    (vec).cap = (_cap);
+#define VEC_RESIZE(vec, _cap)                                                      \
+    do {                                                                           \
+        void *tmp = realloc((vec).data, (_cap) * sizeof((vec).data[0]));           \
+        assert(tmp != NULL);                                                       \
+        (vec).data = tmp;                                                          \
+        (vec).cap = (_cap);                                                        \
+    } while (0)
 
-#define VEC_GROW(vec, _cap)                                                    \
-    if ((vec).cap < (_cap)) {                                                  \
-        VEC_RESIZE((vec), (_cap));                                             \
+#define VEC_GROW(vec, _cap)                                                        \
+    if ((vec).cap < (_cap)) {                                                      \
+        VEC_RESIZE((vec), (_cap));                                                 \
     }
 
-#define VEC_PUSH(vec, el)                                                      \
-    if ((vec).cap == (vec).len) {                                              \
-        VEC_RESIZE((vec), MAX(16, (vec).len * 2));                             \
-    }                                                                          \
-    (vec).data[(vec).len++] = (el);
+#define VEC_PUSH(vec, el)                                                          \
+    do {                                                                           \
+        if ((vec).cap == (vec).len) {                                              \
+            VEC_RESIZE((vec), MAX(16, (vec).len * 2));                             \
+        }                                                                          \
+        (vec).data[(vec).len++] = (el);                                            \
+    } while (0)
 
 #define VEC_POP(vec) (vec).len--;
 
-#define VEC_NEW                                                                \
-    { .len = 0, .cap = 0, .data = NULL }
+#define VEC_NEW { .len = 0, .cap = 0, .data = NULL }
 
 #define VEC_BACK(vec) ((vec).data[(vec).len - 1])
 
-#define VEC_FREE(vec)                                                          \
-    {                                                                          \
-        if ((vec).data != NULL)                                                \
-            free((vec).data);                                                  \
+#define VEC_FREE(vec)                                                              \
+    {                                                                              \
+        if ((vec).data != NULL)                                                    \
+            free((vec).data);                                                      \
     }
 
 #define VEC_CLEAR(vec) (vec).len = 0;
 
-#define QUEUE_RESIZE(queue, _cap)                                              \
-    do {                                                                       \
-        void *tmp = realloc((queue).data, (_cap) * sizeof((queue).data[0]));   \
-        assert(tmp != NULL);                                                   \
-        (queue).data = tmp;                                                    \
-        (queue).cap = (_cap);                                                  \
+#define QUEUE_RESIZE(queue, _cap)                                                  \
+    do {                                                                           \
+        void *tmp = calloc((_cap), sizeof((queue).data[0]));                       \
+        assert(tmp != NULL);                                                       \
+        uint32_t count = (queue).tail - (queue).head;                              \
+        for (uint32_t i = 0; i < count; i++) {                                     \
+            ((uint16_t *)tmp)[i] = (queue).data[((queue).head + i) % (queue).cap]; \
+        }                                                                          \
+        if ((queue).data != NULL)                                                  \
+            free((queue).data);                                                    \
+        (queue).data = tmp;                                                        \
+        (queue).head = 0;                                                          \
+        (queue).tail = count;                                                      \
+        (queue).cap = (_cap);                                                      \
     } while (0)
 
-#define QUEUE_GROW(queue, _cap)                                                \
-    do {                                                                       \
-        if ((queue).cap < (_cap)) {                                            \
-            QUEUE_RESIZE((queue), (_cap));                                     \
-        }                                                                      \
+#define QUEUE_GROW(queue, _cap)                                                    \
+    do {                                                                           \
+        if ((queue).cap < (_cap)) {                                                \
+            QUEUE_RESIZE((queue), (_cap));                                         \
+        }                                                                          \
     } while (0)
 
-#define QUEUE_PUSH(queue, el)                                                  \
-    do {                                                                       \
-        if ((queue).cap == 0) {                                                \
-            QUEUE_RESIZE((queue), 16);                                         \
-        } else if ((queue).cap == ((queue).tail - (queue).head)) {             \
-            QUEUE_RESIZE((queue), (queue).cap * 2);                            \
-        }                                                                      \
-        (queue).data[(queue).tail % (queue).cap] = (el);                       \
-        (queue).tail++;                                                        \
+#define QUEUE_PUSH(queue, el)                                                      \
+    do {                                                                           \
+        if ((queue).cap == 0) {                                                    \
+            QUEUE_RESIZE((queue), 16);                                             \
+        } else if ((queue).cap == ((queue).tail - (queue).head)) {                 \
+            QUEUE_RESIZE((queue), (queue).cap * 2);                                \
+        }                                                                          \
+        (queue).data[(queue).tail % (queue).cap] = (el);                           \
+        (queue).tail++;                                                            \
     } while (0)
 
-#define QUEUE_POP(queue)                                                       \
-    do {                                                                       \
-        assert((queue).head < (queue).tail);                                   \
-        (queue).head++;                                                        \
+#define QUEUE_POP(queue)                                                           \
+    do {                                                                           \
+        assert((queue).head < (queue).tail);                                       \
+        (queue).head++;                                                            \
     } while (0)
 
 #define QUEUE_FRONT(queue) (queue).data[(queue).head % (queue).cap]
 
 #define QUEUE_EMPTY(queue) ((queue).head == (queue).tail)
 
-#define QUEUE_NEW                                                              \
-    { .head = 0, .tail = 0, .cap = 0, .data = NULL }
+#define QUEUE_NEW { .head = 0, .tail = 0, .cap = 0, .data = NULL }
 
-#define QUEUE_FREE(queue)                                                      \
-    do {                                                                       \
-        if ((queue).data != NULL)                                              \
-            free((queue).data);                                                \
+#define QUEUE_FREE(queue)                                                          \
+    do {                                                                           \
+        if ((queue).data != NULL)                                                  \
+            free((queue).data);                                                    \
     } while (0)
 
-#define QUEUE_CLEAR(queue)                                                     \
-    do {                                                                       \
-        (queue).head = 0;                                                      \
-        (queue).tail = 0;                                                      \
+#define QUEUE_CLEAR(queue)                                                         \
+    do {                                                                           \
+        (queue).head = 0;                                                          \
+        (queue).tail = 0;                                                          \
     } while (0)
 
 enum TokenType {
