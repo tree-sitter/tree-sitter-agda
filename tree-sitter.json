@@ -9,11 +9,9 @@
         "agda"
       ],
       "injection-regex": "^agda$",
-      "queries": {
-        "highlights": [
-          "queries/highlights.scm"
-        ]
-      }
+      "highlights": [
+        "queries/highlights.scm"
+      ]
     }
   ],
   "metadata": {
