@@ -140,6 +140,51 @@ f a with g a
             (expr (atom)))))
 
 ==================
+With-abstraction equality
+==================
+
+⊔≡⊔′ : ∀ m n → m ⊔ n ≡ m ⊔′ n
+⊔≡⊔′ m n with m <ᵇ n in eq
+... | false = _
+... | true  = _
+
+---
+
+(source_file
+  (function
+    (lhs
+      (function_name (atom (qid))))
+    (rhs
+      (expr
+        (forall
+          (untyped_binding (bid))
+          (untyped_binding (bid))
+          (expr
+            (atom (qid))
+            (atom (qid))
+            (atom (qid))
+            (atom (qid))
+            (atom (qid))
+            (atom (qid))
+            (atom (qid)))))))
+  (function
+    (lhs
+      (atom (qid))
+      (atom (qid))
+      (atom (qid))
+      (with_expressions (expr
+          (atom (qid))
+          (atom (qid))
+          (atom (qid))
+          (id)))))
+  (function
+    (lhs (atom) (atom (qid)))
+    (rhs (expr (atom))))
+  (function
+    (lhs (atom) (atom (qid)))
+    (rhs (expr (atom)))))
+
+==================
 Idiom brackets
 ==================
 
