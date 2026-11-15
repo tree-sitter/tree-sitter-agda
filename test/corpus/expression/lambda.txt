@@ -73,7 +73,8 @@ f = \ { a -> b
                 (lambda_clause_absurd (atom)))))))
 
 ==================
-Clauses in where
+Clauses in where (skipped: Agda 2.8.0 cannot parse this)
+:skip
 ==================
 f = \ where
       b -> c

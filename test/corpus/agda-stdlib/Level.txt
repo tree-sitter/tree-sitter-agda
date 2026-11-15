@@ -22,8 +22,9 @@ open Lift public
 ---
 
 (source_file
-    (module (module_name (qid)))
-    (comment)
+    (module
+        (module_name (qid))
+        (comment))
     (open (import (module_name (qid)))
         (import_directive)
         (import_directive (id) (id))

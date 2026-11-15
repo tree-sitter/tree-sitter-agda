@@ -23,7 +23,7 @@ record Pair (A B : Set) : Set where
             (record_eta))))
 
 ==================
-Directives with declarations I
+Directives with declarations 1
 ==================
 
 record Pair (A B : Set) : Set where
@@ -59,7 +59,7 @@ record Pair (A B : Set) : Set where
                 (signature (field_name) (expr (atom (qid))))))))
 
 ==================
-Directives with declarations II
+Directives with declarations 2
 ==================
 
 record Pair (A B : Set) : Set where
@@ -80,11 +80,11 @@ record Pair (A B : Set) : Set where
             (atom (qid))
             (expr (atom (SetN))))
         (expr (atom (SetN)))
+        (comment)
         (record_declarations_block
-            (comment)
             (record_constructor_instance
-              (record_constructor (id)))
-            (comment)
+              (record_constructor (id))
+              (comment))
             (instance
                 (function
                     (lhs (atom (qid)))
